@@ -5,6 +5,10 @@ import edu.wpi.first.wpilibj.TimedRobot
 @Suppress("MagicNumber")
 class Robot : TimedRobot(0.005) {
 
+    init {
+        println("init")
+    }
+
     override fun robotInit() {
     }
 
