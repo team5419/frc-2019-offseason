@@ -1,9 +1,9 @@
-# frc-2019
+# frc-2019-offseason
 ## Getting started
 ### Pre-commit
 First, install the project's [pre-commit](http://pre-commit.com/) hooks (**do this immediately after cloning!**)
 ```
-./gradlew install_hooks
+tox
 ```
 Pre-commit hooks are programs that check the files you've changed each time you make a new commit. They will prevent you from checking in things like invalid JSON, code that fails the [Kotlin linter](https://github.com/shyiko/ktlint/), and more.
 
