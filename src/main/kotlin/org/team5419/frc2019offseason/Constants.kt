@@ -15,12 +15,10 @@ public object Constants {
     object Drivetrain {
         // talon port
         public const val LEFT_MASTER_TALON_PORT = 6
-        public const val LEFT_SLAVE1_TALON_PORT = 7
-        public const val LEFT_SLAVE2_TALON_PORT = 8
+        public const val LEFT_SLAVE_TALON_PORT = 8
 
         public const val RIGHT_MASTER_TALON_PORT = 12
-        public const val RIGHT_SLAVE1_TALON_PORT = 2
-        public const val RIGHT_SLAVE2_TALON_PORT = 3
+        public const val RIGHT_SLAVE_TALON_PORT = 3
 
         // gyro
         public const val GYRO_PORT = 13
@@ -35,6 +33,12 @@ public object Constants {
         public const val WHEEL_DIAMETER = 6.0 // inches
         public const val WHEEL_RADIUS = WHEEL_DIAMETER / 2.0
         public const val WHEEL_CIR = WHEEL_DIAMETER * Math.PI
+    }
+
+    object Lift {
+        // talon port
+        public const val MASTER_TALON_PORT = 6
+        public const val SLAVE_TALON_PORT = 8
     }
 
     object PID {

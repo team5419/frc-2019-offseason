@@ -2,14 +2,20 @@ package org.team5499.frc2019offseason
 
 import edu.wpi.first.wpilibj.TimedRobot
 
+import org.team5419.frc2019offseason.Constants
+
 import org.team5419.frc2019offseason.subsystems.Drivetrain
+import org.team5419.frc2019offseason.subsystems.Climber
+import org.team5419.frc2019offseason.subsystems.Intake
 import org.team5419.frc2019offseason.subsystems.Lift
+import org.team5419.frc2019offseason.subsystems.Vacuum
+
+import org.team5419.frc2019offseason.subsystems.SubsystemsManager
 
 import org.team5419.fault.hardware.LazyTalonSRX
 import org.team5419.fault.hardware.LazyVictorSPX
 
-@Suppress("MagicNumber")
-class Robot : TimedRobot(0.005) {
+class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
 
     private val mLeftMaster: LazyTalonSRX
     private val mLeftSlave: LazyVictorSPX
@@ -22,15 +28,20 @@ class Robot : TimedRobot(0.005) {
 
     private val mDrivetrain: Drivetrain
     private val mLift: Lift
-    // private val mIntake: Intake
+    private val mIntake: Intake
+    private val mClimber: Climber
+    private val mVacuum: Vacuum
+
+    private val mSubsystemsManager: SubsystemsManager
 
     init {
-        mLeftMaster = LazyTalonSRX(0)
-        mLeftSlave = LazyVictorSPX(1)
-        mRightMaster = LazyTalonSRX(2)
-        mRightSlave = LazyVictorSPX(3)
-        mLiftMaster = LazyTalonSRX(4)
-        mLiftSlave = LazyVictorSPX(5)
+        // initilize DriveTrain
+
+        mLeftMaster = LazyTalonSRX(Constants.Drivetrain.LEFT_MASTER_TALON_PORT)
+        mLeftSlave = LazyVictorSPX(Constants.Drivetrain.LEFT_SLAVE_TALON_PORT)
+
+        mRightMaster = LazyTalonSRX(Constants.Drivetrain.RIGHT_MASTER_TALON_PORT)
+        mRightSlave = LazyVictorSPX(Constants.Drivetrain.RIGHT_SLAVE_TALON_PORT)
 
         mDrivetrain = Drivetrain(
             mLeftMaster,
@@ -39,13 +50,40 @@ class Robot : TimedRobot(0.005) {
             mRightSlave
         )
 
+        // initilize Lift
+
+        mLiftMaster = LazyTalonSRX(Constants.Lift.MASTER_TALON_PORT)
+        mLiftSlave = LazyVictorSPX(Constants.Lift.SLAVE_TALON_PORT)
+
         mLift = Lift(
             mLiftMaster,
             mLiftSlave
         )
 
-        println("init")
+        // initilize Intake
+
+        mIntake = Intake()
+
+        // initilize Climber
+
+        mClimber = Climber()
+
+        // initilize Vacuum
+
+        mVacuum = Vacuum()
+
+        // initilize Subsystems Manager
+
+        mSubsystemsManager = SubsystemsManager(
+            mDrivetrain,
+            mLift,
+            mIntake,
+            mClimber,
+            mVacuum
+        )
     }
+
+    // robot
 
     override fun robotInit() {
     }
@@ -53,21 +91,30 @@ class Robot : TimedRobot(0.005) {
     override fun robotPeriodic() {
     }
 
+    // disabled mode
+
     override fun disabledInit() {
+        mSubsystemsManager.resetAll()
     }
 
     override fun disabledPeriodic() {
     }
 
+    // autonomous mode
+
     override fun autonomousInit() {
     }
 
     override fun autonomousPeriodic() {
+        mSubsystemsManager.updateAll()
     }
+
+    // teleop mode
 
     override fun teleopInit() {
     }
 
     override fun teleopPeriodic() {
+        mSubsystemsManager.updateAll()
     }
 }
