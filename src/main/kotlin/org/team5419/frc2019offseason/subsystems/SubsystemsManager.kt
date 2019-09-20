@@ -22,20 +22,20 @@ public class SubsystemsManager(
     }
 
     public fun updateAll() {
-        for (s in mList) {
-            s.update()
+        for (subsystem in mList) {
+            subsystem.update()
         }
     }
 
     public fun stopAll() {
-        for (s in mList) {
-            s.stop()
+        for (subsystem in mList) {
+            subsystem.stop()
         }
     }
 
     public fun resetAll() {
-        for (s in mList) {
-            s.reset()
+        for (subsystem in mList) {
+            subsystem.reset()
         }
     }
 }

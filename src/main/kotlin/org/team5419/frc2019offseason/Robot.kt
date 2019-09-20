@@ -9,8 +9,10 @@ import org.team5419.frc2019offseason.subsystems.Climber
 import org.team5419.frc2019offseason.subsystems.Intake
 import org.team5419.frc2019offseason.subsystems.Lift
 import org.team5419.frc2019offseason.subsystems.Vacuum
-
 import org.team5419.frc2019offseason.subsystems.SubsystemsManager
+
+import org.team5419.frc2019offseason.controllers.AutoController
+import org.team5419.frc2019offseason.controllers.TeleopController
 
 import org.team5419.fault.hardware.LazyTalonSRX
 import org.team5419.fault.hardware.LazyVictorSPX
@@ -33,6 +35,9 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     private val mVacuum: Vacuum
 
     private val mSubsystemsManager: SubsystemsManager
+
+    private val mAutoController: AutoController
+    private val mTeleopController: TeleopController
 
     init {
         // initilize DriveTrain
@@ -81,6 +86,12 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
             mClimber,
             mVacuum
         )
+
+        // initilize controllers
+
+        mAutoController = AutoController()
+
+        mTeleopController = TeleopController()
     }
 
     // robot
@@ -95,6 +106,8 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
 
     override fun disabledInit() {
         mSubsystemsManager.resetAll()
+        mTeleopController.reset()
+        mAutoController.reset()
     }
 
     override fun disabledPeriodic() {
@@ -103,18 +116,22 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     // autonomous mode
 
     override fun autonomousInit() {
+        mAutoController.start()
     }
 
     override fun autonomousPeriodic() {
         mSubsystemsManager.updateAll()
+        mAutoController.update()
     }
 
     // teleop mode
 
     override fun teleopInit() {
+        mTeleopController.start()
     }
 
     override fun teleopPeriodic() {
         mSubsystemsManager.updateAll()
+        mTeleopController.update()
     }
 }
