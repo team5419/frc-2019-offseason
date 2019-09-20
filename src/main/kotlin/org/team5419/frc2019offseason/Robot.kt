@@ -10,9 +10,11 @@ class Robot : TimedRobot(0.005) {
     }
 
     override fun robotInit() {
+
     }
 
     override fun robotPeriodic() {
+        
     }
 
     override fun disabledInit() {
