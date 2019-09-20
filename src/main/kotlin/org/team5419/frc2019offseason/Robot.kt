@@ -2,19 +2,21 @@ package org.team5499.frc2019offseason
 
 import edu.wpi.first.wpilibj.TimedRobot
 
-import org.team5419.frc2019offseason.subsystems.*
+import org.team5419.frc2019offseason.subsystems.Drivetrain
+import org.team5419.frc2019offseason.subsystems.Lift
 
 import org.team5419.fault.hardware.LazyTalonSRX
 import org.team5419.fault.hardware.LazyVictorSPX
-
 
 @Suppress("MagicNumber")
 class Robot : TimedRobot(0.005) {
 
     private val mLeftMaster: LazyTalonSRX
     private val mLeftSlave: LazyVictorSPX
+
     private val mRightMaster: LazyTalonSRX
     private val mRightSlave: LazyVictorSPX
+
     private val mLiftMaster: LazyTalonSRX
     private val mLiftSlave: LazyVictorSPX
 
@@ -46,11 +48,9 @@ class Robot : TimedRobot(0.005) {
     }
 
     override fun robotInit() {
-
     }
 
     override fun robotPeriodic() {
-        
     }
 
     override fun disabledInit() {

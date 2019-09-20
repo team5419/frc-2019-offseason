@@ -1,7 +1,6 @@
 package org.team5419.frc2019offseason.subsystems
 
 import org.team5419.fault.Subsystem
-import org.team5419.frc2019offseason.subsystems.*
 
 public class SubsystemsManager(
     drivetrain: Drivetrain,

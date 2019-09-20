@@ -36,7 +36,7 @@ public object Constants {
         public const val WHEEL_RADIUS = WHEEL_DIAMETER / 2.0
         public const val WHEEL_CIR = WHEEL_DIAMETER * Math.PI
     }
-    
+
     object PID {
         public const val MAX_VELOCITY_SETPOINT = 100.0 // inches per seconds
 
