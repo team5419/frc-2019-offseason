@@ -43,7 +43,7 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven {
-        url 'https://maven.team5499.org'
+        url 'https://maven.team5419.org'
     }
     maven {
         url "http://devsite.ctr-electronics.com/maven/release/"
@@ -59,7 +59,7 @@ dependencies {
     // We need to add the Kotlin stdlib in order to use most Kotlin language features.
     compile "org.jetbrains.kotlin:kotlin-stdlib:1.3.20"
 
-    compile 'org.team5499:monkey-lib:2.7.2'
+    compile 'org.team5419:fault:2.11.0'
 
     // wpilib specific
     compile wpi.deps.wpilib()
