@@ -1,28 +1,17 @@
 package org.team5419.frc2019offseason.subsystems
 
-import  org.team5419.frc2019offseason.Constants
+import org.team5419.frc2019offseason.Constants
 
-import com.ctre.phoenix.sensors.PigeonIMU
 import com.ctre.phoenix.motorcontrol.ControlMode
 import com.ctre.phoenix.motorcontrol.NeutralMode
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced
-import com.ctre.phoenix.motorcontrol.DemandType
-import com.ctre.phoenix.motorcontrol.FeedbackDevice
-import com.ctre.phoenix.motorcontrol.SensorTerm
-import com.ctre.phoenix.motorcontrol.RemoteSensorSource
-import com.ctre.phoenix.motorcontrol.FollowerType
 import com.ctre.phoenix.motorcontrol.InvertType
 
 import org.team5419.fault.Subsystem
 import org.team5419.fault.hardware.LazyTalonSRX
 import org.team5419.fault.hardware.LazyVictorSPX
 import org.team5419.fault.math.Position
-import org.team5419.fault.math.geometry.Vector2
-import org.team5419.fault.math.geometry.Rotation2d
-import org.team5419.fault.math.geometry.Pose2d
 import org.team5419.fault.util.Utils
-import org.team5419.fault.input.DriveSignal
-import edu.wpi.first.wpilibj.Encoder
 
 class Drivetrain(
     leftMaster: LazyTalonSRX,
@@ -81,6 +70,7 @@ class Drivetrain(
             setInverted(InvertType.FollowMaster)
         }
     }
+
     public var leftDistance: Double
         get() {
             return -Utils.encoderTicksToInches(
@@ -113,22 +103,20 @@ class Drivetrain(
                 ), 0)
         }
 
-    public fun setPercent(left: Double, right: Double){
+    public fun setPercent(left: Double, right: Double) {
         mLeftMaster.set(ControlMode.PercentOutput, left)
         mRightMaster.set(ControlMode.PercentOutput, right)
     }
 
-    public override fun update(){
+    public override fun update() {
         // mPosition.update(leftDistance, rightDistance, heading.degrees)
-
     }
 
-    public override fun stop(){
-        setPercent(0.0,0.0)
+    public override fun stop() {
+        setPercent(0.0, 0.0)
         brakeMode = false
-
     }
-    public override fun reset(){
+    public override fun reset() {
         stop()
     }
 }

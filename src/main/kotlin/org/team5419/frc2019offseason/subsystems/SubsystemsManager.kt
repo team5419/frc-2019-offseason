@@ -5,37 +5,37 @@ import org.team5419.fault.Subsystem
 public class SubsystemsManager(
     drivetrain: Drivetrain,
     lift: Lift,
-    intake: Intake
+    intake: Intake,
+    climber: Climber,
+    vacuum: Vacuum
 ) {
-
-    public val drivetrain: Drivetrain
-    public val lift: Lift
-    public val intake: Intake
-
     private val mList: List<Subsystem>
 
     init {
-        this.drivetrain = drivetrain
-        this.lift = lift
-        this.intake = intake
-        mList = listOf(this.drivetrain, this.lift, this.intake)
+        mList = listOf(
+            drivetrain,
+            lift,
+            intake,
+            climber,
+            vacuum
+        )
     }
 
     public fun updateAll() {
-        for (s in mList) {
-            s.update()
+        for (subsystem in mList) {
+            subsystem.update()
         }
     }
 
     public fun stopAll() {
-        for (s in mList) {
-            s.stop()
+        for (subsystem in mList) {
+            subsystem.stop()
         }
     }
 
     public fun resetAll() {
-        for (s in mList) {
-            s.reset()
+        for (subsystem in mList) {
+            subsystem.reset()
         }
     }
 }
