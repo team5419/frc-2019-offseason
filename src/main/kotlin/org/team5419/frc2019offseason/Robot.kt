@@ -57,9 +57,6 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         mRightMaster = LazyTalonSRX(Constants.Drivetrain.RIGHT_MASTER_TALON_PORT)
         mRightSlave = LazyVictorSPX(Constants.Drivetrain.RIGHT_SLAVE_TALON_PORT)
 
-        mLiftMaster = LazyTalonSRX(4)
-        mLiftSlave = LazyVictorSPX(5)
-
         mDrivetrain = Drivetrain(
             mLeftMaster,
             mLeftSlave,
@@ -139,18 +136,20 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     // teleop mode
 
     override fun teleopInit() {
+        mTeleopController.start()
+
         rightDrive = 0.0
         leftDrive = 0.0
     }
 
     override fun teleopPeriodic() {
+        mSubsystemsManager.updateAll()
+        mTeleopController.update()
+
         rightDrive = driver.getX(Hand.kRight)
         leftDrive = driver.getX(Hand.kLeft)
         if (rightDrive < Constants.Input.CONTROLLER_MARGIN) rightDrive = 0.0
         if (leftDrive < Constants.Input.CONTROLLER_MARGIN) rightDrive = 0.0
         mDrivetrain.setPercent(leftDrive, rightDrive)
-        
-        mTeleopController.start()
-        mSubsystemsManager.updateAll()
-        mTeleopController.update()
+    }
 }

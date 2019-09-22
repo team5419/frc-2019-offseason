@@ -36,6 +36,12 @@ public object Constants {
         public const val WHEEL_CIR = WHEEL_DIAMETER * Math.PI
     }
 
+    object Lift {
+        // talon port
+        public const val MASTER_TALON_PORT = 6
+        public const val SLAVE_TALON_PORT = 8
+    }
+
     object PID {
         public const val MAX_VELOCITY_SETPOINT = 100.0 // inches per seconds
 
