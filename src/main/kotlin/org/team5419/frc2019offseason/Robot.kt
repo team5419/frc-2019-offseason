@@ -2,7 +2,6 @@ package org.team5499.frc2019offseason
 
 import edu.wpi.first.wpilibj.TimedRobot
 import edu.wpi.first.wpilibj.XboxController
-import edu.wpi.first.wpilibj.GenericHID.Hand
 
 import org.team5419.frc2019offseason.Constants
 
@@ -34,7 +33,7 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     private val mRightSlave: LazyVictorSPX
 
     private val mLiftMaster: LazyTalonSRX
-    private val mLiftSlave: LazyVictorSPX
+    private val mLiftSlave: LazyTalonSRX
 
     private val mDrivetrain: Drivetrain
     private val mLift: Lift
@@ -47,19 +46,12 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     private val mTeleopController: TeleopController
 
     init {
-        // initilize DriveTrain
-        driver = XboxController(0)
-        coDriver = XboxController(1)
-
+        // initilize Drivetrain
         mLeftMaster = LazyTalonSRX(Constants.Drivetrain.LEFT_MASTER_TALON_PORT)
         mLeftSlave = LazyVictorSPX(Constants.Drivetrain.LEFT_SLAVE_TALON_PORT)
 
         mRightMaster = LazyTalonSRX(Constants.Drivetrain.RIGHT_MASTER_TALON_PORT)
         mRightSlave = LazyVictorSPX(Constants.Drivetrain.RIGHT_SLAVE_TALON_PORT)
-
-        mLiftMaster = LazyTalonSRX(4)
-        mLiftSlave = LazyVictorSPX(5)
-
         mDrivetrain = Drivetrain(
             mLeftMaster,
             mLeftSlave,
@@ -68,29 +60,23 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         )
 
         // initilize Lift
-
         mLiftMaster = LazyTalonSRX(Constants.Lift.MASTER_TALON_PORT)
-        mLiftSlave = LazyVictorSPX(Constants.Lift.SLAVE_TALON_PORT)
-
+        mLiftSlave = LazyTalonSRX(Constants.Lift.SLAVE_TALON_PORT)
         mLift = Lift(
             mLiftMaster,
             mLiftSlave
         )
 
         // initilize Intake
-
         mIntake = Intake()
 
         // initilize Climber
-
         mClimber = Climber()
 
         // initilize Vacuum
-
         mVacuum = Vacuum()
 
         // initilize Subsystems Manager
-
         mSubsystemsManager = SubsystemsManager(
             mDrivetrain,
             mLift,
@@ -100,10 +86,15 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         )
 
         // initilize controllers
-
         mAutoController = AutoController()
 
-        mTeleopController = TeleopController()
+        driver = XboxController(0)
+        coDriver = XboxController(1)
+        mTeleopController = TeleopController(
+            mSubsystemsManager,
+            driver,
+            coDriver
+        )
     }
 
     // robot
@@ -139,18 +130,11 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     // teleop mode
 
     override fun teleopInit() {
-        rightDrive = 0.0
-        leftDrive = 0.0
+        mTeleopController.start()
     }
 
     override fun teleopPeriodic() {
-        rightDrive = driver.getX(Hand.kRight)
-        leftDrive = driver.getX(Hand.kLeft)
-        if (rightDrive < Constants.Input.CONTROLLER_MARGIN) rightDrive = 0.0
-        if (leftDrive < Constants.Input.CONTROLLER_MARGIN) rightDrive = 0.0
-        mDrivetrain.setPercent(leftDrive, rightDrive)
-        
-        mTeleopController.start()
         mSubsystemsManager.updateAll()
         mTeleopController.update()
+    }
 }

@@ -1,41 +1,48 @@
 package org.team5419.frc2019offseason.subsystems
 
-import org.team5419.fault.Subsystem
-
 public class SubsystemsManager(
-    drivetrain: Drivetrain,
-    lift: Lift,
-    intake: Intake,
-    climber: Climber,
-    vacuum: Vacuum
+    mDrivetrain: Drivetrain,
+    mLift: Lift,
+    mIntake: Intake,
+    mClimber: Climber,
+    mVacuum: Vacuum
 ) {
-    private val mList: List<Subsystem>
+
+    public val drivetrain: Drivetrain
+    public val lift: Lift
+    public val intake: Intake
+    public val climber: Climber
+    public val vacuum: Vacuum
 
     init {
-        mList = listOf(
-            drivetrain,
-            lift,
-            intake,
-            climber,
-            vacuum
-        )
+        drivetrain = mDrivetrain
+        lift = mLift
+        intake = mIntake
+        climber = mClimber
+        vacuum = mVacuum
     }
 
     public fun updateAll() {
-        for (subsystem in mList) {
-            subsystem.update()
-        }
+        drivetrain.update()
+        lift.update()
+        intake.update()
+        climber.update()
+        vacuum.update()
     }
 
     public fun stopAll() {
-        for (subsystem in mList) {
-            subsystem.stop()
-        }
+        drivetrain.stop()
+        lift.stop()
+        intake.stop()
+        climber.stop()
+        vacuum.stop()
     }
 
     public fun resetAll() {
-        for (subsystem in mList) {
-            subsystem.reset()
-        }
+        drivetrain.reset()
+        lift.reset()
+        intake.reset()
+        climber.reset()
+        vacuum.reset()
     }
 }

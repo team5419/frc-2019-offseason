@@ -5,17 +5,16 @@ import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced
 import com.ctre.phoenix.motorcontrol.InvertType
 
 import org.team5419.fault.hardware.LazyTalonSRX
-import org.team5419.fault.hardware.LazyVictorSPX
 import org.team5419.fault.Subsystem
 
 import org.team5419.frc2019offseason.Constants
 
 class Lift(
     master: LazyTalonSRX,
-    slave: LazyVictorSPX
+    slave: LazyTalonSRX
 ) : Subsystem() {
     private var mMaster: LazyTalonSRX
-    private var mSlave: LazyVictorSPX
+    private var mSlave: LazyTalonSRX
 
     public var position: Double
 

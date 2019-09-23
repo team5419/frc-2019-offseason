@@ -11,6 +11,11 @@ public object Constants {
         public const val DRIVER_PORT = 0
         public const val CODRIVER_PORT = 1
         public const val CONTROLLER_MARGIN = 0.02
+        public const val BASE_SPEED = 1.0
+        public const val BASE_INVERSE_SPEED = 1.0
+        public const val SLOW_COEFFICIENT = 1.0
+        public const val MINIMAL_SLOW = 0.3
+        public const val SPIN_SPEED = 0.5
     }
 
     object Drivetrain {
@@ -35,6 +40,14 @@ public object Constants {
         public const val WHEEL_RADIUS = WHEEL_DIAMETER / 2.0
         public const val WHEEL_CIR = WHEEL_DIAMETER * Math.PI
     }
+    object Lift {
+        public const val MASTER_TALON_PORT = 1
+        public const val SLAVE_TALON_PORT = 1
+    }
+
+    object Vacuum
+
+    object Climber
 
     object PID {
         public const val MAX_VELOCITY_SETPOINT = 100.0 // inches per seconds

@@ -85,7 +85,7 @@ class Drivetrain(
                 Constants.Drivetrain.WHEEL_CIR,
                 inches), 0)
         }
-    //encoders
+    // encoders
     public var rightDistance: Double
         get() {
             return Utils.encoderTicksToInches(
