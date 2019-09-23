@@ -40,10 +40,6 @@ public object Constants {
         public const val WHEEL_RADIUS = WHEEL_DIAMETER / 2.0
         public const val WHEEL_CIR = WHEEL_DIAMETER * Math.PI
     }
-    object Lift {
-        public const val MASTER_TALON_PORT = 1
-        public const val SLAVE_TALON_PORT = 1
-    }
 
     object Vacuum
 
@@ -53,6 +49,22 @@ public object Constants {
         // talon port
         public const val MASTER_TALON_PORT = 6
         public const val SLAVE_TALON_PORT = 8
+
+        // inches
+        public const val STOW_HEIGHT = 0.0
+        public const val HATCH_LOW_HEIGHT = 0.0
+        public const val HATCH_MID_HEIGHT = 0.0
+        public const val HATCH_HIGH_HEIGHT = 0.0
+        public const val BALL_LOW_HEIGHT = 0.0
+        public const val BALL_MID_HEIGHT = 0.0
+        public const val BALL_HIGH_HEIGHT = 0.0
+        public const val BALL_HUMAN_PLAYER_HEIGHT = 0.0
+
+        // pid
+        public const val KP = 0.7
+        public const val KI = 0.0
+        public const val KD = 0.0
+        public const val KF = 0.0
     }
 
     object PID {
