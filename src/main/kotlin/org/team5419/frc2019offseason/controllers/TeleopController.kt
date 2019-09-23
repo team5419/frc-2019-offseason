@@ -1,6 +1,8 @@
 package org.team5419.frc2019offseason.controllers
 
 import org.team5419.frc2019offseason.subsystems.SubsystemsManager
+import org.team5419.frc2019offseason.subsystems.Lift.LiftHeight
+
 import org.team5419.frc2019offseason.Constants
 import org.team5419.fault.Controller
 
@@ -23,6 +25,9 @@ public class TeleopController(
     private var leftDrive: Double = 0.0
     private var rightDrive: Double = 0.0
 
+    private var liftIndex: Int = 0
+    private var lastLiftIndex: Int = 0
+
     init {
         mDriver = driver
         mCoDriver = driver
@@ -41,7 +46,9 @@ public class TeleopController(
         mSubsystems.resetAll()
     }
 
+    @Suppress("ComplexMethod")
     override fun update() {
+        // Driver
         speed = 1.0
         isSlow = false
         speed = Constants.Input.BASE_SPEED
@@ -66,5 +73,10 @@ public class TeleopController(
         if (leftDrive > Constants.Input.CONTROLLER_MARGIN) rightDrive = 0.0
         mSubsystems.drivetrain.setPercent(leftDrive * speed, rightDrive * speed)
         mSubsystems.updateAll()
+
+        // Codriver
+        if (mCoDriver.getBumperPressed(Hand.kLeft)) liftIndex--
+        if (mCoDriver.getBumperPressed(Hand.kRight)) liftIndex++
+        if (liftIndex != lastLiftIndex) mSubsystems.lift.goToHeight(LiftHeight.values()[liftIndex])
     }
 }

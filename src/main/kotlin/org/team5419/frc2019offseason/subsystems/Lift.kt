@@ -73,8 +73,8 @@ class Lift(
         mMaster.set(ControlMode.PercentOutput, speed)
     }
 
-    public fun goToHeight(height: Double) {
-        pid.setpoint = height
+    public fun goToHeight(height: LiftHeight) {
+        pid.setpoint = height.carriageHeightInches()
     }
 
     // public fun setPosistion() {
