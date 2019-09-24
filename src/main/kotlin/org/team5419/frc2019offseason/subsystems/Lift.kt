@@ -21,7 +21,9 @@ class Lift(
     public var firstStagePosistion: Double = 0.0
     public var secondStagePosistion: Double = 0.0
     // confirm resting hight
-    public enum class LiftHeight(val getHeight: () -> Double = { 0.0 }) {
+    public enum class LiftHeight (
+        val getHeight: () -> Double = { 0.0 }
+      ) {
         BOTTOM({ Constants.Lift.STOW_HEIGHT }),
         HATCH_LOW({ Constants.Lift.HATCH_LOW_HEIGHT }),
         HATCH_MID({ Constants.Lift.HATCH_MID_HEIGHT }),
@@ -45,7 +47,11 @@ class Lift(
         field = value
     }
 
-    private val pid: PIDF
+    public val setpoint: Double
+      set(value) {
+        feild = value
+        mMaster.set(ControlMode.MotionMagic, value)
+      }
 
     init {
         mMaster = masterTalon.apply {
@@ -78,12 +84,8 @@ class Lift(
             follow(mMaster)
             setInverted(InvertType.FollowMaster)
         }
-        pid = PIDF(
-            Constants.Lift.KP,
-            Constants.Lift.KI,
-            Constants.Lift.KD,
-            Constants.Lift.KF
-        )
+
+        setpoint = LiftHeight.getHeight()
     }
 
     public fun setPercent(speed: Double) {
@@ -91,7 +93,7 @@ class Lift(
     }
 
     public fun goToHeight(height: LiftHeight) {
-      mMaster.set(ControlMode.MotionMagic, height)
+      setpoint = height.getHeight()
     }
 
     public override fun update() {
