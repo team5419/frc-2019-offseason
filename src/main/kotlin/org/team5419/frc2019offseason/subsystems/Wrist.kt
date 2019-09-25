@@ -24,7 +24,7 @@ class Wrist(
     public var targetPosistion: WristPosistions
 
     // set posistion
-    public enum class WristPosistions(val value: Double) {
+    public enum class WristPosistions(val value: Int) {
         FORWARD(Constants.Wrist.FORWARD_TICKS),
         MIDDLE(Constants.Wrist.MIDDLE_TICKS),
         BACKWARD(Constants.Wrist.BACKWARD_TICKS)
@@ -66,14 +66,16 @@ class Wrist(
 
     public fun setPosistion(point: WristPosistions) {
         targetPosistion = point
-        setPoint(point.value)
+        setPoint(point.value.toDouble())
     }
 
     public fun setPoint(point: Double) {
-        mMaster.set(ControlMode.MotionMagic, point)
+        mMaster.set(ControlMode.Posistion, point)
     }
 
     public override fun update() {
+        println(mMaster.getSelectedSensorPosistion())
+
         // mMaster.get()
     }
     public override fun stop() {}
