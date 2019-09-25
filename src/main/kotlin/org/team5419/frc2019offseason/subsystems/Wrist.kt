@@ -21,7 +21,7 @@ class Wrist(
     private val isFlipping: Boolean = false
 
     public var setPoint = 0.0
-    public var posistion: WristPosistions
+    public var targetPosistion: WristPosistions
 
     // set posistion
     public enum class WristPosistions(val value: Double) {
@@ -64,8 +64,13 @@ class Wrist(
         posistion = WristPosistions.FORWARD
     }
 
-    public fun setPoint(point: WristPosistions) {
-        mMaster.set(ControlMode.MotionMagic, point.value)
+    public fun setPosistion(point: WristPosistions) {
+        targetPosistion = point
+        setPoint(point.value)
+    }
+
+    public fun setPoint(point: Double) {
+        mMaster.set(ControlMode.MotionMagic, point)
     }
 
     public override fun update() {
