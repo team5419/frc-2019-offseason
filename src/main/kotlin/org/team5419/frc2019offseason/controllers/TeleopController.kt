@@ -30,7 +30,7 @@ public class TeleopController(
 
     init {
         mDriver = driver
-        mCoDriver = driver
+        mCoDriver = codriver
         mSubsystems = subsystems
     }
 
@@ -53,30 +53,35 @@ public class TeleopController(
         isSlow = false
         speed = Constants.Input.BASE_SPEED
 
-        if (mDriver.getBumperPressed(Hand.kLeft)) {
-            mSubsystems.drivetrain.setPercent(Constants.Input.SPIN_SPEED, Constants.Input.SPIN_SPEED*-1)
-            return
-        } else if (mDriver.getBumperPressed(Hand.kRight)) {
-            mSubsystems.drivetrain.setPercent(Constants.Input.SPIN_SPEED*-1, Constants.Input.SPIN_SPEED)
-            return
+        if (mDriver.getTriggerAxis(Hand.kLeft) > Constants.Input.CONTROLLER_MARGIN) {
+            mSubsystems.drivetrain.setPercent(mDriver.getTriggerAxis(Hand.kLeft), mDriver.getTriggerAxis(Hand.kLeft)*-1)
+        } else if (mDriver.getTriggerAxis(Hand.kRight) > Constants.Input.CONTROLLER_MARGIN) {
+            mSubsystems.drivetrain.setPercent(mDriver.getTriggerAxis(Hand.kLeft), mDriver.getTriggerAxis(Hand.kLeft)*-1)
+        } else {
+            // make better
+            if (mDriver.getAButton()) isReverse = !isReverse
+            if (isReverse) speed *= -1
+
+            if (mDriver.getTriggerAxis(Hand.kLeft) > Constants.Input.CONTROLLER_MARGIN)
+                speed *= Math.max(1.0 - mDriver.getTriggerAxis(Hand.kLeft), Constants.Input.MINIMAL_SLOW)
+
+            rightDrive = mDriver.getX(Hand.kRight)
+            leftDrive = mDriver.getX(Hand.kLeft)
+            if (rightDrive > Constants.Input.CONTROLLER_MARGIN) rightDrive = 0.0
+            if (leftDrive > Constants.Input.CONTROLLER_MARGIN) rightDrive = 0.0
+            mSubsystems.drivetrain.setPercent(leftDrive * speed, rightDrive * speed)
+            mSubsystems.updateAll()
         }
-
-        if (mDriver.getAButton()) isReverse = !isReverse
-        if (isReverse) speed *= -1
-
-        if (mDriver.getTriggerAxis(Hand.kLeft) > Constants.Input.CONTROLLER_MARGIN)
-            speed *= Math.max(1.0 - mDriver.getTriggerAxis(Hand.kLeft), Constants.Input.MINIMAL_SLOW)
-
-        rightDrive = mDriver.getX(Hand.kRight)
-        leftDrive = mDriver.getX(Hand.kLeft)
-        if (rightDrive > Constants.Input.CONTROLLER_MARGIN) rightDrive = 0.0
-        if (leftDrive > Constants.Input.CONTROLLER_MARGIN) rightDrive = 0.0
-        mSubsystems.drivetrain.setPercent(leftDrive * speed, rightDrive * speed)
-        mSubsystems.updateAll()
+        // Add flip
 
         // Codriver
         if (mCoDriver.getBumperPressed(Hand.kLeft)) liftIndex--
         if (mCoDriver.getBumperPressed(Hand.kRight)) liftIndex++
         if (liftIndex != lastLiftIndex) mSubsystems.lift.setPoint(LiftHeight.values()[liftIndex])
+
+        if (mCoDriver.getAButtonPressed()) mSubsystems.vacuum.toogleValve()
+
+        if (mCoDriver.getBumper(Hand.kLeft) || mCoDriver.getBumper(Hand.kRight))
+            mSubsystems.vacuum.pump = true
     }
 }

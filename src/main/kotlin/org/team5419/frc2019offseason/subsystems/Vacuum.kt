@@ -11,27 +11,30 @@ class Vacuum(
     solnoid: Solenoid
 ) : Subsystem() {
 
-    private val mMaster: LazyTalonSRX
+    private val mTalon: LazyTalonSRX
     private val mSolenoid: Solenoid
-    private var isPumping: Boolean = false
+    public var pump: Boolean = false
 
     init {
-        mMaster = masterTalon
+        mTalon = masterTalon
         mSolenoid = solnoid
     }
 
-    public fun setValve(value: Boolean) {
-        mSolenoid.set(value)
-    }
+    public fun setValve(value: Boolean) = mSolenoid.set(value)
+
+    public fun toogleValve() = setValve(!mSolenoid.get())
+
+    public fun setPercent(percent: Double) = mTalon.set(ControlMode.PercentOutput, percent)
 
     public override fun update() {
-        if (isPumping) mMaster.set(ControlMode.PercentOutput, 1.0)
-        else mMaster.set(ControlMode.PercentOutput, 0.0)
+        if (pump) mTalon.set(ControlMode.PercentOutput, 1.0)
+        else mTalon.set(ControlMode.PercentOutput, 0.0)
+        pump = false
     }
 
     public override fun stop() {
-        isPumping = false
-        mMaster.set(ControlMode.PercentOutput, 0.0)
+        pump = false
+        mTalon.set(ControlMode.PercentOutput, 0.0)
         mSolenoid.set(false)
     }
     public override fun reset() { stop() }

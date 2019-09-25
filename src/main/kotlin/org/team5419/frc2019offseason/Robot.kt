@@ -17,6 +17,7 @@ import org.team5419.frc2019offseason.controllers.TeleopController
 
 import org.team5419.fault.hardware.LazyTalonSRX
 import org.team5419.fault.hardware.LazyVictorSPX
+import edu.wpi.first.wpilibj.Solenoid
 
 class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
 
@@ -34,6 +35,9 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
 
     private val mLiftMaster: LazyTalonSRX
     private val mLiftSlave: LazyTalonSRX
+
+    private val mVacuumMaster: LazyTalonSRX
+    private val mSolenoid: Solenoid
 
     private val mDrivetrain: Drivetrain
     private val mLift: Lift
@@ -74,7 +78,12 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         mClimber = Climber()
 
         // initilize Vacuum
-        mVacuum = Vacuum()
+        mVacuumMaster = LazyTalonSRX(Constants.Vacuum.MASTER_TALON_PORT)
+        mSolenoid = Solenoid(Constants.Vacuum.SOLENOID_PORT)
+        mVacuum = Vacuum(
+            mVacuumMaster,
+            mSolenoid
+        )
 
         // initilize Subsystems Manager
         mSubsystemsManager = SubsystemsManager(
