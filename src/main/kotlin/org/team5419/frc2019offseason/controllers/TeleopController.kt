@@ -77,6 +77,6 @@ public class TeleopController(
         // Codriver
         if (mCoDriver.getBumperPressed(Hand.kLeft)) liftIndex--
         if (mCoDriver.getBumperPressed(Hand.kRight)) liftIndex++
-        if (liftIndex != lastLiftIndex) mSubsystems.lift.goToHeight(LiftHeight.values()[liftIndex])
+        if (liftIndex != lastLiftIndex) mSubsystems.lift.setPoint(LiftHeight.values()[liftIndex])
     }
 }

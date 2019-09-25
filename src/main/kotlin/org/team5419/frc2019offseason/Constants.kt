@@ -60,6 +60,12 @@ public object Constants {
         public const val BALL_HIGH_HEIGHT = 0.0
         public const val BALL_HUMAN_PLAYER_HEIGHT = 0.0
 
+        // tf?
+        public const val MOTION_MAGIC_VELOCITY = 11000
+        public const val MOTION_MAGIC_ACCELERATION = 11000
+        public const val MAX_ENCODER_TICKS = 0
+        public const val MIN_ENCODER_TICKS = 0
+
         // pid
         public const val KP = 0.7
         public const val KI = 0.0

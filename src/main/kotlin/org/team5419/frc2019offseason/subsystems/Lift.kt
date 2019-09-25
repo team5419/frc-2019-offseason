@@ -2,28 +2,32 @@ package org.team5419.frc2019offseason.subsystems
 
 import com.ctre.phoenix.motorcontrol.ControlMode
 import com.ctre.phoenix.motorcontrol.NeutralMode
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced
+import com.ctre.phoenix.motorcontrol.FeedbackDevice
 import com.ctre.phoenix.motorcontrol.InvertType
 
 import org.team5419.fault.hardware.LazyTalonSRX
 import org.team5419.fault.Subsystem
-import org.team5419.fault.math.pid.PIDF
 
 import org.team5419.frc2019offseason.Constants
 
 class Lift(
-    master: LazyTalonSRX,
-    slave: LazyTalonSRX
+    masterTalon: LazyTalonSRX,
+    slaveTalon: LazyTalonSRX
 ) : Subsystem() {
+
+    companion object {
+        private const val kElevatorSlot = 0
+    }
+
     private var mMaster: LazyTalonSRX
     private var mSlave: LazyTalonSRX
 
     public var firstStagePosistion: Double = 0.0
     public var secondStagePosistion: Double = 0.0
     // confirm resting hight
-    public enum class LiftHeight (
+    public enum class LiftHeight(
         val getHeight: () -> Double = { 0.0 }
-      ) {
+    ) {
         BOTTOM({ Constants.Lift.STOW_HEIGHT }),
         HATCH_LOW({ Constants.Lift.HATCH_LOW_HEIGHT }),
         HATCH_MID({ Constants.Lift.HATCH_MID_HEIGHT }),
@@ -47,15 +51,11 @@ class Lift(
         field = value
     }
 
-    public val setpoint: Double
-      set(value) {
-        feild = value
-        mMaster.set(ControlMode.MotionMagic, value)
-      }
+    var setpoint: Double
 
     init {
         mMaster = masterTalon.apply {
-            configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0)
+            configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0) //
             setSensorPhase(true) // check
             setInverted(false) // check this
 
@@ -73,6 +73,7 @@ class Lift(
             enableCurrentLimit(false)
             configPeakCurrentDuration(0, 0)
             configPeakCurrentLimit(0, 0)
+            @Suppress("MagicNumber")
             configContinuousCurrentLimit(25, 0) // amps
             enableVoltageCompensation(false)
             configForwardSoftLimitThreshold(Constants.Lift.MAX_ENCODER_TICKS, 0)
@@ -80,24 +81,26 @@ class Lift(
             configForwardSoftLimitEnable(true, 0)
             configReverseSoftLimitEnable(true, 0)
         }
-        mSlave = slave.apply {
+        mSlave = slaveTalon.apply {
             follow(mMaster)
             setInverted(InvertType.FollowMaster)
         }
 
-        setpoint = LiftHeight.getHeight()
+        // setpoint = LiftHeight.getHeight()
+        setpoint = 0.0
     }
 
     public fun setPercent(speed: Double) {
         mMaster.set(ControlMode.PercentOutput, speed)
     }
 
-    public fun goToHeight(height: LiftHeight) {
-      setpoint = height.getHeight()
+    public fun setPoint(height: LiftHeight) {
+        setpoint = height.getHeight()
+        mMaster.set(ControlMode.MotionMagic, setpoint)
     }
 
     public override fun update() {
-        setPercent(pid.calculate())
+        // setPercent(pid.calculate())
     }
 
     public override fun stop() {
