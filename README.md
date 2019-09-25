@@ -1,4 +1,5 @@
 # frc-2019-offseason
+[![Build Status](https://travis-ci.org/team5419/frc-2019-offseason.svg?branch=master)](https://travis-ci.org/team5419/frc-2019-offseason)
 ## Getting started
 ### Pre-commit
 First, install the project's [pre-commit](http://pre-commit.com/) hooks (**do this immediately after cloning!**)
