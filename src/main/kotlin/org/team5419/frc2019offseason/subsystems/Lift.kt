@@ -25,17 +25,15 @@ class Lift(
     public var firstStagePosistion: Double = 0.0
     public var secondStagePosistion: Double = 0.0
     // confirm resting hight
-    public enum class LiftHeight(
-        val getHeight: () -> Double = { 0.0 }
-    ) {
-        BOTTOM({ Constants.Lift.STOW_HEIGHT }),
-        HATCH_LOW({ Constants.Lift.HATCH_LOW_HEIGHT }),
-        HATCH_MID({ Constants.Lift.HATCH_MID_HEIGHT }),
-        HATCH_HIGH({ Constants.Lift.HATCH_HIGH_HEIGHT }),
-        BALL_LOW({ Constants.Lift.BALL_LOW_HEIGHT }),
-        BALL_MID({ Constants.Lift.BALL_MID_HEIGHT }),
-        BALL_HIGH({ Constants.Lift.BALL_HIGH_HEIGHT }),
-        BALL_HUMAN_PLAYER({ Constants.Lift.BALL_HUMAN_PLAYER_HEIGHT })
+    public enum class LiftHeight(val value: Double = 0.0) {
+        BOTTOM(Constants.Lift.STOW_HEIGHT),
+        HATCH_LOW(Constants.Lift.HATCH_LOW_HEIGHT),
+        HATCH_MID(Constants.Lift.HATCH_MID_HEIGHT),
+        HATCH_HIGH(Constants.Lift.HATCH_HIGH_HEIGHT),
+        BALL_LOW(Constants.Lift.BALL_LOW_HEIGHT),
+        BALL_MID(Constants.Lift.BALL_MID_HEIGHT),
+        BALL_HIGH(Constants.Lift.BALL_HIGH_HEIGHT),
+        BALL_HUMAN_PLAYER(Constants.Lift.BALL_HUMAN_PLAYER_HEIGHT)
     }
 
     private var mBrakeMode: Boolean = false
@@ -94,8 +92,8 @@ class Lift(
         mMaster.set(ControlMode.PercentOutput, speed)
     }
 
-    public fun setPoint(height: LiftHeight) {
-        setpoint = height.getHeight()
+    public fun setPoint(height: Double) {
+        setpoint = height
         mMaster.set(ControlMode.MotionMagic, setpoint)
     }
 

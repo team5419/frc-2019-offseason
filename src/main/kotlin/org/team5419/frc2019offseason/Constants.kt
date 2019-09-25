@@ -45,6 +45,23 @@ public object Constants {
 
     object Climber
 
+    object Wrist {
+        public const val MASTER_TALON_PORT = 0 // to set
+        public const val FORWARD_TICKS = 0.0
+        public const val MIDDLE_TICKS = 0.0
+        public const val BACKWARD_TICKS = 0.0 // to set
+
+        public const val KP = 0.7
+        public const val KI = 0.0
+        public const val KD = 0.0
+        public const val KF = 0.0
+
+        public const val MOTION_MAGIC_VELOCITY = 11000
+        public const val MOTION_MAGIC_ACCELERATION = 11000
+        public const val MAX_ENCODER_TICKS = 0
+        public const val MIN_ENCODER_TICKS = 0
+    }
+
     object Lift {
         // talon port
         public const val MASTER_TALON_PORT = 6
