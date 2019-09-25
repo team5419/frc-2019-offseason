@@ -7,7 +7,7 @@ import org.team5419.frc2019offseason.Constants
 
 import org.team5419.frc2019offseason.subsystems.Drivetrain
 import org.team5419.frc2019offseason.subsystems.Climber
-import org.team5419.frc2019offseason.subsystems.Intake
+import org.team5419.frc2019offseason.subsystems.Wrist
 import org.team5419.frc2019offseason.subsystems.Lift
 import org.team5419.frc2019offseason.subsystems.Vacuum
 import org.team5419.frc2019offseason.subsystems.SubsystemsManager
@@ -35,9 +35,11 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     private val mLiftMaster: LazyTalonSRX
     private val mLiftSlave: LazyTalonSRX
 
+    private val mWristMaster: LazyTalonSRX
+
     private val mDrivetrain: Drivetrain
     private val mLift: Lift
-    private val mIntake: Intake
+    private val mWrist: Wrist
     private val mClimber: Climber
     private val mVacuum: Vacuum
 
@@ -67,8 +69,11 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
             mLiftSlave
         )
 
-        // initilize Intake
-        mIntake = Intake()
+        // initilize Wrist
+        mWristMaster = LazyTalonSRX(Constants.Lift.MASTER_TALON_PORT)
+        mWrist = Wrist(
+            mWristMaster
+        )
 
         // initilize Climber
         mClimber = Climber()
@@ -80,7 +85,7 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         mSubsystemsManager = SubsystemsManager(
             mDrivetrain,
             mLift,
-            mIntake,
+            mWrist,
             mClimber,
             mVacuum
         )
