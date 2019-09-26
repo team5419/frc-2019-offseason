@@ -30,7 +30,7 @@ public class TeleopController(
 
     init {
         mDriver = driver
-        mCoDriver = driver
+        mCoDriver = codriver
         mSubsystems = subsystems
     }
 
