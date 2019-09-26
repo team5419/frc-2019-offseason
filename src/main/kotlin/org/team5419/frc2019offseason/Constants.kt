@@ -39,6 +39,17 @@ public object Constants {
         public const val WHEEL_DIAMETER = 6.0 // inches
         public const val WHEEL_RADIUS = WHEEL_DIAMETER / 2.0
         public const val WHEEL_CIR = WHEEL_DIAMETER * Math.PI
+
+        //pidf
+        public const val ANGLE_KP = 0.7
+        public const val ANGLE_KI = 0.0
+        public const val ANGLE_KD = 0.0
+        public const val ANGLE_KF = 0.0
+
+        public const val DISTANCE_KP = 0.0
+        public const val DISTANCE_KI = 0.0
+        public const val DISTANCE_KD = 0.0
+        public const val DISTANCE_KF = 0.0
     }
 
     object Vacuum
