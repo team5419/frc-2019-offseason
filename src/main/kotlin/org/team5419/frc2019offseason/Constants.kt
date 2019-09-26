@@ -41,7 +41,10 @@ public object Constants {
         public const val WHEEL_CIR = WHEEL_DIAMETER * Math.PI
     }
 
-    object Vacuum
+    object Vacuum {
+        public const val MASTER_TALON_PORT = 0
+        public const val SOLENOID_PORT = 0
+    }
 
     object Climber
 
@@ -150,7 +153,7 @@ public object Constants {
     }
 
     object Dimensions {
-        //change
+        // change
         public const val WHEEL_BASE = 20.0 // inches
         public const val WHEEL_DIAMETER = 6.0 // inches
         public const val WHEEL_RADIUS = WHEEL_DIAMETER / 2.0
