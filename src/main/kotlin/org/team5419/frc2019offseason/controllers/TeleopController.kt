@@ -20,9 +20,6 @@ public class TeleopController(
     private val mCoDriver: XboxController
     private val mSubsystems: SubsystemsManager
 
-    private val mDistancePID: PIDF
-    private val mAnglePID: PIDF
-
     private var isSlow: Boolean = false
     private var isReverse: Boolean = false
     private var speed: Double = Constants.Input.BASE_SPEED
@@ -36,21 +33,6 @@ public class TeleopController(
         mDriver = driver
         mCoDriver = driver
         mSubsystems = subsystems
-
-        mAnglePID = PIDF(
-            Constants.Drivetrain.ANGLE_KP,
-            Constants.Drivetrain.ANGLE_KI,
-            Constants.Drivetrain.ANGLE_KI,
-            Constants.Drivetrain.ANGLE_KD,
-            false
-        )
-        mDistancePID = PIDF(
-            Constants.Drivetrain.DISTANCE_KP,
-            Constants.Drivetrain.DISTANCE_KI,
-            Constants.Drivetrain.DISTANCE_KD,
-            Constants.Drivetrain.DISTANCE_KF,
-            false
-        )
     }
 
     override fun start() {
@@ -60,18 +42,6 @@ public class TeleopController(
         rightDrive = 0.0
         leftDrive = 0.0
 
-        mAnglePID.reset()
-        mDistancePID.reset()
-
-        mAnglePID.kP = Constants.Drivetrain.ANGLE_KP
-        mAnglePID.kI = Constants.Drivetrain.ANGLE_KI
-        mAnglePID.kD = Constants.Drivetrain.ANGLE_KD
-        mAnglePID.kF = Constants.Drivetrain.ANGLE_KF
-
-        mDistancePID.kP = Constants.Drivetrain.DISTANCE_KP
-        mDistancePID.kI = Constants.Drivetrain.DISTANCE_KI
-        mDistancePID.kD = Constants.Drivetrain.DISTANCE_KD
-        mDistancePID.kF = Constants.Drivetrain.DISTANCE_KF
     }
 
     override fun reset() {
@@ -81,6 +51,7 @@ public class TeleopController(
     @Suppress("ComplexMethod")
     override fun update() {
         // Driver
+
         speed = 1.0
         isSlow = false
         speed = Constants.Input.BASE_SPEED

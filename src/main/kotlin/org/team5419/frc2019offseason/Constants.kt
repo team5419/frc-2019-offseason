@@ -41,16 +41,11 @@ public object Constants {
         public const val WHEEL_CIR = WHEEL_DIAMETER * Math.PI
 
         //pidf
-        public const val ANGLE_KP = 0.7
-        public const val ANGLE_KI = 0.0
-        public const val ANGLE_KD = 0.0
-        public const val ANGLE_KF = 0.0
-
-        public const val DISTANCE_KP = 0.0
-        public const val DISTANCE_KI = 0.0
-        public const val DISTANCE_KD = 0.0
-        public const val DISTANCE_KF = 0.0
-    }
+        public const val VEL_KP = 0.7
+        public const val VEL_KI = 0.0
+        public const val VEL_KD = 0.0
+        public const val VEL_KF = 0.0
+        public const val TALON_PIDF_UPDATE_PERIOD_MS = 1
 
     object Vacuum
 
