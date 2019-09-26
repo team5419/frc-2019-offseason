@@ -5,7 +5,6 @@ import org.team5419.frc2019offseason.subsystems.Lift.LiftHeight
 import org.team5419.frc2019offseason.Constants
 
 import org.team5419.fault.Controller
-import org.team5419.fault.math.pid.PIDF //change later
 
 import edu.wpi.first.wpilibj.XboxController
 import edu.wpi.first.wpilibj.GenericHID.Hand
@@ -41,7 +40,6 @@ public class TeleopController(
         speed = Constants.Input.BASE_SPEED
         rightDrive = 0.0
         leftDrive = 0.0
-
     }
 
     override fun reset() {

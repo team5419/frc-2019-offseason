@@ -40,7 +40,7 @@ public object Constants {
         public const val WHEEL_RADIUS = WHEEL_DIAMETER / 2.0
         public const val WHEEL_CIR = WHEEL_DIAMETER * Math.PI
 
-        //pidf
+        // pidf
         public const val VEL_KP = 0.7
         public const val VEL_KI = 0.0
         public const val VEL_KD = 0.0

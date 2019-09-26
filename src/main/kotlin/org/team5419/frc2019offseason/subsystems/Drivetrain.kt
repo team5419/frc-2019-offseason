@@ -15,7 +15,6 @@ import org.team5419.fault.hardware.LazyVictorSPX
 import org.team5419.fault.math.Position
 import org.team5419.fault.util.Utils
 
-
 class Drivetrain(
     leftMaster: LazyTalonSRX,
     leftSlave: LazyVictorSPX,
