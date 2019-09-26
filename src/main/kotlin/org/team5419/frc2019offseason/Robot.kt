@@ -7,7 +7,7 @@ import org.team5419.frc2019offseason.Constants
 
 import org.team5419.frc2019offseason.subsystems.Drivetrain
 import org.team5419.frc2019offseason.subsystems.Climber
-import org.team5419.frc2019offseason.subsystems.Wrist
+import org.team5419.frc2019offseason.subsystems.Intake
 import org.team5419.frc2019offseason.subsystems.Lift
 import org.team5419.frc2019offseason.subsystems.Vacuum
 import org.team5419.frc2019offseason.subsystems.SubsystemsManager
@@ -17,6 +17,7 @@ import org.team5419.frc2019offseason.controllers.TeleopController
 
 import org.team5419.fault.hardware.LazyTalonSRX
 import org.team5419.fault.hardware.LazyVictorSPX
+import edu.wpi.first.wpilibj.Solenoid
 
 class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
 
@@ -35,11 +36,14 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     private val mLiftMaster: LazyTalonSRX
     private val mLiftSlave: LazyTalonSRX
 
+    private val mVacuumMaster: LazyTalonSRX
+    private val mSolenoid: Solenoid
+
     private val mWristMaster: LazyTalonSRX
 
     private val mDrivetrain: Drivetrain
     private val mLift: Lift
-    private val mWrist: Wrist
+    private val mIntake: Intake
     private val mClimber: Climber
     private val mVacuum: Vacuum
 
@@ -71,21 +75,26 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
 
         // initilize Wrist
         mWristMaster = LazyTalonSRX(Constants.Lift.MASTER_TALON_PORT)
-        mWrist = Wrist(
-            mWristMaster
+        mIntake = Intake(
+            // mWristMaster
         )
 
         // initilize Climber
         mClimber = Climber()
 
         // initilize Vacuum
-        mVacuum = Vacuum()
+        mVacuumMaster = LazyTalonSRX(Constants.Vacuum.MASTER_TALON_PORT)
+        mSolenoid = Solenoid(Constants.Vacuum.SOLENOID_PORT)
+        mVacuum = Vacuum(
+            mVacuumMaster,
+            mSolenoid
+        )
 
         // initilize Subsystems Manager
         mSubsystemsManager = SubsystemsManager(
             mDrivetrain,
             mLift,
-            mWrist,
+            mIntake,
             mClimber,
             mVacuum
         )
