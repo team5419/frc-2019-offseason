@@ -21,7 +21,7 @@ class Wrist(
     private val isFlipping: Boolean = false
 
     public var setPoint = 0.0
-    public var targetPosistion: WristPosistions
+    // public var targetPosistion: WristPosistions
 
     // set posistion
     public enum class WristPosistions(val value: Int) {
@@ -61,22 +61,20 @@ class Wrist(
         }
 
         setPoint = 0.0
-        posistion = WristPosistions.FORWARD
+        // posistion = WristPosistions.FORWARD
     }
 
     public fun setPosistion(point: WristPosistions) {
-        targetPosistion = point
+        // targetPosistion = point
         setPoint(point.value.toDouble())
     }
 
     public fun setPoint(point: Double) {
-        mMaster.set(ControlMode.Posistion, point)
+        mMaster.set(ControlMode.Position, point)
     }
 
     public override fun update() {
-        println(mMaster.getSelectedSensorPosistion())
-
-        // mMaster.get()
+        println(mMaster.getSelectedSensorPosition(0))
     }
     public override fun stop() {}
     public override fun reset() {}

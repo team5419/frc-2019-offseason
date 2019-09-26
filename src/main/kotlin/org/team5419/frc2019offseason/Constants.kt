@@ -83,8 +83,10 @@ public object Constants {
 
         public const val MOTION_MAGIC_VELOCITY = 11000
         public const val MOTION_MAGIC_ACCELERATION = 11000
-        public const val MAX_ENCODER_TICKS = Float.POSITIVE_INFINITY.toInt()
+        public const val MAX_ENCODER_TICKS = 0
         public const val MIN_ENCODER_TICKS = 0
+
+        public const val INCHES_PER_ROTATION = 1
 
         // pid
         public const val KP = 0.7
