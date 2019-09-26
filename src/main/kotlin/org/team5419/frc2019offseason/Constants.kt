@@ -46,7 +46,7 @@ public object Constants {
         public const val VEL_KD = 0.0
         public const val VEL_KF = 0.0
         public const val TALON_PIDF_UPDATE_PERIOD_MS = 1
-
+    }
     object Vacuum
 
     object Climber
