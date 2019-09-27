@@ -78,9 +78,11 @@ public class TeleopController(
         if (mCoDriver.getBumperPressed(Hand.kLeft)) liftIndex--
         if (mCoDriver.getBumperPressed(Hand.kRight)) liftIndex++
 
-        if (liftIndex != lastLiftIndex) mSubsystems.lift.setPoint(LiftHeight.values()[liftIndex])
+        if (liftIndex != lastLiftIndex)
+            mSubsystems.lift.setPoint(LiftHeight.values()[liftIndex].value)
 
-        if (mCoDriver.getAButtonPressed()) mSubsystems.vacuum.toogleValve()
+        if (mCoDriver.getAButtonPressed())
+            mSubsystems.vacuum.toogleValve()
 
         if (mCoDriver.getBumper(Hand.kLeft) || mCoDriver.getBumper(Hand.kRight))
             mSubsystems.vacuum.pump = true

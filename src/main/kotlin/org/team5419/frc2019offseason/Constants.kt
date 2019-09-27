@@ -48,12 +48,30 @@ public object Constants {
 
     object Climber
 
+    object Wrist {
+        public const val MASTER_TALON_PORT = 0 // to set
+        // to check
+        public const val FORWARD_TICKS = 0
+        public const val MIDDLE_TICKS = 1024
+        public const val BACKWARD_TICKS = 2048
+
+        public const val KP = 0.7
+        public const val KI = 0.0
+        public const val KD = 0.0
+        public const val KF = 0.0
+
+        public const val MOTION_MAGIC_VELOCITY = 11000
+        public const val MOTION_MAGIC_ACCELERATION = 11000
+        public const val MAX_ENCODER_TICKS = 2048
+        public const val MIN_ENCODER_TICKS = 0
+    }
+
     object Lift {
         // talon port
         public const val MASTER_TALON_PORT = 6
         public const val SLAVE_TALON_PORT = 8
 
-        // inches
+        // inchesß
         public const val STOW_HEIGHT = 0.0
         public const val HATCH_LOW_HEIGHT = 0.0
         public const val HATCH_MID_HEIGHT = 0.0
@@ -63,11 +81,12 @@ public object Constants {
         public const val BALL_HIGH_HEIGHT = 0.0
         public const val BALL_HUMAN_PLAYER_HEIGHT = 0.0
 
-        // tf?
         public const val MOTION_MAGIC_VELOCITY = 11000
         public const val MOTION_MAGIC_ACCELERATION = 11000
         public const val MAX_ENCODER_TICKS = 0
         public const val MIN_ENCODER_TICKS = 0
+
+        public const val INCHES_PER_ROTATION = 1
 
         // pid
         public const val KP = 0.7
@@ -129,25 +148,6 @@ public object Constants {
         public const val INVERT_TURN_AUX_PIDF = false
     }
 
-    object HardwarePorts {
-        public const val LEFT_DRIVE_MASTER = 6
-        public const val LEFT_DRIVE_SLAVE1 = 1
-        public const val LEFT_DRIVE_SLAVE2 = 22 // check this later
-
-        public const val RIGHT_DRIVE_MASTER = 8
-        public const val RIGHT_DRIVE_SLAVE1 = 2
-        public const val RIGHT_DRIVE_SLAVE2 = 23
-
-        public const val LIFT_MASTER = 24
-        public const val LIFT_SLAVE = 23
-
-        public const val WRIST_MASTER = 4 // check this later
-
-        public const val INTAKE_MASTER = 27
-
-        public const val GYRO_PORT = 10
-    }
-
     object Units {
         public const val ENCODER_TICKS_PER_ROTATION = 4096
         public const val TURN_UNITS_PER_ROTATION = 3600 // for gyro
@@ -155,6 +155,7 @@ public object Constants {
     }
 
     object Dimensions {
+        // change
         public const val WHEEL_BASE = 20.0 // inches
         public const val WHEEL_DIAMETER = 6.0 // inches
         public const val WHEEL_RADIUS = WHEEL_DIAMETER / 2.0
