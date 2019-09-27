@@ -46,6 +46,14 @@ public class TeleopController(
         mSubsystems.resetAll()
     }
 
+    @Suppress("ReturnCount")
+    private fun getLiftHeightFromPOV(angle: Int): LiftHeight {
+        if (angle == 0) return LiftHeight.BALL_HIGH
+        if (angle == 270) return LiftHeight.BALL_MID
+        if (angle == 180) return LiftHeight.BALL_LOW
+        return LiftHeight.BOTTOM
+    }
+
     @Suppress("ComplexMethod")
     override fun update() {
         // Driver
@@ -75,14 +83,30 @@ public class TeleopController(
         // Add flip
 
         // Codriver
-        if (mCoDriver.getBumperPressed(Hand.kLeft)) liftIndex--
-        if (mCoDriver.getBumperPressed(Hand.kRight)) liftIndex++
-
-        if (liftIndex != lastLiftIndex) mSubsystems.lift.setPoint(LiftHeight.values()[liftIndex])
-
-        if (mCoDriver.getAButtonPressed()) mSubsystems.vacuum.toogleValve()
-
-        if (mCoDriver.getBumper(Hand.kLeft) || mCoDriver.getBumper(Hand.kRight))
-            mSubsystems.vacuum.pump = true
+        // Valve control
+        if (mCoDriver.getBumperPressed(Hand.kLeft) || mCoDriver.getBumperPressed(Hand.kRight))
+            mSubsystems.vacuum.setValve(false)
+        // Vacuum control
+        @Suppress("MaxLineLength")
+        if (
+            Math.max(mCoDriver.getTriggerAxis(Hand.kLeft), mCoDriver.getTriggerAxis(Hand.kRight)
+        ) > Constants.Input.CONTROLLER_MARGIN)
+            mSubsystems.vacuum.setPercent(Math.max(
+                mCoDriver.getTriggerAxis(Hand.kLeft),
+                mCoDriver.getTriggerAxis(Hand.kRight)))
+        // Absolute lift control
+        if (mCoDriver.getAButtonPressed())
+            mSubsystems.lift.setPoint(LiftHeight.HATCH_LOW)
+        else if (mCoDriver.getBButtonPressed())
+            mSubsystems.lift.setPoint(LiftHeight.HATCH_MID)
+        else if (mCoDriver.getYButtonPressed())
+            mSubsystems.lift.setPoint(LiftHeight.HATCH_HIGH)
+        else if (mCoDriver.getPOV() != -1 && arrayOf(0, 270, 90).any { it == mCoDriver.getPOV() })
+            mSubsystems.lift.setPoint(getLiftHeightFromPOV(mCoDriver.getPOV()))
+        // Manuel Lift control
+        if (Math.max(mCoDriver.getX(Hand.kLeft), mCoDriver.getX(Hand.kRight)) > 0.9)
+            mSubsystems.lift.setPercent(0.5)
+        else if (Math.max(mCoDriver.getX(Hand.kLeft), mCoDriver.getX(Hand.kRight)) < -0.9)
+            mSubsystems.lift.setPercent(-0.5)
     }
 }

@@ -34,8 +34,7 @@ class Lift(
         HATCH_HIGH({ Constants.Lift.HATCH_HIGH_HEIGHT }),
         BALL_LOW({ Constants.Lift.BALL_LOW_HEIGHT }),
         BALL_MID({ Constants.Lift.BALL_MID_HEIGHT }),
-        BALL_HIGH({ Constants.Lift.BALL_HIGH_HEIGHT }),
-        BALL_HUMAN_PLAYER({ Constants.Lift.BALL_HUMAN_PLAYER_HEIGHT })
+        BALL_HIGH({ Constants.Lift.BALL_HIGH_HEIGHT })
     }
 
     private var mBrakeMode: Boolean = false
