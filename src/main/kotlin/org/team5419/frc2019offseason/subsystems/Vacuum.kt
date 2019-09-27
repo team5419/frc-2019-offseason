@@ -49,6 +49,5 @@ class Vacuum(
         mTalon.set(ControlMode.PercentOutput, 0.0)
         mSolenoid.set(false)
     }
-
     public override fun reset() { stop() }
 }
