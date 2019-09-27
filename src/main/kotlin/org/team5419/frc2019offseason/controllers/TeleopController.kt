@@ -72,6 +72,10 @@ public class TeleopController(
             mSubsystems.drivetrain.setPercent(leftDrive * speed, rightDrive * speed)
             mSubsystems.updateAll()
         }
+
+        if (mDriver.getBumperPressed(Hand.kRight) || mCoDriver.getBumperPressed(Hand.kLeft)) {
+            mSubsystems.climber.climb()
+        }
         // Add flip
 
         // Codriver
@@ -80,9 +84,8 @@ public class TeleopController(
 
         if (liftIndex != lastLiftIndex) mSubsystems.lift.setPoint(LiftHeight.values()[liftIndex])
 
-        if (mCoDriver.getAButtonPressed()) mSubsystems.vacuum.toogleValve()
-
-        if (mCoDriver.getBumper(Hand.kLeft) || mCoDriver.getBumper(Hand.kRight))
+        if (mCoDriver.getBumper(Hand.kLeft) || mCoDriver.getBumper(Hand.kRight)) {
             mSubsystems.vacuum.pump = true
+        }
     }
 }

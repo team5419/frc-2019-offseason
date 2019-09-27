@@ -47,7 +47,11 @@ public object Constants {
         public const val MIN_MOTOR_OUTPUT_VOLTAGE = 1.0
     }
 
-    object Climber
+    object Climber {
+        public const val MASTER_TALON_PORT = 28 // check this later
+        public const val SLAVE_TALON_PORT = 29 // check this later
+        public const val MAX_OUTPUT_PERCENTAGE = 90.0
+    }
 
     object Lift {
         // talon port
