@@ -21,12 +21,9 @@ public class TeleopController(
 
     private var isSlow: Boolean = false
     private var isReverse: Boolean = false
-    private var speed: Double = Constants.Input.BASE_SPEED
+    private var speed = Constants.Input.BASE_SPEED
     private var leftDrive: Double = 0.0
     private var rightDrive: Double = 0.0
-
-    private var liftIndex: Int = 0
-    private var lastLiftIndex: Int = 0
 
     init {
         mDriver = driver
@@ -37,7 +34,6 @@ public class TeleopController(
     override fun start() {
         isSlow = false
         isReverse = false
-        speed = Constants.Input.BASE_SPEED
         rightDrive = 0.0
         leftDrive = 0.0
     }
@@ -57,7 +53,6 @@ public class TeleopController(
     @Suppress("ComplexMethod")
     override fun update() {
         // Driver
-        speed = 1.0
         isSlow = false
         speed = Constants.Input.BASE_SPEED
 
@@ -71,16 +66,14 @@ public class TeleopController(
             if (isReverse) speed *= -1
 
             if (mDriver.getTriggerAxis(Hand.kLeft) > Constants.Input.CONTROLLER_MARGIN)
-                speed *= Math.max(1.0 - mDriver.getTriggerAxis(Hand.kLeft), Constants.Input.MINIMAL_SLOW)
+                speed *= Constants.Input.SLOW
 
             rightDrive = mDriver.getX(Hand.kRight)
             leftDrive = mDriver.getX(Hand.kLeft)
             if (rightDrive > Constants.Input.CONTROLLER_MARGIN) rightDrive = 0.0
             if (leftDrive > Constants.Input.CONTROLLER_MARGIN) rightDrive = 0.0
             mSubsystems.drivetrain.setPercent(leftDrive * speed, rightDrive * speed)
-            mSubsystems.updateAll()
         }
-        // Add flip
 
         // Codriver
         // Valve control

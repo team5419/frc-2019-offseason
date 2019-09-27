@@ -14,7 +14,7 @@ public object Constants {
         public const val BASE_SPEED = 1.0
         public const val BASE_INVERSE_SPEED = 1.0
         public const val SLOW_COEFFICIENT = 1.0
-        public const val MINIMAL_SLOW = 0.3
+        public const val SLOW = 0.4
         public const val SPIN_SPEED = 0.5
     }
 
