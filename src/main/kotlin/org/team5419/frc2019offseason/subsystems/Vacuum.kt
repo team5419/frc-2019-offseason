@@ -15,9 +15,10 @@ class Vacuum(
 
     private val mTalon: LazyTalonSRX
     private val mSolenoid: Solenoid
-    public var pump: Boolean = false
     private var suck: Boolean = false
+    public var pump: Boolean = false
     public var hasPeice: Boolean = false
+        get() = mTalon.getMotorOutputVoltage().toDouble() > Constants.Vacuum.MIN_MOTOR_OUTPUT_VOLTAGE
     public var valve: Boolean
         get() = mSolenoid.get()
         set(value) { if (hasPeice && !value) mSolenoid.set(value) }
@@ -43,20 +44,13 @@ class Vacuum(
     public fun setPercent(percent: Double) = mTalon.set(ControlMode.PercentOutput, percent)
 
     public override fun update() {
-        pump = pump || (suck && mTimer.get().toInt() % 2 == 1)
-        if (pump) mTalon.set(ControlMode.PercentOutput, 1.0)
+        if (pump) setPercent(1.0)
+        else if (valve && mTimer.get().toInt() % 2 == 1) setPercent(0.5)
         else mTalon.set(ControlMode.PercentOutput, 0.0)
         pump = false
-        if (valveCheck() && mSolenoid.get()) {
+        if (hasPeice && mSolenoid.get()) {
             valve = false
         }
-    }
-
-    private fun valveCheck(): Boolean {
-        if (mTalon.getMotorOutputVoltage().toDouble() > Constants.Vacuum.MIN_MOTOR_OUTPUT_VOLTAGE) {
-            hasPeice = true
-        }
-        return hasPeice
     }
 
     public override fun stop() {
