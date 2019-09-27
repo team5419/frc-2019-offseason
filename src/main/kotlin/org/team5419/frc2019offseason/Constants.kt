@@ -44,6 +44,7 @@ public object Constants {
     object Vacuum {
         public const val MASTER_TALON_PORT = 0
         public const val SOLENOID_PORT = 0
+        public const val MIN_MOTOR_OUTPUT_VOLTAGE = 1.0
     }
 
     object Climber
