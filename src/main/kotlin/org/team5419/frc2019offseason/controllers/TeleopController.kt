@@ -78,7 +78,7 @@ public class TeleopController(
         // Codriver
         // Valve control
         if (mCoDriver.getBumperPressed(Hand.kLeft) || mCoDriver.getBumperPressed(Hand.kRight))
-            mSubsystems.vacuum.setValve(false)
+            mSubsystems.vacuum.valve = false
         // Vacuum control
         @Suppress("MaxLineLength")
         if (

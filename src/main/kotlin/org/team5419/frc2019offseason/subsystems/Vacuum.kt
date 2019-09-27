@@ -17,24 +17,28 @@ class Vacuum(
     private val mSolenoid: Solenoid
     public var pump: Boolean = false
     private var suck: Boolean = false
-    public var hasBall: Boolean = false
+    public var hasPeice: Boolean = false
+    public var valve: Boolean
+        get() = mSolenoid.get()
+        set(value) { if (hasPeice && !value) mSolenoid.set(value) }
 
     init {
         mTalon = masterTalon
         mSolenoid = solenoid
+        valve = mSolenoid.get()
     }
 
-    public fun setValve(value: Boolean) {
-        mSolenoid.set(value)
-        suck = value
-        if (value) mTimer.start()
-        else {
-            mTimer.stop()
-            mTimer.reset()
-        }
-    }
+    // public fun setValve(value: Boolean) {
+    //     mSolenoid.set(value)
+    //     suck = value
+    //     if (value) mTimer.start()
+    //     else {
+    //         mTimer.stop()
+    //         mTimer.reset()
+    //     }
+    // }
 
-    public fun disableValve() = setValve(false)
+    public fun disableValve() { valve = false }
 
     public fun setPercent(percent: Double) = mTalon.set(ControlMode.PercentOutput, percent)
 
@@ -44,15 +48,15 @@ class Vacuum(
         else mTalon.set(ControlMode.PercentOutput, 0.0)
         pump = false
         if (valveCheck() && mSolenoid.get()) {
-            setValve(false)
+            valve = false
         }
     }
 
     private fun valveCheck(): Boolean {
         if (mTalon.getMotorOutputVoltage().toDouble() > Constants.Vacuum.MIN_MOTOR_OUTPUT_VOLTAGE) {
-            hasBall = true
+            hasPeice = true
         }
-        return hasBall
+        return hasPeice
     }
 
     public override fun stop() {
