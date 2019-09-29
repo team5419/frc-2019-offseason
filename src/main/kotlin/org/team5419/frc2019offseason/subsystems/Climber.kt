@@ -10,7 +10,6 @@ class Climber(masterTalon: LazyTalonSRX, slaveTalon: LazyTalonSRX) : Subsystem()
 
     private val mMasterTalon: LazyTalonSRX
     private val mSlaveTalon: LazyTalonSRX
-    public var climbButtonPressed: Boolean = false
 
     init {
         mMasterTalon = masterTalon
