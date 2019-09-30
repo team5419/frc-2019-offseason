@@ -20,13 +20,11 @@ import org.team5419.fault.hardware.LazyVictorSPX
 import edu.wpi.first.wpilibj.Solenoid
 
 class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
+    // input
+    private val mDriver: XboxController
+    private val mCodriver: XboxController
 
-    private val driver: XboxController
-    private val coDriver: XboxController
-
-    var rightDrive: Double = 0.0
-    var leftDrive: Double = 0.0
-
+    // hardware
     private val mLeftMaster: LazyTalonSRX
     private val mLeftSlave: LazyVictorSPX
 
@@ -41,6 +39,7 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
 
     private val mWristMaster: LazyTalonSRX
 
+    // subsystems
     private val mDrivetrain: Drivetrain
     private val mLift: Lift
     private val mWrist: Wrist
@@ -58,6 +57,7 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
 
         mRightMaster = LazyTalonSRX(Constants.Drivetrain.RIGHT_MASTER_TALON_PORT)
         mRightSlave = LazyVictorSPX(Constants.Drivetrain.RIGHT_SLAVE_TALON_PORT)
+
         mDrivetrain = Drivetrain(
             mLeftMaster,
             mLeftSlave,
@@ -102,12 +102,12 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         // initilize controllers
         mAutoController = AutoController()
 
-        driver = XboxController(0)
-        coDriver = XboxController(1)
+        mDriver = XboxController(Constants.Input.DRIVER_PORT)
+        mCodriver = XboxController(Constants.Input.CODRIVER_PORT)
         mTeleopController = TeleopController(
             mSubsystemsManager,
-            driver,
-            coDriver
+            mDriver,
+            mCodriver
         )
     }
 
@@ -150,5 +150,11 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     override fun teleopPeriodic() {
         mSubsystemsManager.updateAll()
         mTeleopController.update()
+    }
+
+    override fun testInit() {
+    }
+
+    override fun testPeriodic() {
     }
 }

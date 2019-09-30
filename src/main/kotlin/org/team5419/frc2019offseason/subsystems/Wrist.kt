@@ -13,7 +13,7 @@ class Wrist(
 ) : Subsystem() {
 
     companion object {
-        val kWristSlot = 0
+        const val kWristSlot = 0
     }
 
     private val mMaster: LazyTalonSRX
