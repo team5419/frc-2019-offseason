@@ -21,7 +21,7 @@ class Wrist(
     private fun degreesToTicks(heading: Double): Int =
         (heading / 360.0 * Constants.Wrist.ENCODER_TICKS_PER_ROTATION).toInt()
     private val mMaster: LazyTalonSRX
-    private var posistion: Double get() = ticksToDegrees(mMaster.getSelectedSensorPosition())
+    private var position: Double get() = ticksToDegrees(mMaster.getSelectedSensorPosition())
     private var setPoint: Double
     // public var targetPosistion: WristPosistions
 
@@ -36,8 +36,10 @@ class Wrist(
         // config talon PIDF
         mMaster = masterTalon.apply {
             configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0) //
+            // configSelectedFeedbackCoefficient(-1.0)
+            setSelectedSensorPosition(0)
             setSensorPhase(true) // check
-            setInverted(false) // check this
+            setInverted(true) // check this
 
             configClosedLoopPeakOutput(kWristSlot, 1.0)
 
@@ -50,7 +52,7 @@ class Wrist(
             selectProfileSlot(kWristSlot, 0)
             configAllowableClosedloopError(0, 0, 0)
 
-            enableCurrentLimit(false)
+            enableCurrentLimit(true)
             configPeakCurrentDuration(kWristSlot, 0)
             configPeakCurrentLimit(kWristSlot, 0)
             @Suppress("MagicNumber")
@@ -63,15 +65,19 @@ class Wrist(
         }
 
         setPoint = 0.0
-        posistion = WristPosistions.FORWARD.value
+        position = WristPosistions.FORWARD.value
     }
 
     public fun zero() {
         setPoint = 0.0
-        posistion = WristPosistions.FORWARD.value
+        position = WristPosistions.FORWARD.value
     }
 
-    public fun setPosistion(point: WristPosistions) {
+    public fun setPercent(percent: Double) {
+        mMaster.set(ControlMode.PercentOutput, percent)
+    }
+
+    public fun setPosition(point: WristPosistions) {
         setTicks(degreesToTicks(point.value))
     }
 
@@ -84,7 +90,6 @@ class Wrist(
     }
 
     public override fun update() {
-        println(mMaster.getSelectedSensorPosition(0))
     }
     public override fun stop() {}
     public override fun reset() {}

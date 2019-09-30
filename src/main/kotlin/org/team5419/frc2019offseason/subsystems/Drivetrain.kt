@@ -42,7 +42,7 @@ class Drivetrain(
 
     init {
         mLeftMaster = leftMaster.apply {
-            setInverted(false)
+            setInverted(true)
             setSensorPhase(true)
             setStatusFramePeriod(
                 StatusFrameEnhanced.Status_3_Quadrature,
@@ -57,7 +57,7 @@ class Drivetrain(
         }
 
         mRightMaster = rightMaster.apply {
-            setInverted(true)
+            setInverted(false)
             setSensorPhase(true)
             setStatusFramePeriod(
                 StatusFrameEnhanced.Status_3_Quadrature,
@@ -67,7 +67,7 @@ class Drivetrain(
         }
         mRightSlave = rightSlave.apply {
             follow(mRightMaster)
-            setInverted(InvertType.FollowMaster)
+            setInverted(true)
         }
     }
 

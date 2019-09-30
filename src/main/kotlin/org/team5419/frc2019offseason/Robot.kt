@@ -6,11 +6,10 @@ import edu.wpi.first.wpilibj.XboxController
 import org.team5419.frc2019offseason.Constants
 
 import org.team5419.frc2019offseason.subsystems.Drivetrain
-import org.team5419.frc2019offseason.subsystems.Climber
-import org.team5419.frc2019offseason.subsystems.Wrist
 import org.team5419.frc2019offseason.subsystems.Lift
 import org.team5419.frc2019offseason.subsystems.Vacuum
 import org.team5419.frc2019offseason.subsystems.SubsystemsManager
+import org.team5419.frc2019offseason.subsystems.Wrist
 
 import org.team5419.frc2019offseason.controllers.AutoController
 import org.team5419.frc2019offseason.controllers.TeleopController
@@ -37,14 +36,15 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     private val mLiftSlave: LazyTalonSRX
 
     private val mVacuumMaster: LazyTalonSRX
-    private val mSolenoid: Solenoid
+    private val mReleaseSolenoid: Solenoid
+    private val mHatchSolenoid: Solenoid
 
     private val mWristMaster: LazyTalonSRX
 
     private val mDrivetrain: Drivetrain
-    private val mLift: Lift
+    // private val mLift: Lift
     private val mWrist: Wrist
-    private val mClimber: Climber
+    // private val mClimber: Climber
     private val mVacuum: Vacuum
 
     private val mSubsystemsManager: SubsystemsManager
@@ -68,10 +68,10 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         // initilize Lift
         mLiftMaster = LazyTalonSRX(Constants.Lift.MASTER_TALON_PORT)
         mLiftSlave = LazyTalonSRX(Constants.Lift.SLAVE_TALON_PORT)
-        mLift = Lift(
-            mLiftMaster,
-            mLiftSlave
-        )
+        // mLift = Lift(
+        //     mLiftMaster,
+        //     mLiftSlave
+        // )
 
         // initilize Wrist
         mWristMaster = LazyTalonSRX(Constants.Lift.MASTER_TALON_PORT)
@@ -80,22 +80,24 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         )
 
         // initilize Climber
-        mClimber = Climber()
+        // mClimber = Climber()
 
         // initilize Vacuum
         mVacuumMaster = LazyTalonSRX(Constants.Vacuum.MASTER_TALON_PORT)
-        mSolenoid = Solenoid(Constants.Vacuum.SOLENOID_PORT)
+        mReleaseSolenoid = Solenoid(Constants.Vacuum.RELEASE_SOLNOID_PORT)
+        mHatchSolenoid = Solenoid(Constants.Vacuum.HATCH_SOLENOID_PORT)
         mVacuum = Vacuum(
             mVacuumMaster,
-            mSolenoid
+            mReleaseSolenoid,
+            mHatchSolenoid
         )
 
         // initilize Subsystems Manager
         mSubsystemsManager = SubsystemsManager(
             mDrivetrain,
-            mLift,
+            // mLift,
             mWrist,
-            mClimber,
+            // mClimber,
             mVacuum
         )
 

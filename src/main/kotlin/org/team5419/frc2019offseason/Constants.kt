@@ -12,7 +12,7 @@ public object Constants {
         public const val CODRIVER_PORT = 1
         public const val CONTROLLER_MARGIN = 0.02
         public const val BASE_SPEED = 1.0
-        public const val BASE_INVERSE_SPEED = 1.0
+        public const val BASE_INVERSE_SPEED = 0.1
         public const val SLOW_COEFFICIENT = 1.0
         public const val SLOW = 0.4
         public const val SPIN_SPEED = 0.5
@@ -20,10 +20,10 @@ public object Constants {
 
     object Drivetrain {
         // talon port
-        public const val LEFT_MASTER_TALON_PORT = 6
+        public const val LEFT_MASTER_TALON_PORT = 10
         public const val LEFT_SLAVE_TALON_PORT = 8
-        public const val RIGHT_MASTER_TALON_PORT = 12
-        public const val RIGHT_SLAVE_TALON_PORT = 3
+        public const val RIGHT_MASTER_TALON_PORT = 9
+        public const val RIGHT_SLAVE_TALON_PORT = 12
         // gyro
         public const val GYRO_PORT = 13
         // units
@@ -38,24 +38,27 @@ public object Constants {
     }
 
     object Vacuum {
-        public const val MASTER_TALON_PORT = 0
-        public const val SOLENOID_PORT = 0
-        public const val MIN_MOTOR_OUTPUT_VOLTAGE = 1.0
+        public const val MASTER_TALON_PORT = 2
+        public const val RELEASE_SOLNOID_PORT = 0
+        public const val HATCH_SOLENOID_PORT = 1
+        public const val CURRENT_THRESHOLD = 2.25
     }
 
     object Climber
 
     object Wrist {
-        public const val MASTER_TALON_PORT = 0 // to set
+        public const val MASTER_TALON_PORT = 6 // to set
         // to check
         public const val FORWARD = 0.0
         public const val MIDDLE = 90.0
         public const val BACKWARD = 180.0
+        public const val BALL_ANGLE = 20.0
 
         public const val INCHES_PER_ROTATION = 1.0
         public const val ENCODER_TICKS_PER_ROTATION = 4096
+        public const val ENCODER_TICKS_BALL_POSITSTION = 1692
 
-        public const val KP = 0.7
+        public const val KP = 0.5
         public const val KI = 0.0
         public const val KD = 0.0
         public const val KF = 0.0

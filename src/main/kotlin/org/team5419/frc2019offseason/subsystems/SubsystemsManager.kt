@@ -2,47 +2,45 @@ package org.team5419.frc2019offseason.subsystems
 
 public class SubsystemsManager(
     mDrivetrain: Drivetrain,
-    mLift: Lift,
     mWrist: Wrist,
-    mClimber: Climber,
     mVacuum: Vacuum
 ) {
 
     public val drivetrain: Drivetrain
-    public val lift: Lift
+    // public val lift: Lift
     public val wrist: Wrist
-    public val climber: Climber
+    // public val climber: Climber
     public val vacuum: Vacuum
 
     init {
         drivetrain = mDrivetrain
-        lift = mLift
+        // lift = mLift
         wrist = mWrist
-        climber = mClimber
         vacuum = mVacuum
+        // climber = mClimber
     }
 
     public fun updateAll() {
         drivetrain.update()
-        lift.update()
+        // lift.update()
         wrist.update()
-        climber.update()
+        // climber.update()
         vacuum.update()
     }
 
     public fun stopAll() {
         drivetrain.stop()
-        lift.stop()
+        // lift.stop()
         wrist.stop()
-        climber.stop()
+        // climber.stop()
         vacuum.stop()
     }
 
     public fun resetAll() {
         drivetrain.reset()
-        lift.reset()
+        // lift.reset()
         wrist.reset()
-        climber.reset()
+        // climber.reset()
         vacuum.reset()
     }
 }

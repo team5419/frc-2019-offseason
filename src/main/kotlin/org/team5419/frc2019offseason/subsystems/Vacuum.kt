@@ -9,54 +9,77 @@ import edu.wpi.first.wpilibj.Timer
 
 class Vacuum(
     masterTalon: LazyTalonSRX,
-    solenoid: Solenoid
+    releaseSolenoid: Solenoid,
+    hatchSolenoid: Solenoid
+
 ) : Subsystem() {
     private val mTimer: Timer = Timer()
 
     private val mTalon: LazyTalonSRX
-    private val mSolenoid: Solenoid
-    private var suck: Boolean = false
-    public var pump: Boolean = false
-    public var hasPeice: Boolean = false
-        get() = mTalon.getMotorOutputVoltage().toDouble() > Constants.Vacuum.MIN_MOTOR_OUTPUT_VOLTAGE
-    public var valve: Boolean
-        get() = mSolenoid.get()
-        set(value) { if (hasPeice && !value) mSolenoid.set(value) }
+    private val mReleaseSolenoid: Solenoid
+    private val mHatchSolenoid: Solenoid
+    private var isClearingValve: Boolean = false
+    private var hasPeice: Boolean = false
+    private var isPumping: Boolean = false
+    public var hatchValve: Boolean = false
+        get() = mHatchSolenoid.get()
+        set(value) {
+            mHatchSolenoid.set(value)
+            field = value
+        }
+
+    public var realeaseValve: Boolean = false
+        get() = mReleaseSolenoid.get()
+        set(value) {
+            mReleaseSolenoid.set(value)
+            field = value
+        }
 
     init {
         mTalon = masterTalon
-        mSolenoid = solenoid
-        valve = mSolenoid.get()
+        mReleaseSolenoid = releaseSolenoid
+        mHatchSolenoid = hatchSolenoid
     }
 
-    // public fun setValve(value: Boolean) {
-    //     mSolenoid.set(value)
-    //     suck = value
-    //     if (value) mTimer.start()
-    //     else {
-    //         mTimer.stop()
-    //         mTimer.reset()
-    //     }
-    // }
+    public fun release() {
+        isPumping = false
+        realeaseValve = true
+        hatchValve = true
+        hasPeice = false
+    }
 
-    public fun disableValve() { valve = false }
+    public fun pickBall(percent: Double) {
+        realeaseValve = false
+        hatchValve = false
+        setPercent(percent)
+        isPumping = true
+    }
 
-    public fun setPercent(percent: Double) = mTalon.set(ControlMode.PercentOutput, percent)
+    public fun pickHatch(percent: Double) {
+        realeaseValve = false
+        hatchValve = true
+        setPercent(percent)
+        isPumping = true
+    }
+
+    public fun setPercent(percent: Double) {
+        if (percent == 0.0) isPumping = false
+        mTalon.set(ControlMode.PercentOutput, percent)
+    }
 
     public override fun update() {
-        if (pump) setPercent(1.0)
-        else if (valve && mTimer.get().toInt() % 2 == 1) setPercent(0.5)
-        else mTalon.set(ControlMode.PercentOutput, 0.0)
-        pump = false
-        if (hasPeice && mSolenoid.get()) {
-            valve = false
-        }
+    println("Current: " + mTalon.getOutputCurrent().toString() +
+            "\nhasPeice: " + hasPeice.toString() +
+            "\nisPumping " + isPumping.toString()
+    )
+        hasPeice = !hasPeice && mTalon.getOutputCurrent() >= Constants.Vacuum.CURRENT_THRESHOLD
+        if (hasPeice && mTalon.getOutputCurrent() < Constants.Vacuum.CURRENT_THRESHOLD)
+            setPercent(1.0)
+        else if (!isPumping) mTalon.set(ControlMode.PercentOutput, 0.0)
     }
 
     public override fun stop() {
-        pump = false
-        mTalon.set(ControlMode.PercentOutput, 0.0)
-        mSolenoid.set(false)
+        release()
     }
     public override fun reset() { stop() }
 }
