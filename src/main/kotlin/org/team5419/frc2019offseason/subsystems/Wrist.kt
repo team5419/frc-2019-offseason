@@ -16,18 +16,20 @@ class Wrist(
         val kWristSlot = 0
     }
 
+    private fun ticksToDegrees(ticks: Int): Double =
+        ticks / Constants.Wrist.ENCODER_TICKS_PER_ROTATION * 360.0
+    private fun degreesToTicks(heading: Double): Int =
+        (heading / 360.0 * Constants.Wrist.ENCODER_TICKS_PER_ROTATION).toInt()
     private val mMaster: LazyTalonSRX
-    private val isFlipped: Boolean = false
-    private val isFlipping: Boolean = false
-
-    public var setPoint = 0.0
+    private var posistion: Double get() = ticksToDegrees(mMaster.getSelectedSensorPosition())
+    private var setPoint: Double
     // public var targetPosistion: WristPosistions
 
     // set posistion
-    public enum class WristPosistions(val value: Int) {
-        FORWARD(Constants.Wrist.FORWARD_TICKS),
-        MIDDLE(Constants.Wrist.MIDDLE_TICKS),
-        BACKWARD(Constants.Wrist.BACKWARD_TICKS)
+    public enum class WristPosistions(val value: Double) {
+        FORWARD(Constants.Wrist.FORWARD),
+        MIDDLE(Constants.Wrist.MIDDLE),
+        BACKWARD(Constants.Wrist.BACKWARD)
     }
 
     init {
@@ -61,16 +63,24 @@ class Wrist(
         }
 
         setPoint = 0.0
-        // posistion = WristPosistions.FORWARD
+        posistion = WristPosistions.FORWARD.value
+    }
+
+    public fun zero() {
+        setPoint = 0.0
+        posistion = WristPosistions.FORWARD.value
     }
 
     public fun setPosistion(point: WristPosistions) {
-        // targetPosistion = point
-        setPoint(point.value.toDouble())
+        setTicks(degreesToTicks(point.value))
     }
 
-    public fun setPoint(point: Double) {
-        mMaster.set(ControlMode.Position, point)
+    public fun setDegrees(heading: Double) {
+        setTicks(degreesToTicks(heading))
+    }
+
+    public fun setTicks(ticks: Int) {
+        mMaster.set(ControlMode.MotionMagic, ticks.toDouble())
     }
 
     public override fun update() {

@@ -48,9 +48,12 @@ public object Constants {
     object Wrist {
         public const val MASTER_TALON_PORT = 0 // to set
         // to check
-        public const val FORWARD_TICKS = 0
-        public const val MIDDLE_TICKS = 1024
-        public const val BACKWARD_TICKS = 2048
+        public const val FORWARD = 0.0
+        public const val MIDDLE = 90.0
+        public const val BACKWARD = 180.0
+
+        public const val INCHES_PER_ROTATION = 1.0
+        public const val ENCODER_TICKS_PER_ROTATION = 4096
 
         public const val KP = 0.7
         public const val KI = 0.0

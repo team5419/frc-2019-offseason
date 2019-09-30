@@ -22,11 +22,14 @@ class Lift(
     private var mMaster: LazyTalonSRX
     private var mSlave: LazyTalonSRX
 
-    private fun ticksToInches(ticks: Int): Double = ticks / Lift.ENCODER_TICKS_PER_ROTATION * Lift.INCHES_PER_ROTATION
+    private fun ticksToInches(ticks: Int): Double =
+        ticks / Lift.ENCODER_TICKS_PER_ROTATION * Lift.INCHES_PER_ROTATION
+    private fun inchesToTicks(inches: Double): Int =
+        (inches / Lift.INCHES_PER_ROTATION * Lift.ENCODER_TICKS_PER_ROTATION).toInt()
 
     var firstStagePosistion: Double get() = ticksToInches(mMaster.getSelectedSensorPosition())
     var secondStagePosistion: Double get() = Math.max(ticksToInches(mMaster.getSelectedSensorPosition()), 0.0)
-    var setpoint: Double
+    var setpoint: Int
     var isSecondStage: Boolean
     // confirm resting hight
     public enum class LiftHeight(
@@ -89,14 +92,14 @@ class Lift(
         }
 
         // setpoint = LiftHeight.getHeight()
-        setpoint = 0.0
+        setpoint = 0
         firstStagePosistion = 0.0
         secondStagePosistion = Lift.SECOND_STAGE_HIGHT
         isSecondStage = false
     }
 
     public fun zero() {
-        setpoint = 0.0
+        setpoint = 0
         firstStagePosistion = 0.0
         secondStagePosistion = Lift.SECOND_STAGE_HIGHT
         isSecondStage = false
@@ -107,12 +110,16 @@ class Lift(
     }
 
     public fun setPosistion(height: LiftHeight) {
-        setPoint(height.value)
+        setTicks(inchesToTicks(height.value))
     }
 
-    public fun setPoint(height: Double) {
-        setpoint = height
-        mMaster.set(ControlMode.MotionMagic, setpoint)
+    public fun setTicks(ticks: Int) {
+        setpoint = ticks
+        mMaster.set(ControlMode.MotionMagic, ticks.toDouble())
+    }
+
+    public fun setInches(inches: Double) {
+        setTicks(inchesToTicks(inches))
     }
 
     public override fun update() {
