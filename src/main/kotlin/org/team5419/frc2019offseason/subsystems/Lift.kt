@@ -8,45 +8,77 @@ import com.ctre.phoenix.motorcontrol.InvertType
 import org.team5419.fault.hardware.LazyTalonSRX
 import org.team5419.fault.Subsystem
 
-import org.team5419.frc2019offseason.Constants
+import org.team5419.frc2019offseason.Constants.Lift
 
 class Lift(
     masterTalon: LazyTalonSRX,
     slaveTalon: LazyTalonSRX
 ) : Subsystem() {
 
-        companion object {
-                private const val kElevatorSlot = 0
+    companion object {
+        private const val kElevatorSlot = 0
+    }
+
+    private var mMaster: LazyTalonSRX
+    private var mSlave: LazyTalonSRX
+
+    var firstStagePosistion: Int get() = mMaster.getSelectedSensorPosition()
+    var secondStagePosistion: Int get() = Math.max(mMaster.getSelectedSensorPosition(), 0)
+    var setpoint: Double
+    var isSecondStage: Boolean
+    // confirm resting hight
+    public enum class LiftHeight(
+        val getHeight: () -> Double = { 0.0 }
+    ) {
+        BOTTOM({ Lift.STOW_HEIGHT }),
+        HATCH_LOW({ Lift.HATCH_LOW_HEIGHT }),
+        HATCH_MID({ Lift.HATCH_MID_HEIGHT }),
+        HATCH_HIGH({ Lift.HATCH_HIGH_HEIGHT }),
+        BALL_LOW({ Lift.BALL_LOW_HEIGHT }),
+        BALL_MID({ Lift.BALL_MID_HEIGHT }),
+        BALL_HIGH({ Lift.BALL_HIGH_HEIGHT })
+    }
+
+    private var mBrakeMode: Boolean = false
+    set(value) {
+        if (value == field) return
+        if (value) {
+            mMaster.setNeutralMode(NeutralMode.Brake)
+            mSlave.setNeutralMode(NeutralMode.Brake)
+        } else {
+            mMaster.setNeutralMode(NeutralMode.Coast)
+            mSlave.setNeutralMode(NeutralMode.Coast)
         }
+        field = value
+    }
 
-        private var mMaster: LazyTalonSRX
-        private var mSlave: LazyTalonSRX
+    init {
+        mMaster = masterTalon.apply {
+            configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0) //
+            setSensorPhase(true) // check
+            setInverted(false) // check this
 
-        public var firstStagePosistion: Double = 0.0
-        public var secondStagePosistion: Double = 0.0
-        // confirm resting hight
-        public enum class LiftHeight(val value: Double = 0.0) {
-                STOW(Constants.Lift.STOW_HEIGHT),
-                HATCH_LOW(Constants.Lift.HATCH_LOW_HEIGHT),
-                HATCH_MID(Constants.Lift.HATCH_MID_HEIGHT),
-                HATCH_HIGH(Constants.Lift.HATCH_HIGH_HEIGHT),
-                BALL_LOW(Constants.Lift.BALL_LOW_HEIGHT),
-                BALL_MID(Constants.Lift.BALL_MID_HEIGHT),
-                BALL_HIGH(Constants.Lift.BALL_HIGH_HEIGHT),
-                BALL_HUMAN_PLAYER(Constants.Lift.BALL_HUMAN_PLAYER_HEIGHT)
-        }
+            configClosedLoopPeakOutput(kElevatorSlot, 1.0)
 
-        private var mBrakeMode: Boolean = false
-        set(value) {
-                if (value == field) return
-                if (value) {
-                        mMaster.setNeutralMode(NeutralMode.Brake)
-                        mSlave.setNeutralMode(NeutralMode.Brake)
-                } else {
-                        mMaster.setNeutralMode(NeutralMode.Coast)
-                        mSlave.setNeutralMode(NeutralMode.Coast)
-                }
-                field = value
+            config_kP(kElevatorSlot, Lift.KP, 0)
+            config_kI(kElevatorSlot, Lift.KI, 0)
+            config_kD(kElevatorSlot, Lift.KD, 0)
+            config_kF(kElevatorSlot, Lift.KF, 0)
+            configMotionCruiseVelocity(Lift.MOTION_MAGIC_VELOCITY, 0)
+            configMotionAcceleration(Lift.MOTION_MAGIC_ACCELERATION, 0)
+            selectProfileSlot(kElevatorSlot, 0)
+            configAllowableClosedloopError(0, 0, 0)
+
+            enableCurrentLimit(false)
+            configPeakCurrentDuration(0, 0)
+            configPeakCurrentLimit(0, 0)
+            @Suppress("MagicNumber")
+            configContinuousCurrentLimit(25, 0) // amps
+            enableVoltageCompensation(false)
+            configForwardSoftLimitThreshold(Lift.MAX_ENCODER_TICKS, 0)
+            configReverseSoftLimitThreshold(Lift.MIN_ENCODER_TICKS, 0)
+            configForwardSoftLimitEnable(true, 0)
+            configReverseSoftLimitEnable(true, 0)
         }
 
         var setpoint: Double
@@ -91,10 +123,18 @@ class Lift(
         public fun setPercent(speed: Double) {
                 mMaster.set(ControlMode.PercentOutput, speed)
         }
+        setpoint = 0.0
+        firstStagePosistion = 0.0
+        secondStagePosistion = Lift.SECOND_STAGE_HIGHT
+        isSecondStage = false
+    }
 
-        public fun setHeightInches(height: Double) {
-            height / Constants.Lift.INCHES_PER_ROTATION / Constants.Units.ENCODER_TICKS_PER_ROTATION
-        }
+    public fun zero() {
+        setpoint = 0.0
+        firstStagePosistion = 0.0
+        secondStagePosistion = Lift.SECOND_STAGE_HIGHT
+        isSecondStage = false
+    }
 
         public fun setPosistion(height: LiftHeight) {
             setPoint(height.value)
@@ -105,9 +145,26 @@ class Lift(
                 mMaster.set(ControlMode.MotionMagic, setpoint)
         }
 
-        public override fun update() {
-                // setPercent(pid.calculate())
+    public override fun update() {
+        firstStagePosistion = mMaster
+        .if (!isSecondStage && firstStagePosistion + Lift.SECOND_STAGE_EPSILON > Lift.SECOND_STAGE_HIGHT) {
+            mMaster.apply {
+                config_kP(kElevatorSlot, Lift.KP2, 0)
+                config_kI(kElevatorSlot, Lift.KI2, 0)
+                config_kD(kElevatorSlot, Lift.KD2, 0)
+                config_kF(kElevatorSlot, Lift.KF2, 0)
+            }
+            isSecondStage = true
+        } else if (isSecondStage && Lift.SECOND_STAGE_HIGHT + Lift.SECOND_STAGE_EPSILON > secondStagePosistion) {
+            mMaster.apply {
+                config_kP(kElevatorSlot, Lift.KP, 0)
+                config_kI(kElevatorSlot, Lift.KI, 0)
+                config_kD(kElevatorSlot, Lift.KD, 0)
+                config_kF(kElevatorSlot, Lift.KF, 0)
+            }
+            isSecondStage = false
         }
+    }
 
         public override fun stop() {
                 setPosistion(LiftHeight.STOW)

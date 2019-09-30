@@ -14,7 +14,7 @@ public object Constants {
         public const val BASE_SPEED = 1.0
         public const val BASE_INVERSE_SPEED = 1.0
         public const val SLOW_COEFFICIENT = 1.0
-        public const val MINIMAL_SLOW = 0.3
+        public const val SLOW = 0.4
         public const val SPIN_SPEED = 0.5
     }
 
@@ -22,18 +22,14 @@ public object Constants {
         // talon port
         public const val LEFT_MASTER_TALON_PORT = 6
         public const val LEFT_SLAVE_TALON_PORT = 8
-
         public const val RIGHT_MASTER_TALON_PORT = 12
         public const val RIGHT_SLAVE_TALON_PORT = 3
-
         // gyro
         public const val GYRO_PORT = 13
-
         // units
         public const val ENCODER_TICKS_PER_ROTATION = 4096
         public const val TURN_UNITS_PER_ROTATION = 3600 // for gyro
         public const val PIGEON_UNITS_PER_ROTATION = 8192
-
         // dimensions
         public const val WHEEL_BASE = 27.0 // inches
         public const val WHEEL_DIAMETER = 6.0 // inches
@@ -44,6 +40,7 @@ public object Constants {
     object Vacuum {
         public const val MASTER_TALON_PORT = 0
         public const val SOLENOID_PORT = 0
+        public const val MIN_MOTOR_OUTPUT_VOLTAGE = 1.0
     }
 
     object Climber
@@ -80,7 +77,9 @@ public object Constants {
         public const val BALL_MID_HEIGHT = 0.0
         public const val BALL_HIGH_HEIGHT = 0.0
         public const val BALL_HUMAN_PLAYER_HEIGHT = 0.0
-
+        public const val SECOND_STAGE_HIGHT = 0.0
+        // tf?
+        public const val INCHES_PER_ROTATION = 0
         public const val MOTION_MAGIC_VELOCITY = 11000
         public const val MOTION_MAGIC_ACCELERATION = 11000
         public const val MAX_ENCODER_TICKS = 0
@@ -93,6 +92,11 @@ public object Constants {
         public const val KI = 0.0
         public const val KD = 0.0
         public const val KF = 0.0
+        public const val KP2 = 0.7
+        public const val KI2 = 0.0
+        public const val KD2 = 0.0
+        public const val KF2 = 0.0
+        public const val SECOND_STAGE_EPSILON = 10.0
     }
 
     object PID {
