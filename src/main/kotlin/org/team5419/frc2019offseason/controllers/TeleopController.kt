@@ -46,8 +46,7 @@ public class TeleopController(
     private fun getLiftHeightFromPOV(angle: Int): LiftHeight {
         if (angle == 0) return LiftHeight.BALL_HIGH
         if (angle == 270) return LiftHeight.BALL_MID
-        if (angle == 180) return LiftHeight.BALL_LOW
-        return LiftHeight.BOTTOM
+        return LiftHeight.BALL_LOW
     }
 
     @Suppress("ComplexMethod")
