@@ -41,7 +41,7 @@ public object Constants {
         public const val MASTER_TALON_PORT = 2
         public const val RELEASE_SOLNOID_PORT = 0
         public const val HATCH_SOLENOID_PORT = 1
-        public const val CURRENT_THRESHOLD = 2.25
+        public const val CURRENT_THRESHOLD = 2.125
     }
 
     object Climber

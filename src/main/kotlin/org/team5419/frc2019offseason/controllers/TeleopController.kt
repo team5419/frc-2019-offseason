@@ -75,8 +75,9 @@ public class TeleopController(
         // @Suppress("MaxLineLength")
         if (mCoDriver.getTriggerAxis(Hand.kLeft) > Constants.Input.CONTROLLER_MARGIN)
             mSubsystems.vacuum.pickBall(mCoDriver.getTriggerAxis(Hand.kLeft))
-        if (mCoDriver.getTriggerAxis(Hand.kRight) > Constants.Input.CONTROLLER_MARGIN)
+        else if (mCoDriver.getTriggerAxis(Hand.kRight) > Constants.Input.CONTROLLER_MARGIN)
             mSubsystems.vacuum.pickHatch(mCoDriver.getTriggerAxis(Hand.kRight))
+        else mSubsystems.vacuum.setPercent(0.0)
         // // button control
         // if (mCoDriver.getAButtonPressed())
         //     mSubsystems.lift.setPosistion(LiftHeight.HATCH_LOW)
@@ -94,7 +95,7 @@ public class TeleopController(
         if (mCoDriver.getXButtonPressed()) {
             mSubsystems.wrist.setPosition(WristPosistions.BACKWARD)
         }
-        if (mCoDriver.getPOV() == 270)
+        if (mCoDriver.getPOV() == 90)
             mSubsystems.wrist.setPosition(WristPosistions.FORWARD)
 
         // // Manuel Lift control
@@ -103,7 +104,7 @@ public class TeleopController(
         // if (mCoDriver.getX(Hand.kLeft) < -0.9)
         //     mSubsystems.lift.setPercent(-0.5)
         if (mCoDriver.getY(Hand.kRight) > 0.9)
-            mSubsystems.wrist.setPercent(-0.5)
+            mSubsystems.wrist.setPercent(0.5)
         if (mCoDriver.getY(Hand.kRight) < -0.9)
             mSubsystems.wrist.setPercent(-0.5)
     }
