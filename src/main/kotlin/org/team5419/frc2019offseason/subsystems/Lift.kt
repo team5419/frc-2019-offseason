@@ -22,21 +22,23 @@ class Lift(
     private var mMaster: LazyTalonSRX
     private var mSlave: LazyTalonSRX
 
-    var firstStagePosistion: Int get() = mMaster.getSelectedSensorPosition()
-    var secondStagePosistion: Int get() = Math.max(mMaster.getSelectedSensorPosition(), 0)
+    private fun ticksToInches(ticks: Int): Double = ticks / Lift.ENCODER_TICKS_PER_ROTATION * Lift.INCHES_PER_ROTATION
+
+    var firstStagePosistion: Double get() = ticksToInches(mMaster.getSelectedSensorPosition())
+    var secondStagePosistion: Double get() = Math.max(ticksToInches(mMaster.getSelectedSensorPosition()), 0.0)
     var setpoint: Double
     var isSecondStage: Boolean
     // confirm resting hight
     public enum class LiftHeight(
-        val getHeight: () -> Double = { 0.0 }
+        val value: Double = 0.0
     ) {
-        BOTTOM({ Lift.STOW_HEIGHT }),
-        HATCH_LOW({ Lift.HATCH_LOW_HEIGHT }),
-        HATCH_MID({ Lift.HATCH_MID_HEIGHT }),
-        HATCH_HIGH({ Lift.HATCH_HIGH_HEIGHT }),
-        BALL_LOW({ Lift.BALL_LOW_HEIGHT }),
-        BALL_MID({ Lift.BALL_MID_HEIGHT }),
-        BALL_HIGH({ Lift.BALL_HIGH_HEIGHT })
+        BOTTOM(Lift.STOW_HEIGHT),
+        HATCH_LOW(Lift.HATCH_LOW_HEIGHT),
+        HATCH_MID(Lift.HATCH_MID_HEIGHT),
+        HATCH_HIGH(Lift.HATCH_HIGH_HEIGHT),
+        BALL_LOW(Lift.BALL_LOW_HEIGHT),
+        BALL_MID(Lift.BALL_MID_HEIGHT),
+        BALL_HIGH(Lift.BALL_HIGH_HEIGHT)
     }
 
     private var mBrakeMode: Boolean = false
@@ -81,48 +83,12 @@ class Lift(
             configReverseSoftLimitEnable(true, 0)
         }
 
-        var setpoint: Double
-
-        init {
-                mMaster = masterTalon.apply {
-                        configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0) //
-                        setSensorPhase(true) // check
-                        setInverted(false) // check this
-
-                        configClosedLoopPeakOutput(kElevatorSlot, 1.0)
-
-                        config_kP(kElevatorSlot, Constants.Lift.KP, 0)
-                        config_kI(kElevatorSlot, Constants.Lift.KI, 0)
-                        config_kD(kElevatorSlot, Constants.Lift.KD, 0)
-                        config_kF(kElevatorSlot, Constants.Lift.KF, 0)
-                        configMotionCruiseVelocity(Constants.Lift.MOTION_MAGIC_VELOCITY, 0)
-                        configMotionAcceleration(Constants.Lift.MOTION_MAGIC_ACCELERATION, 0)
-                        selectProfileSlot(kElevatorSlot, 0)
-                        configAllowableClosedloopError(0, 0, 0)
-
-                        enableCurrentLimit(false)
-                        configPeakCurrentDuration(0, 0)
-                        configPeakCurrentLimit(0, 0)
-                        @Suppress("MagicNumber")
-                        configContinuousCurrentLimit(25, 0) // amps
-                        enableVoltageCompensation(false)
-                        configForwardSoftLimitThreshold(Constants.Lift.MAX_ENCODER_TICKS, 0)
-                        configReverseSoftLimitThreshold(Constants.Lift.MIN_ENCODER_TICKS, 0)
-                        configForwardSoftLimitEnable(true, 0)
-                        configReverseSoftLimitEnable(true, 0)
-                }
-                mSlave = slaveTalon.apply {
-                        follow(mMaster)
-                        setInverted(InvertType.FollowMaster)
-                }
-
-                // setpoint = LiftHeight.getHeight()
-                setpoint = 0.0
+        mSlave = slaveTalon.apply {
+                follow(mMaster)
+                setInverted(InvertType.FollowMaster)
         }
 
-        public fun setPercent(speed: Double) {
-                mMaster.set(ControlMode.PercentOutput, speed)
-        }
+        // setpoint = LiftHeight.getHeight()
         setpoint = 0.0
         firstStagePosistion = 0.0
         secondStagePosistion = Lift.SECOND_STAGE_HIGHT
@@ -136,18 +102,21 @@ class Lift(
         isSecondStage = false
     }
 
-        public fun setPosistion(height: LiftHeight) {
-            setPoint(height.value)
-        }
+    public fun setPercent(speed: Double) {
+        mMaster.set(ControlMode.PercentOutput, speed)
+    }
 
-        public fun setPoint(height: Double) {
-                setpoint = height
-                mMaster.set(ControlMode.MotionMagic, setpoint)
-        }
+    public fun setPosistion(height: LiftHeight) {
+        setPoint(height.value)
+    }
+
+    public fun setPoint(height: Double) {
+        setpoint = height
+        mMaster.set(ControlMode.MotionMagic, setpoint)
+    }
 
     public override fun update() {
-        firstStagePosistion = mMaster
-        .if (!isSecondStage && firstStagePosistion + Lift.SECOND_STAGE_EPSILON > Lift.SECOND_STAGE_HIGHT) {
+        if (!isSecondStage && firstStagePosistion + Lift.SECOND_STAGE_EPSILON > Lift.SECOND_STAGE_HIGHT) {
             mMaster.apply {
                 config_kP(kElevatorSlot, Lift.KP2, 0)
                 config_kI(kElevatorSlot, Lift.KI2, 0)
@@ -166,12 +135,12 @@ class Lift(
         }
     }
 
-        public override fun stop() {
-                setPosistion(LiftHeight.STOW)
-                mBrakeMode = false
-        }
+    public override fun stop() {
+        setPosistion(LiftHeight.BOTTOM)
+        mBrakeMode = false
+    }
 
-        public override fun reset() {
-                setPercent(0.0)
-        }
+    public override fun reset() {
+        setPercent(0.0)
+    }
 }

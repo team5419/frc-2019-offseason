@@ -88,13 +88,13 @@ public class TeleopController(
                 mCoDriver.getTriggerAxis(Hand.kRight)))
         // Absolute lift control
         if (mCoDriver.getAButtonPressed())
-            mSubsystems.lift.setPoint(LiftHeight.HATCH_LOW)
+            mSubsystems.lift.setPosistion(LiftHeight.HATCH_LOW)
         else if (mCoDriver.getBButtonPressed())
-            mSubsystems.lift.setPoint(LiftHeight.HATCH_MID)
+            mSubsystems.lift.setPosistion(LiftHeight.HATCH_MID)
         else if (mCoDriver.getYButtonPressed())
-            mSubsystems.lift.setPoint(LiftHeight.HATCH_HIGH)
+            mSubsystems.lift.setPosistion(LiftHeight.HATCH_HIGH)
         else if (mCoDriver.getPOV() != -1 && arrayOf(0, 270, 90).any { it == mCoDriver.getPOV() })
-            mSubsystems.lift.setPoint(getLiftHeightFromPOV(mCoDriver.getPOV()))
+            mSubsystems.lift.setPosistion(getLiftHeightFromPOV(mCoDriver.getPOV()))
         // Manuel Lift control
         if (Math.max(mCoDriver.getX(Hand.kLeft), mCoDriver.getX(Hand.kRight)) > 0.9)
             mSubsystems.lift.setPercent(0.5)
