@@ -68,10 +68,6 @@ class Vacuum(
     }
 
     public override fun update() {
-    println("Current: " + mTalon.getOutputCurrent().toString() +
-            "\nhasPeice: " + hasPeice.toString() +
-            "\nisPumping " + isPumping.toString()
-    )
         hasPeice = !hasPeice && mTalon.getOutputCurrent() >= Constants.Vacuum.CURRENT_THRESHOLD
         if (hasPeice && mTalon.getOutputCurrent() < Constants.Vacuum.CURRENT_THRESHOLD)
             setPercent(1.0)

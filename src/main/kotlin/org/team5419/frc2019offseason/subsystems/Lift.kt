@@ -140,6 +140,9 @@ class Lift(
             }
             isSecondStage = false
         }
+        println("Stage 1: " + firstStagePosistion.toString() +
+            "\nStage 2: " + secondStagePosistion.toString() +
+            "\nis Second Stage: " + isSecondStage.toString())
     }
 
     public override fun stop() {
