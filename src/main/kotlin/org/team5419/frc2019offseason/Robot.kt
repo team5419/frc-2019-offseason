@@ -10,7 +10,6 @@ import org.team5419.frc2019offseason.subsystems.Lift
 import org.team5419.frc2019offseason.subsystems.Vacuum
 import org.team5419.frc2019offseason.subsystems.SubsystemsManager
 import org.team5419.frc2019offseason.subsystems.Wrist
-
 import org.team5419.frc2019offseason.controllers.AutoController
 import org.team5419.frc2019offseason.controllers.TeleopController
 
@@ -42,7 +41,7 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     private val mWristMaster: LazyTalonSRX
 
     private val mDrivetrain: Drivetrain
-    // private val mLift: Lift
+    private val mLift: Lift
     private val mWrist: Wrist
     // private val mClimber: Climber
     private val mVacuum: Vacuum
@@ -68,10 +67,10 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         // initilize Lift
         mLiftMaster = LazyTalonSRX(Constants.Lift.MASTER_TALON_PORT)
         mLiftSlave = LazyTalonSRX(Constants.Lift.SLAVE_TALON_PORT)
-        // mLift = Lift(
-        //     mLiftMaster,
-        //     mLiftSlave
-        // )
+        mLift = Lift(
+            mLiftMaster,
+            mLiftSlave
+        )
 
         // initilize Wrist
         mWristMaster = LazyTalonSRX(Constants.Lift.MASTER_TALON_PORT)
@@ -95,10 +94,10 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         // initilize Subsystems Manager
         mSubsystemsManager = SubsystemsManager(
             mDrivetrain,
-            // mLift,
             mWrist,
             // mClimber,
-            mVacuum
+            mVacuum,
+            mLift
         )
 
         // initilize controllers
@@ -109,7 +108,8 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         mTeleopController = TeleopController(
             mSubsystemsManager,
             driver,
-            coDriver
+            coDriver,
+            TeleopController.ControlModes.CHEESY
         )
     }
 
@@ -119,6 +119,7 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     }
 
     override fun robotPeriodic() {
+        mWrist.canFlip = mLift.canSwich
     }
 
     // disabled mode
@@ -130,6 +131,7 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     }
 
     override fun disabledPeriodic() {
+        println(mLift.firstStagePosistion.toString())
     }
 
     // autonomous mode

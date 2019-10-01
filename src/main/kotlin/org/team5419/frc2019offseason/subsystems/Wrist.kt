@@ -23,13 +23,17 @@ class Wrist(
     private val mMaster: LazyTalonSRX
     private var position: Double get() = ticksToDegrees(mMaster.getSelectedSensorPosition())
     private var setPoint: Double
+    public var canFlip: Boolean
     // public var targetPosistion: WristPosistions
 
     // set posistion
     public enum class WristPosistions(val value: Double) {
         FORWARD(Constants.Wrist.FORWARD),
         MIDDLE(Constants.Wrist.MIDDLE),
-        BACKWARD(Constants.Wrist.BACKWARD)
+        BACKWARD(Constants.Wrist.BACKWARD),
+        BALL_HIGH(Constants.Wrist.BALL_HIGH),
+        BALL_MID(Constants.Wrist.BALL_MID),
+        BALL_LOW(Constants.Wrist.BALL_LOW)
     }
 
     init {
@@ -66,6 +70,7 @@ class Wrist(
 
         setPoint = 0.0
         position = WristPosistions.FORWARD.value
+        canFlip = true
     }
 
     public fun zero() {

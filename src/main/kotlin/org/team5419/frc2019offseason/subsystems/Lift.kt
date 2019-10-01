@@ -23,14 +23,17 @@ class Lift(
     private var mSlave: LazyTalonSRX
 
     private fun ticksToInches(ticks: Int): Double =
-        ticks / Lift.ENCODER_TICKS_PER_ROTATION * Lift.INCHES_PER_ROTATION
+        ticks.toDouble() / Lift.ENCODER_TICKS_PER_ROTATION.toDouble() * Lift.INCHES_PER_ROTATION
     private fun inchesToTicks(inches: Double): Int =
         (inches / Lift.INCHES_PER_ROTATION * Lift.ENCODER_TICKS_PER_ROTATION).toInt()
 
-    var firstStagePosistion: Double get() = ticksToInches(mMaster.getSelectedSensorPosition())
-    var secondStagePosistion: Double get() = Math.max(ticksToInches(mMaster.getSelectedSensorPosition()), 0.0)
+    var firstStagePosistion: Double
+        get() = ticksToInches(-mMaster.getSelectedSensorPosition(0))
+    var secondStagePosistion: Double
+        get() = Math.max(ticksToInches(-mMaster.getSelectedSensorPosition(0)) - Lift.SECOND_STAGE_HIGHT, 0.0)
     var setpoint: Int
     var isSecondStage: Boolean
+    val canSwich: Boolean get() = firstStagePosistion < Lift.MAX_FLIP_HIGHT
     // confirm resting hight
     public enum class LiftHeight(
         val value: Double = 0.0
@@ -62,7 +65,7 @@ class Lift(
             configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0) //
             setSensorPhase(true) // check
             setInverted(false) // check this
-
+            setSelectedSensorPosition(0)
             configClosedLoopPeakOutput(kElevatorSlot, 1.0)
 
             config_kP(kElevatorSlot, Lift.KP, 0)
@@ -106,10 +109,12 @@ class Lift(
     }
 
     public fun setPercent(speed: Double) {
+        println("set percent" + speed.toString())
         mMaster.set(ControlMode.PercentOutput, speed)
     }
 
     public fun setPosistion(height: LiftHeight) {
+        println("posistion")
         setTicks(inchesToTicks(height.value))
     }
 
@@ -140,9 +145,7 @@ class Lift(
             }
             isSecondStage = false
         }
-        println("Stage 1: " + firstStagePosistion.toString() +
-            "\nStage 2: " + secondStagePosistion.toString() +
-            "\nis Second Stage: " + isSecondStage.toString())
+        println("Stage 1: " + firstStagePosistion.toString())
     }
 
     public override fun stop() {

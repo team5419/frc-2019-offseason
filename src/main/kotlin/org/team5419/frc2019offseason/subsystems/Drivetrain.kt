@@ -103,9 +103,14 @@ class Drivetrain(
                 ), 0)
         }
 
-    public fun setPercent(left: Double, right: Double) {
+    public fun setPercents(left: Double, right: Double) {
         mLeftMaster.set(ControlMode.PercentOutput, left)
         mRightMaster.set(ControlMode.PercentOutput, right)
+    }
+
+    public fun setPercent(pair: Pair<Double, Double>) {
+        mLeftMaster.set(ControlMode.PercentOutput, pair.first)
+        mRightMaster.set(ControlMode.PercentOutput, pair.second)
     }
 
     public override fun update() {
@@ -113,7 +118,7 @@ class Drivetrain(
     }
 
     public override fun stop() {
-        setPercent(0.0, 0.0)
+        setPercents(0.0, 0.0)
         brakeMode = false
     }
     public override fun reset() {
