@@ -137,12 +137,14 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     // autonomous mode
 
     override fun autonomousInit() {
-        mAutoController.start()
+        // mAutoController.start()
+        teleopInit()
     }
 
     override fun autonomousPeriodic() {
-        mSubsystemsManager.updateAll()
-        mAutoController.update()
+        // mSubsystemsManager.updateAll()
+        // mAutoController.update()
+        teleopPeriodic()
     }
 
     // teleop mode
