@@ -6,6 +6,8 @@ import com.ctre.phoenix.motorcontrol.ControlMode
 import com.ctre.phoenix.motorcontrol.NeutralMode
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced
 import com.ctre.phoenix.motorcontrol.InvertType
+import com.ctre.phoenix.ParamEnum
+import com.ctre.phoenix.motorcontrol.FeedbackDevice
 
 import org.team5419.fault.Subsystem
 import org.team5419.fault.hardware.LazyTalonSRX

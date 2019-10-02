@@ -44,7 +44,11 @@ public object Constants {
         public const val CURRENT_THRESHOLD = 2.125
     }
 
-    object Climber
+    object Climber {
+        public const val MASTER_TALON_PORT = 28 // check this later
+        public const val SLAVE_TALON_PORT = 29 // check this later
+        public const val MAX_OUTPUT_PERCENTAGE = 90.0
+    }
 
     object Wrist {
         public const val MASTER_TALON_PORT = 6 // to set

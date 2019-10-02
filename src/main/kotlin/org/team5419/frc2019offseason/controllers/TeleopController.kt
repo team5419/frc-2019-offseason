@@ -82,6 +82,11 @@ public class TeleopController(
                 isHighGear
             )
         )
+        
+        //Climb control
+        if (mDriver.getBumperPressed(Hand.kRight) || mCoDriver.getBumperPressed(Hand.kLeft)) {
+            mSubsystems.climber.climb()
+        }
 
         // Codriver
         // Valve control

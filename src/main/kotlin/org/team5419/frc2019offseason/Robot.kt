@@ -37,6 +37,9 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     private val mVacuumMaster: LazyTalonSRX
     private val mReleaseSolenoid: Solenoid
     private val mHatchSolenoid: Solenoid
+    
+    private val mClimberMaster: LazyTalonSRX
+    private val mClimberSlave: LazyTalonSRX
 
     private val mWristMaster: LazyTalonSRX
 
@@ -79,8 +82,12 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         )
         mWrist.lift = mLift
         mLift.wrist = mWrist
+
+
         // initilize Climber
-        // mClimber = Climber()
+        mClimberMaster = LazyTalonSRX(Constants.Climber.MASTER_TALON_PORT)
+        mClimberSlave = LazyTalonSRX(Constants.Climber.SLAVE_TALON_PORT)
+        mClimber = Climber(mClimberMaster, mClimberSlave)
 
         // initilize Vacuum
         mVacuumMaster = LazyTalonSRX(Constants.Vacuum.MASTER_TALON_PORT)
