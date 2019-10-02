@@ -12,6 +12,7 @@ import org.team5419.fault.hardware.LazyTalonSRX
 import org.team5419.fault.hardware.LazyVictorSPX
 import org.team5419.fault.math.Position
 import org.team5419.fault.util.Utils
+import org.team5419.fault.input.DriveSignal
 
 class Drivetrain(
     leftMaster: LazyTalonSRX,
@@ -103,14 +104,10 @@ class Drivetrain(
                 ), 0)
         }
 
-    public fun setPercents(left: Double, right: Double) {
-        mLeftMaster.set(ControlMode.PercentOutput, left)
-        mRightMaster.set(ControlMode.PercentOutput, right)
-    }
-
-    public fun setPercent(pair: Pair<Double, Double>) {
-        mLeftMaster.set(ControlMode.PercentOutput, pair.first)
-        mRightMaster.set(ControlMode.PercentOutput, pair.second)
+    public fun setPercent(driveSignal: DriveSignal) {
+        mLeftMaster.set(ControlMode.PercentOutput, driveSignal.left)
+        mRightMaster.set(ControlMode.PercentOutput, driveSignal.left)
+        brakeMode = driveSignal.brakeMode
     }
 
     public override fun update() {
@@ -118,7 +115,7 @@ class Drivetrain(
     }
 
     public override fun stop() {
-        setPercents(0.0, 0.0)
+        setPercent(DriveSignal(0.0, 0.0, true))
         brakeMode = false
     }
     public override fun reset() {

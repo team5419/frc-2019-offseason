@@ -33,7 +33,6 @@ class Lift(
         get() = Math.max(ticksToInches(-mMaster.getSelectedSensorPosition(0)) - Lift.SECOND_STAGE_HIGHT, 0.0)
     var setpoint: Int
     var isSecondStage: Boolean
-    val canSwich: Boolean get() = firstStagePosistion < Lift.MAX_FLIP_HIGHT
     // confirm resting hight
     public enum class LiftHeight(
         val value: Double = 0.0
@@ -75,23 +74,23 @@ class Lift(
             configMotionCruiseVelocity(Lift.MOTION_MAGIC_VELOCITY, 0)
             configMotionAcceleration(Lift.MOTION_MAGIC_ACCELERATION, 0)
             selectProfileSlot(kElevatorSlot, 0)
-            configAllowableClosedloopError(0, 0, 0)
-
+            // configAllowableClosedloopError(0, 0, 0)
+            configPeakOutputForward(0.1)
+            configPeakOutputReverse(0.1)
             enableCurrentLimit(false)
-            configPeakCurrentDuration(0, 0)
-            configPeakCurrentLimit(0, 0)
-            @Suppress("MagicNumber")
+            // configPeakCurrentDuration(0, 0)
+            // configPeakCurrentLimit(0, 0)
             configContinuousCurrentLimit(25, 0) // amps
             enableVoltageCompensation(false)
-            configForwardSoftLimitThreshold(Lift.MAX_ENCODER_TICKS, 0)
-            configReverseSoftLimitThreshold(Lift.MIN_ENCODER_TICKS, 0)
-            configForwardSoftLimitEnable(true, 0)
-            configReverseSoftLimitEnable(true, 0)
+            // configForwardSoftLimitThreshold(10000000, 0)
+            // configReverseSoftLimitThreshold(-1000000, 0)
+            // configForwardSoftLimitEnable(false, 0)
+            // configReverseSoftLimitEnable(false, 0)
         }
 
         mSlave = slaveTalon.apply {
-                follow(mMaster)
-                setInverted(InvertType.FollowMaster)
+            follow(mMaster)
+            setInverted(InvertType.FollowMaster)
         }
 
         // setpoint = LiftHeight.getHeight()
@@ -109,16 +108,16 @@ class Lift(
     }
 
     public fun setPercent(speed: Double) {
-        println("set percent" + speed.toString())
         mMaster.set(ControlMode.PercentOutput, speed)
     }
 
     public fun setPosistion(height: LiftHeight) {
-        println("posistion")
+        // println("posistion ${height.value}")
         setTicks(inchesToTicks(height.value))
     }
 
     public fun setTicks(ticks: Int) {
+        println("posistion $ticks")
         setpoint = ticks
         mMaster.set(ControlMode.MotionMagic, ticks.toDouble())
     }
@@ -128,24 +127,25 @@ class Lift(
     }
 
     public override fun update() {
-        if (!isSecondStage && firstStagePosistion + Lift.SECOND_STAGE_EPSILON > Lift.SECOND_STAGE_HIGHT) {
-            mMaster.apply {
-                config_kP(kElevatorSlot, Lift.KP2, 0)
-                config_kI(kElevatorSlot, Lift.KI2, 0)
-                config_kD(kElevatorSlot, Lift.KD2, 0)
-                config_kF(kElevatorSlot, Lift.KF2, 0)
-            }
-            isSecondStage = true
-        } else if (isSecondStage && Lift.SECOND_STAGE_HIGHT + Lift.SECOND_STAGE_EPSILON > secondStagePosistion) {
-            mMaster.apply {
-                config_kP(kElevatorSlot, Lift.KP, 0)
-                config_kI(kElevatorSlot, Lift.KI, 0)
-                config_kD(kElevatorSlot, Lift.KD, 0)
-                config_kF(kElevatorSlot, Lift.KF, 0)
-            }
-            isSecondStage = false
-        }
-        println("Stage 1: " + firstStagePosistion.toString())
+        // println(mMaster.getSelectedSensorPosition(0))
+        // if (!isSecondStage && firstStagePosistion + Lift.SECOND_STAGE_EPSILON > Lift.SECOND_STAGE_HIGHT) {
+        //     mMaster.apply {
+        //         config_kP(kElevatorSlot, Lift.KP2, 0)
+        //         config_kI(kElevatorSlot, Lift.KI2, 0)
+        //         config_kD(kElevatorSlot, Lift.KD2, 0)
+        //         config_kF(kElevatorSlot, Lift.KF2, 0)
+        //     }
+        //     isSecondStage = true
+        // } else if (isSecondStage && Lift.SECOND_STAGE_HIGHT + Lift.SECOND_STAGE_EPSILON > secondStagePosistion) {
+        //     mMaster.apply {
+        //         config_kP(kElevatorSlot, Lift.KP, 0)
+        //         config_kI(kElevatorSlot, Lift.KI, 0)
+        //         config_kD(kElevatorSlot, Lift.KD, 0)
+        //         config_kF(kElevatorSlot, Lift.KF, 0)
+        //     }
+        //     isSecondStage = false
+        // }
+        // println("Stage 1: " + firstStagePosistion.toString())
     }
 
     public override fun stop() {

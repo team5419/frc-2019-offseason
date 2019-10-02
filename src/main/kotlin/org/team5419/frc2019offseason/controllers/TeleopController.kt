@@ -29,7 +29,11 @@ public class TeleopController(
     private var speed = Input.BASE_SPEED
     private var leftDrive: Double = 0.0
     private var rightDrive: Double = 0.0
-    private var driveSignal: DriveHelper
+    private var driveHelper: DriveHelper
+
+    private val isHighGear: Boolean get() = mDriver.getTriggerAxis(Hand.kLeft) > Input.DEADBAND
+
+    private val isQuickTurn: Boolean get() = mDriver.getTriggerAxis(Hand.kRight) > Input.DEADBAND
 
     public enum class ControlModes { TANK, CHEESY }
 
@@ -38,13 +42,13 @@ public class TeleopController(
         mCoDriver = codriver
         mSubsystems = subsystems
         if (controlMode == ControlModes.TANK) {
-            driveSignal = TankDriveHelper(Input.DEADBAND, 1.0)
+            driveHelper = TankDriveHelper(Input.DEADBAND, 1.0)
         } else {
             val config: CheesyDriveHelper.CheesyDriveConfig = CheesyDriveHelper.CheesyDriveConfig()
             config.apply {
                 deadband = Input.DEADBAND
             }
-            driveSignal = CheesyDriveHelper(config)
+            driveHelper = CheesyDriveHelper(config)
         }
     }
 
@@ -64,29 +68,21 @@ public class TeleopController(
         // Driver
         isSlow = false
         speed = Input.BASE_SPEED
-        // } else {
-            // make better
         if (mDriver.getAButton()) { isReverse = !isReverse }
         if (isReverse) { speed *= -1 }
         if (mDriver.getBumper(Hand.kLeft) || mDriver.getBumper(Hand.kLeft)) {
             speed *= Input.SLOW
         }
-        rightDrive = 0.0
-        leftDrive = 0.0
-        if (mDriver.getTriggerAxis(Hand.kLeft) > Input.DEADBAND) {
-            rightDrive = 0.5
-            leftDrive = -0.5
-        } else if (mDriver.getTriggerAxis(Hand.kRight) > Input.DEADBAND) {
-            rightDrive = -0.5
-            leftDrive = 0.5
-        }
-        if (Math.abs(mDriver.getY(Hand.kRight)) > Input.DEADBAND) {
-            rightDrive = mDriver.getY(Hand.kRight)
-        }
-        if (Math.abs(mDriver.getY(Hand.kLeft)) > Input.DEADBAND) {
-            leftDrive = mDriver.getY(Hand.kLeft)
-        }
-        mSubsystems.drivetrain.setPercents(leftDrive * speed, rightDrive * speed)
+
+        mSubsystems.drivetrain.setPercent(
+            driveHelper.calculateOutput(
+                mDriver.getY(Hand.kLeft) * speed,
+                mDriver.getX(Hand.kLeft),
+                isQuickTurn,
+                isHighGear
+            )
+        )
+
         // Codriver
         // Valve control
         if (mCoDriver.getBumperPressed(Hand.kLeft) || mCoDriver.getBumperPressed(Hand.kRight))
@@ -115,13 +111,10 @@ public class TeleopController(
             mSubsystems.wrist.setPosition(WristPosistions.BALL_LOW)
         }
 
-        println("check for wrist")
         if (mCoDriver.getXButtonPressed()) {
-            println("press X")
             mSubsystems.wrist.setPosition(WristPosistions.BACKWARD)
         }
         if (mCoDriver.getPOV() == 90) {
-            println("press D-pad 90")
             mSubsystems.wrist.setPosition(WristPosistions.FORWARD)
         }
 

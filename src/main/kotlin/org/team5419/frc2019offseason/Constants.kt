@@ -93,7 +93,7 @@ public object Constants {
         public const val INCHES_PER_ROTATION = 4.4
         public const val MOTION_MAGIC_VELOCITY = 11000
         public const val MOTION_MAGIC_ACCELERATION = 11000
-        public const val MAX_ENCODER_TICKS = 0
+        public const val MAX_ENCODER_TICKS = 41890
         public const val MIN_ENCODER_TICKS = 0
         public const val MAX_FLIP_HIGHT = 0
         // pid

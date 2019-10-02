@@ -73,7 +73,7 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         )
 
         // initilize Wrist
-        mWristMaster = LazyTalonSRX(Constants.Lift.MASTER_TALON_PORT)
+        mWristMaster = LazyTalonSRX(Constants.Wrist.MASTER_TALON_PORT)
         mWrist = Wrist(
             mWristMaster
         )
@@ -119,7 +119,6 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     }
 
     override fun robotPeriodic() {
-        mWrist.canFlip = mLift.canSwich
     }
 
     // disabled mode
@@ -131,7 +130,7 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     }
 
     override fun disabledPeriodic() {
-        println(mLift.firstStagePosistion.toString())
+        // println(mLift.firstStagePosistion.toString())
     }
 
     // autonomous mode

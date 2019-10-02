@@ -23,7 +23,6 @@ class Wrist(
     private val mMaster: LazyTalonSRX
     private var position: Double get() = ticksToDegrees(mMaster.getSelectedSensorPosition())
     private var setPoint: Double
-    public var canFlip: Boolean
     // public var targetPosistion: WristPosistions
 
     // set posistion
@@ -62,15 +61,14 @@ class Wrist(
             @Suppress("MagicNumber")
             configContinuousCurrentLimit(25, 0) // amps
             enableVoltageCompensation(false)
-            configForwardSoftLimitThreshold(Constants.Wrist.MAX_ENCODER_TICKS, kWristSlot)
-            configReverseSoftLimitThreshold(Constants.Wrist.MIN_ENCODER_TICKS, kWristSlot)
-            configForwardSoftLimitEnable(true, 0)
-            configReverseSoftLimitEnable(true, 0)
+            // configForwardSoftLimitThreshold(Constants.Wrist.MAX_ENCODER_TICKS, kWristSlot)
+            // configReverseSoftLimitThreshold(Constants.Wrist.MIN_ENCODER_TICKS, kWristSlot)
+            // configForwardSoftLimitEnable(true, 0)
+            // configReverseSoftLimitEnable(true, 0)
         }
 
         setPoint = 0.0
         position = WristPosistions.FORWARD.value
-        canFlip = true
     }
 
     public fun zero() {
