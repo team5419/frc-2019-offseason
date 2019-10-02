@@ -21,10 +21,12 @@ class Wrist(
     private fun degreesToTicks(heading: Double): Int =
         (heading / 360.0 * Constants.Wrist.ENCODER_TICKS_PER_ROTATION).toInt()
     private val mMaster: LazyTalonSRX
-    private var position: Double get() = ticksToDegrees(mMaster.getSelectedSensorPosition())
+    private var position: Double
+        get() = ticksToDegrees(mMaster.getSelectedSensorPosition())
     private var setPoint: Double
     public var liftPos: Double
-    public val canRise: Boolean get() = position < Constants.Wrist.MAX_RISE_ANGLE
+    public val canRise: Boolean
+        get() = position < Constants.Wrist.MAX_RISE_ANGLE && setPoint < Constants.Wrist.MAX_RISE_ANGLE // 75.0
     lateinit var lift: Lift
     // public var targetPosistion: WristPosistions
 
@@ -64,10 +66,12 @@ class Wrist(
             @Suppress("MagicNumber")
             configContinuousCurrentLimit(25, 0) // amps
             enableVoltageCompensation(false)
-            // configForwardSoftLimitThreshold(Constants.Wrist.MAX_ENCODER_TICKS, kWristSlot)
-            // configReverseSoftLimitThreshold(Constants.Wrist.MIN_ENCODER_TICKS, kWristSlot)
-            // configForwardSoftLimitEnable(true, 0)
-            // configReverseSoftLimitEnable(true, 0)
+            configForwardSoftLimitThreshold(Constants.Wrist.MAX_ENCODER_TICKS, kWristSlot)
+            configReverseSoftLimitThreshold(Constants.Wrist.MIN_ENCODER_TICKS, kWristSlot)
+            configForwardSoftLimitEnable(true, 0)
+            configReverseSoftLimitEnable(true, 0)
+            configPeakOutputForward(0.1)
+            configPeakOutputReverse(0.1)
         }
 
         setPoint = 0.0
@@ -85,9 +89,13 @@ class Wrist(
     }
 
     public fun setPosition(point: WristPosistions) {
-        if (point.value < Constants.Wrist.MAX_RISE_ANGLE || lift.canFlip) {
+        setPoint = point.value
+        if (
+            (position < Constants.Wrist.MAX_RISE_ANGLE &&
+            point.value < Constants.Wrist.MAX_RISE_ANGLE) ||
+            lift.canFlip) {
             setDegrees(point.value)
-        }
+        } else println("Can't set wrist posistion")
     }
 
     public fun setDegrees(heading: Double) {

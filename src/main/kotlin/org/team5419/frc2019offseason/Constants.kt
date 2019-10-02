@@ -58,7 +58,6 @@ public object Constants {
         public const val BALL_LOW = 20.0
         public const val MAX_RISE_ANGLE = 75.0
 
-        public const val INCHES_PER_ROTATION = 1.0
         public const val ENCODER_TICKS_PER_ROTATION = 4096
         public const val ENCODER_TICKS_BALL_POSITSTION = 1692
 
@@ -102,11 +101,8 @@ public object Constants {
         public const val KP = 0.5
         public const val KI = 0.0
         public const val KD = 0.0
-        public const val KF = 0.0
-        public const val KP2 = 0.5
-        public const val KI2 = 0.0
-        public const val KD2 = 0.0
-        public const val KF2 = 0.0
+        public const val KF = 0.01
+        public const val KF2 = 0.02
         public const val SECOND_STAGE_EPSILON = 10.0
     }
 

@@ -26,9 +26,9 @@ class Lift(
         get() = ticksToInches(-mMaster.getSelectedSensorPosition(0))
     var secondStagePosistion: Double
         get() = Math.max(ticksToInches(-mMaster.getSelectedSensorPosition(0)) - Lift.SECOND_STAGE_HIGHT, 0.0)
-    var setpoint: Int
+    var setPoint: Double
     var isSecondStage: Boolean
-    val canFlip: Boolean get() = firstStagePosistion < 4.0
+    val canFlip: Boolean get() = 4.0 > firstStagePosistion && 4.0 > setPoint
     // confirm resting hight
     public enum class LiftHeight(
         val value: Double = 0.0
@@ -83,10 +83,10 @@ class Lift(
             // configPeakCurrentLimit(0, 0)
             configContinuousCurrentLimit(25, 0) // amps
             enableVoltageCompensation(false)
-            // configForwardSoftLimitThreshold(10000000, 0)
-            // configReverseSoftLimitThreshold(-1000000, 0)
-            // configForwardSoftLimitEnable(false, 0)
-            // configReverseSoftLimitEnable(false, 0)
+            configForwardSoftLimitThreshold(Lift.MIN_ENCODER_TICKS, 0)
+            configReverseSoftLimitThreshold(Lift.MAX_ENCODER_TICKS, 0)
+            configForwardSoftLimitEnable(true, 0)
+            configReverseSoftLimitEnable(true, 0)
         }
 
         mSlave = slaveTalon.apply {
@@ -95,14 +95,14 @@ class Lift(
         }
 
         // setpoint = LiftHeight.getHeight()
-        setpoint = 0
+        setPoint = 0.0
         firstStagePosistion = 0.0
         secondStagePosistion = Lift.SECOND_STAGE_HIGHT
         isSecondStage = false
     }
 
     public fun zero() {
-        setpoint = 0
+        setPoint = 0.0
         firstStagePosistion = 0.0
         secondStagePosistion = Lift.SECOND_STAGE_HIGHT
         isSecondStage = false
@@ -113,14 +113,14 @@ class Lift(
     }
 
     public fun setPosistion(height: LiftHeight) {
-        if (firstStagePosistion < Lift.MAX_FLIP_HIGHT) {
+        if ((firstStagePosistion < Lift.MAX_FLIP_HIGHT && firstStagePosistion < Lift.MAX_FLIP_HIGHT) || wrist.canRise) {
             setTicks(inchesToTicks(height.value))
-        }
+            setPoint = height.value
+        } else println("Can't set lift posistion")
     }
 
     public fun setTicks(ticks: Int) {
         println("posistion $ticks")
-        setpoint = ticks
         mMaster.set(ControlMode.MotionMagic, ticks.toDouble())
     }
 
@@ -129,30 +129,20 @@ class Lift(
     }
 
     public override fun update() {
+        if (!isSecondStage && firstStagePosistion + Lift.SECOND_STAGE_EPSILON > Lift.SECOND_STAGE_HIGHT) {
+            mMaster.config_kF(kElevatorSlot, Lift.KF2, 0)
+            isSecondStage = true
+        } else if (isSecondStage && Lift.SECOND_STAGE_HIGHT + Lift.SECOND_STAGE_EPSILON > secondStagePosistion) {
+            mMaster.config_kF(kElevatorSlot, Lift.KF, 0)
+            isSecondStage = false
+        }
         // println(mMaster.getSelectedSensorPosition(0))
-        // if (!isSecondStage && firstStagePosistion + Lift.SECOND_STAGE_EPSILON > Lift.SECOND_STAGE_HIGHT) {
-        //     mMaster.apply {
-        //         config_kP(kElevatorSlot, Lift.KP2, 0)
-        //         config_kI(kElevatorSlot, Lift.KI2, 0)
-        //         config_kD(kElevatorSlot, Lift.KD2, 0)
-        //         config_kF(kElevatorSlot, Lift.KF2, 0)
-        //     }
-        //     isSecondStage = true
-        // } else if (isSecondStage && Lift.SECOND_STAGE_HIGHT + Lift.SECOND_STAGE_EPSILON > secondStagePosistion) {
-        //     mMaster.apply {
-        //         config_kP(kElevatorSlot, Lift.KP, 0)
-        //         config_kI(kElevatorSlot, Lift.KI, 0)
-        //         config_kD(kElevatorSlot, Lift.KD, 0)
-        //         config_kF(kElevatorSlot, Lift.KF, 0)
-        //     }
-        //     isSecondStage = false
-        // }
         // println("Stage 1: " + firstStagePosistion.toString())
     }
 
     public override fun stop() {
-        setPosistion(LiftHeight.BOTTOM)
-        mBrakeMode = false
+        mMaster.set(ControlMode.PercentOutput, 0.0)
+        mBrakeMode = true
     }
 
     public override fun reset() {
