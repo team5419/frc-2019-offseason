@@ -55,6 +55,7 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     private val mTeleopController: TeleopController
 
     init {
+
         // initilize Drivetrain
         mLeftMaster = LazyTalonSRX(Constants.Drivetrain.LEFT_MASTER_TALON_PORT)
         mLeftSlave = LazyVictorSPX(Constants.Drivetrain.LEFT_SLAVE_TALON_PORT)
@@ -98,6 +99,22 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
             mReleaseSolenoid,
             mHatchSolenoid
         )
+
+        // reset hardware
+        mLeftMaster.configFactoryDefault()
+        mLeftSlave.configFactoryDefault()
+        mRightMaster.configFactoryDefault()
+        mRightSlave.configFactoryDefault()
+
+        mLiftMaster.configFactoryDefault()
+        mLiftSlave.configFactoryDefault()
+
+        mWristMaster.configFactoryDefault()
+
+        mVacuumMaster.configFactoryDefault()
+
+        mClimberMaster.configFactoryDefault()
+        mClimberSlave.configFactoryDefault()
 
         // initilize Subsystems Manager
         mSubsystemsManager = SubsystemsManager(
