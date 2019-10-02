@@ -10,6 +10,7 @@ import org.team5419.frc2019offseason.subsystems.Lift
 import org.team5419.frc2019offseason.subsystems.Vacuum
 import org.team5419.frc2019offseason.subsystems.SubsystemsManager
 import org.team5419.frc2019offseason.subsystems.Wrist
+import org.team5419.frc2019offseason.subsystems.Climber
 import org.team5419.frc2019offseason.controllers.AutoController
 import org.team5419.frc2019offseason.controllers.TeleopController
 
@@ -38,12 +39,15 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     private val mReleaseSolenoid: Solenoid
     private val mHatchSolenoid: Solenoid
 
+    private val mClimberMaster: LazyTalonSRX
+    private val mClimberSlave: LazyTalonSRX
+
     private val mWristMaster: LazyTalonSRX
 
     private val mDrivetrain: Drivetrain
     private val mLift: Lift
     private val mWrist: Wrist
-    // private val mClimber: Climber
+    private val mClimber: Climber
     private val mVacuum: Vacuum
 
     private val mSubsystemsManager: SubsystemsManager
@@ -51,6 +55,7 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     private val mTeleopController: TeleopController
 
     init {
+
         // initilize Drivetrain
         mLeftMaster = LazyTalonSRX(Constants.Drivetrain.LEFT_MASTER_TALON_PORT)
         mLeftSlave = LazyVictorSPX(Constants.Drivetrain.LEFT_SLAVE_TALON_PORT)
@@ -79,8 +84,11 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         )
         mWrist.lift = mLift
         mLift.wrist = mWrist
+
         // initilize Climber
-        // mClimber = Climber()
+        mClimberMaster = LazyTalonSRX(Constants.Climber.MASTER_TALON_PORT)
+        mClimberSlave = LazyTalonSRX(Constants.Climber.SLAVE_TALON_PORT)
+        mClimber = Climber(mClimberMaster, mClimberSlave)
 
         // initilize Vacuum
         mVacuumMaster = LazyTalonSRX(Constants.Vacuum.MASTER_TALON_PORT)
@@ -92,13 +100,29 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
             mHatchSolenoid
         )
 
+        // reset hardware
+        mLeftMaster.configFactoryDefault()
+        mLeftSlave.configFactoryDefault()
+        mRightMaster.configFactoryDefault()
+        mRightSlave.configFactoryDefault()
+
+        mLiftMaster.configFactoryDefault()
+        mLiftSlave.configFactoryDefault()
+
+        mWristMaster.configFactoryDefault()
+
+        mVacuumMaster.configFactoryDefault()
+
+        mClimberMaster.configFactoryDefault()
+        mClimberSlave.configFactoryDefault()
+
         // initilize Subsystems Manager
         mSubsystemsManager = SubsystemsManager(
             mDrivetrain,
             mWrist,
-            // mClimber,
             mVacuum,
-            mLift
+            mLift,
+            mClimber
         )
 
         // initilize controllers

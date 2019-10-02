@@ -4,13 +4,14 @@ public class SubsystemsManager(
     mDrivetrain: Drivetrain,
     mWrist: Wrist,
     mVacuum: Vacuum,
-    mLift: Lift
+    mLift: Lift,
+    mClimber: Climber
 ) {
 
     public val drivetrain: Drivetrain
     public val lift: Lift
     public val wrist: Wrist
-    // public val climber: Climber
+    public val climber: Climber
     public val vacuum: Vacuum
 
     init {
@@ -18,14 +19,14 @@ public class SubsystemsManager(
         lift = mLift
         wrist = mWrist
         vacuum = mVacuum
-        // climber = mClimber
+        climber = mClimber
     }
 
     public fun updateAll() {
         drivetrain.update()
         lift.update()
         wrist.update()
-        // climber.update()
+        climber.update()
         vacuum.update()
     }
 
@@ -33,7 +34,7 @@ public class SubsystemsManager(
         drivetrain.stop()
         lift.stop()
         wrist.stop()
-        // climber.stop()
+        climber.stop()
         vacuum.stop()
     }
 
@@ -41,7 +42,7 @@ public class SubsystemsManager(
         drivetrain.reset()
         lift.reset()
         wrist.reset()
-        // climber.reset()
+        climber.reset()
         vacuum.reset()
     }
 }
