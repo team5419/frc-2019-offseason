@@ -56,6 +56,7 @@ public object Constants {
         public const val BALL_HIGH = 20.0
         public const val BALL_MID = 20.0
         public const val BALL_LOW = 20.0
+        public const val MAX_RISE_ANGLE = 75.0
 
         public const val INCHES_PER_ROTATION = 1.0
         public const val ENCODER_TICKS_PER_ROTATION = 4096
@@ -88,6 +89,8 @@ public object Constants {
         public const val BALL_HUMAN_PLAYER_HEIGHT = 0.0
         public const val SECOND_STAGE_HIGHT = 22.865
         public const val MAX_HEIGHT = 50.0
+        public const val MAX_FLIP_HIGHT = 4.0
+
         // tf?
         public const val ENCODER_TICKS_PER_ROTATION = 4096.0
         public const val INCHES_PER_ROTATION = 4.4
@@ -95,7 +98,6 @@ public object Constants {
         public const val MOTION_MAGIC_ACCELERATION = 11000
         public const val MAX_ENCODER_TICKS = 41890
         public const val MIN_ENCODER_TICKS = 0
-        public const val MAX_FLIP_HIGHT = 0
         // pid
         public const val KP = 0.5
         public const val KI = 0.0

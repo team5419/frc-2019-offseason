@@ -77,7 +77,8 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         mWrist = Wrist(
             mWristMaster
         )
-
+        mWrist.lift = mLift
+        mLift.wrist = mWrist
         // initilize Climber
         // mClimber = Climber()
 

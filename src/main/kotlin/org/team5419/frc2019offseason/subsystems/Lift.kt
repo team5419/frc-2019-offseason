@@ -21,18 +21,14 @@ class Lift(
 
     private var mMaster: LazyTalonSRX
     private var mSlave: LazyTalonSRX
-
-    private fun ticksToInches(ticks: Int): Double =
-        ticks.toDouble() / Lift.ENCODER_TICKS_PER_ROTATION.toDouble() * Lift.INCHES_PER_ROTATION
-    private fun inchesToTicks(inches: Double): Int =
-        (inches / Lift.INCHES_PER_ROTATION * Lift.ENCODER_TICKS_PER_ROTATION).toInt()
-
+    lateinit var wrist: Wrist
     var firstStagePosistion: Double
         get() = ticksToInches(-mMaster.getSelectedSensorPosition(0))
     var secondStagePosistion: Double
         get() = Math.max(ticksToInches(-mMaster.getSelectedSensorPosition(0)) - Lift.SECOND_STAGE_HIGHT, 0.0)
     var setpoint: Int
     var isSecondStage: Boolean
+    val canFlip: Boolean get() = firstStagePosistion < 4.0
     // confirm resting hight
     public enum class LiftHeight(
         val value: Double = 0.0
@@ -45,6 +41,11 @@ class Lift(
         BALL_MID(Lift.BALL_MID_HEIGHT),
         BALL_HIGH(Lift.BALL_HIGH_HEIGHT)
     }
+
+    private fun ticksToInches(ticks: Int): Double =
+        ticks.toDouble() / Lift.ENCODER_TICKS_PER_ROTATION.toDouble() * Lift.INCHES_PER_ROTATION
+    private fun inchesToTicks(inches: Double): Int =
+        (inches / Lift.INCHES_PER_ROTATION * Lift.ENCODER_TICKS_PER_ROTATION).toInt()
 
     private var mBrakeMode: Boolean = false
     set(value) {
@@ -112,8 +113,9 @@ class Lift(
     }
 
     public fun setPosistion(height: LiftHeight) {
-        // println("posistion ${height.value}")
-        setTicks(inchesToTicks(height.value))
+        if (firstStagePosistion < Lift.MAX_FLIP_HIGHT) {
+            setTicks(inchesToTicks(height.value))
+        }
     }
 
     public fun setTicks(ticks: Int) {

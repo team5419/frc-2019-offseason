@@ -23,6 +23,9 @@ class Wrist(
     private val mMaster: LazyTalonSRX
     private var position: Double get() = ticksToDegrees(mMaster.getSelectedSensorPosition())
     private var setPoint: Double
+    public var liftPos: Double
+    public val canRise: Boolean get() = position < Constants.Wrist.MAX_RISE_ANGLE
+    lateinit var lift: Lift
     // public var targetPosistion: WristPosistions
 
     // set posistion
@@ -69,6 +72,7 @@ class Wrist(
 
         setPoint = 0.0
         position = WristPosistions.FORWARD.value
+        liftPos = 0.0
     }
 
     public fun zero() {
@@ -81,7 +85,9 @@ class Wrist(
     }
 
     public fun setPosition(point: WristPosistions) {
-        setTicks(degreesToTicks(point.value))
+        if (point.value < Constants.Wrist.MAX_RISE_ANGLE || lift.canFlip) {
+            setDegrees(point.value)
+        }
     }
 
     public fun setDegrees(heading: Double) {

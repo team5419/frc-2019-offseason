@@ -31,8 +31,8 @@ public class TeleopController(
     private var rightDrive: Double = 0.0
     private var driveHelper: DriveHelper
 
+    private var isManuelOverride = false
     private val isHighGear: Boolean get() = mDriver.getTriggerAxis(Hand.kLeft) > Input.DEADBAND
-
     private val isQuickTurn: Boolean get() = mDriver.getTriggerAxis(Hand.kRight) > Input.DEADBAND
 
     public enum class ControlModes { TANK, CHEESY }
@@ -119,10 +119,10 @@ public class TeleopController(
         }
 
         // Manuel Lift control
-        if (Math.abs(mCoDriver.getY(Hand.kLeft)) > Input.DEADBAND) {
+        if (Math.abs(mCoDriver.getY(Hand.kLeft)) > Input.DEADBAND && isManuelOverride) {
             mSubsystems.lift.setPercent(mCoDriver.getY(Hand.kLeft))
         }
-        if (Math.abs(mCoDriver.getY(Hand.kRight)) > Input.DEADBAND) {
+        if (Math.abs(mCoDriver.getY(Hand.kRight)) > Input.DEADBAND && isManuelOverride) {
             mSubsystems.wrist.setPercent(mCoDriver.getY(Hand.kLeft))
         }
     }
