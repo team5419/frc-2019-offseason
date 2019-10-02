@@ -50,8 +50,26 @@ class Drivetrain(
             setStatusFramePeriod(
                 StatusFrameEnhanced.Status_3_Quadrature,
                 Constants.TALON_UPDATE_PERIOD_MS,
-                0
-            )
+                0)
+            configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0)
+            config_kP(0, Constants.Drivetrain.VEL_KP, 0)
+            config_kI(0, Constants.Drivetrain.VEL_KI, 0)
+            config_kD(0, Constants.Drivetrain.VEL_KD, 0)
+            config_kF(0, Constants.Drivetrain.VEL_KF, 0)
+            configPeakOutputForward(+1.0, 0)
+            configPeakOutputReverse(-1.0, 0)
+            config_IntegralZone(0, 0, 0)
+            configClosedLoopPeakOutput(0, 1.0, 0)
+            config_IntegralZone(1, 0, 0)
+            configClosedLoopPeakOutput(1, 0.0, 0)
+            config_kP(1, 0.0, 0)
+            config_kI(1, 0.0, 0)
+            config_kD(1, 0.0, 0)
+            config_kF(1, 0.0, 0)
+            configSetParameter(ParamEnum.ePIDLoopPeriod,
+                Constants.TALON_PIDF_UPDATE_PERIOD_MS.toDouble(), 0x00, 0, 0)
+            configSetParameter(ParamEnum.ePIDLoopPeriod,
+                Constants.TALON_PIDF_UPDATE_PERIOD_MS.toDouble(), 0x00, 1, 0)
         }
 
         mLeftSlave = leftSlave.apply {
@@ -65,8 +83,26 @@ class Drivetrain(
             setStatusFramePeriod(
                 StatusFrameEnhanced.Status_3_Quadrature,
                 Constants.TALON_UPDATE_PERIOD_MS,
-                0
-            )
+                0)
+            configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0)
+            configPeakOutputForward(+1.0, 0)
+            configPeakOutputReverse(-1.0, 0)
+            config_IntegralZone(0, 0, 0)
+            configClosedLoopPeakOutput(0, 1.0, 0)
+            config_IntegralZone(1, 0, 0)
+            configClosedLoopPeakOutput(1, 0.0, 0)
+            config_kP(0, Constants.Drivetrain.VEL_KP, 0)
+            config_kI(0, Constants.Drivetrain.VEL_KI, 0)
+            config_kD(0, Constants.Drivetrain.VEL_KD, 0)
+            config_kF(0, Constants.Drivetrain.VEL_KF, 0)
+            config_kP(1, 0.0, 0)
+            config_kI(1, 0.0, 0)
+            config_kD(1, 0.0, 0)
+            config_kF(1, 0.0, 0)
+            configSetParameter(ParamEnum.ePIDLoopPeriod,
+                Constants.TALON_PIDF_UPDATE_PERIOD_MS.toDouble(), 0x00, 0, 0)
+            configSetParameter(ParamEnum.ePIDLoopPeriod,
+                Constants.TALON_PIDF_UPDATE_PERIOD_MS.toDouble(), 0x00, 1, 0)
         }
         mRightSlave = rightSlave.apply {
             follow(mRightMaster)

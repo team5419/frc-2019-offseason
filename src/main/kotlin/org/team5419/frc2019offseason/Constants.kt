@@ -35,6 +35,12 @@ public object Constants {
         public const val WHEEL_DIAMETER = 6.0 // inches
         public const val WHEEL_RADIUS = WHEEL_DIAMETER / 2.0
         public const val WHEEL_CIR = WHEEL_DIAMETER * Math.PI
+        // pidf
+        public const val VEL_KP = 0.7
+        public const val VEL_KI = 0.0
+        public const val VEL_KD = 0.0
+        public const val VEL_KF = 0.0
+        public const val TALON_PIDF_UPDATE_PERIOD_MS = 1
     }
 
     object Vacuum {
@@ -42,6 +48,11 @@ public object Constants {
         public const val RELEASE_SOLNOID_PORT = 0
         public const val HATCH_SOLENOID_PORT = 1
         public const val CURRENT_THRESHOLD = 2.125
+
+        public const val MOTION_MAGIC_VELOCITY = 11000
+        public const val MOTION_MAGIC_ACCELERATION = 11000
+        public const val MAX_ENCODER_TICKS = 2048
+        public const val MIN_ENCODER_TICKS = 0
     }
 
     object Climber {

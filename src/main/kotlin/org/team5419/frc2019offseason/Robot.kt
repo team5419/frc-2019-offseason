@@ -10,6 +10,7 @@ import org.team5419.frc2019offseason.subsystems.Lift
 import org.team5419.frc2019offseason.subsystems.Vacuum
 import org.team5419.frc2019offseason.subsystems.SubsystemsManager
 import org.team5419.frc2019offseason.subsystems.Wrist
+import org.team5419.frc2019offseason.subsystems.Climber
 import org.team5419.frc2019offseason.controllers.AutoController
 import org.team5419.frc2019offseason.controllers.TeleopController
 
@@ -37,7 +38,7 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     private val mVacuumMaster: LazyTalonSRX
     private val mReleaseSolenoid: Solenoid
     private val mHatchSolenoid: Solenoid
-    
+
     private val mClimberMaster: LazyTalonSRX
     private val mClimberSlave: LazyTalonSRX
 
@@ -46,7 +47,7 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     private val mDrivetrain: Drivetrain
     private val mLift: Lift
     private val mWrist: Wrist
-    // private val mClimber: Climber
+    private val mClimber: Climber
     private val mVacuum: Vacuum
 
     private val mSubsystemsManager: SubsystemsManager
@@ -83,7 +84,6 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         mWrist.lift = mLift
         mLift.wrist = mWrist
 
-
         // initilize Climber
         mClimberMaster = LazyTalonSRX(Constants.Climber.MASTER_TALON_PORT)
         mClimberSlave = LazyTalonSRX(Constants.Climber.SLAVE_TALON_PORT)
@@ -103,9 +103,9 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         mSubsystemsManager = SubsystemsManager(
             mDrivetrain,
             mWrist,
-            // mClimber,
             mVacuum,
-            mLift
+            mLift,
+            mClimber
         )
 
         // initilize controllers

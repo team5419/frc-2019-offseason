@@ -82,8 +82,8 @@ public class TeleopController(
                 isHighGear
             )
         )
-        
-        //Climb control
+
+        // Climb control
         if (mDriver.getBumperPressed(Hand.kRight) || mCoDriver.getBumperPressed(Hand.kLeft)) {
             mSubsystems.climber.climb()
         }

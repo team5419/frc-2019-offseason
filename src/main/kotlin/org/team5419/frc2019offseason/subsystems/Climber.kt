@@ -5,7 +5,6 @@ import org.team5419.fault.Subsystem
 import org.team5419.fault.hardware.LazyTalonSRX
 import com.ctre.phoenix.motorcontrol.ControlMode
 
-
 class Climber(masterTalon: LazyTalonSRX, slaveTalon: LazyTalonSRX) : Subsystem() {
 
     private val mMasterTalon: LazyTalonSRX
@@ -17,7 +16,7 @@ class Climber(masterTalon: LazyTalonSRX, slaveTalon: LazyTalonSRX) : Subsystem()
         mSlaveTalon.follow(mMasterTalon)
     }
 
-    public fun climb() { //for driver
+    public fun climb() { // for driver
         mMasterTalon.set(ControlMode.PercentOutput, Constants.Climber.MAX_OUTPUT_PERCENTAGE.toDouble())
     }
 

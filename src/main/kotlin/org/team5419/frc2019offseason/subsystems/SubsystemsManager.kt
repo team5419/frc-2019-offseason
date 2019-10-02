@@ -4,7 +4,7 @@ public class SubsystemsManager(
     mDrivetrain: Drivetrain,
     mWrist: Wrist,
     mVacuum: Vacuum,
-    mLift: Lift, 
+    mLift: Lift,
     mClimber: Climber
 ) {
 
