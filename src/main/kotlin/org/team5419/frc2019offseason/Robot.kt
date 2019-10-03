@@ -62,43 +62,22 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
 
         mRightMaster = LazyTalonSRX(Constants.Drivetrain.RIGHT_MASTER_TALON_PORT)
         mRightSlave = LazyVictorSPX(Constants.Drivetrain.RIGHT_SLAVE_TALON_PORT)
-        mDrivetrain = Drivetrain(
-            mLeftMaster,
-            mLeftSlave,
-            mRightMaster,
-            mRightSlave
-        )
 
         // initilize Lift
         mLiftMaster = LazyTalonSRX(Constants.Lift.MASTER_TALON_PORT)
         mLiftSlave = LazyTalonSRX(Constants.Lift.SLAVE_TALON_PORT)
-        mLift = Lift(
-            mLiftMaster,
-            mLiftSlave
-        )
 
         // initilize Wrist
         mWristMaster = LazyTalonSRX(Constants.Wrist.MASTER_TALON_PORT)
-        mWrist = Wrist(
-            mWristMaster
-        )
-        mWrist.lift = mLift
-        mLift.wrist = mWrist
 
         // initilize Climber
         mClimberMaster = LazyTalonSRX(Constants.Climber.MASTER_TALON_PORT)
         mClimberSlave = LazyTalonSRX(Constants.Climber.SLAVE_TALON_PORT)
-        mClimber = Climber(mClimberMaster, mClimberSlave)
 
         // initilize Vacuum
         mVacuumMaster = LazyTalonSRX(Constants.Vacuum.MASTER_TALON_PORT)
         mReleaseSolenoid = Solenoid(Constants.Vacuum.RELEASE_SOLNOID_PORT)
         mHatchSolenoid = Solenoid(Constants.Vacuum.HATCH_SOLENOID_PORT)
-        mVacuum = Vacuum(
-            mVacuumMaster,
-            mReleaseSolenoid,
-            mHatchSolenoid
-        )
 
         // reset hardware
         mLeftMaster.configFactoryDefault()
@@ -115,6 +94,28 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
 
         mClimberMaster.configFactoryDefault()
         mClimberSlave.configFactoryDefault()
+
+        mDrivetrain = Drivetrain(
+            mLeftMaster,
+            mLeftSlave,
+            mRightMaster,
+            mRightSlave
+        )
+        mLift = Lift(
+            mLiftMaster,
+            mLiftSlave
+        )
+        mWrist = Wrist(
+            mWristMaster
+        )
+        mWrist.lift = mLift
+        mLift.wrist = mWrist
+        mClimber = Climber(mClimberMaster, mClimberSlave)
+        mVacuum = Vacuum(
+            mVacuumMaster,
+            mReleaseSolenoid,
+            mHatchSolenoid
+        )
 
         // initilize Subsystems Manager
         mSubsystemsManager = SubsystemsManager(
