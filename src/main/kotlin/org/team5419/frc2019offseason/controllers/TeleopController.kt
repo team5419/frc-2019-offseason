@@ -1,10 +1,14 @@
 package org.team5419.frc2019offseason.controllers
 
 import org.team5419.frc2019offseason.subsystems.SubsystemsManager
+import org.team5419.frc2019offseason.subsystems.Wrist.WristPosistions
 import org.team5419.frc2019offseason.subsystems.Lift.LiftHeight
+import org.team5419.frc2019offseason.Constants.Input
 
-import org.team5419.frc2019offseason.Constants
 import org.team5419.fault.Controller
+import org.team5419.fault.input.CheesyDriveHelper
+import org.team5419.fault.input.TankDriveHelper
+import org.team5419.fault.input.DriveHelper
 
 import edu.wpi.first.wpilibj.XboxController
 import edu.wpi.first.wpilibj.GenericHID.Hand
@@ -12,7 +16,8 @@ import edu.wpi.first.wpilibj.GenericHID.Hand
 public class TeleopController(
     subsystems: SubsystemsManager,
     driver: XboxController,
-    codriver: XboxController
+    codriver: XboxController,
+    controlMode: ControlModes
 ) : Controller() {
 
     private val mDriver: XboxController
@@ -21,23 +26,35 @@ public class TeleopController(
 
     private var isSlow: Boolean = false
     private var isReverse: Boolean = false
-    private var speed: Double = Constants.Input.BASE_SPEED
+    private var speed = Input.BASE_SPEED
     private var leftDrive: Double = 0.0
     private var rightDrive: Double = 0.0
+    private var driveHelper: DriveHelper
 
-    private var liftIndex: Int = 0
-    private var lastLiftIndex: Int = 0
+    private var isManuelOverride = false
+    private val isHighGear: Boolean get() = mDriver.getTriggerAxis(Hand.kLeft) > Input.DEADBAND
+    private val isQuickTurn: Boolean get() = mDriver.getTriggerAxis(Hand.kRight) > Input.DEADBAND
+
+    public enum class ControlModes { TANK, CHEESY }
 
     init {
         mDriver = driver
         mCoDriver = codriver
         mSubsystems = subsystems
+        if (controlMode == ControlModes.TANK) {
+            driveHelper = TankDriveHelper(Input.DEADBAND, 1.0)
+        } else {
+            val config: CheesyDriveHelper.CheesyDriveConfig = CheesyDriveHelper.CheesyDriveConfig()
+            config.apply {
+                deadband = Input.DEADBAND
+            }
+            driveHelper = CheesyDriveHelper(config)
+        }
     }
 
     override fun start() {
         isSlow = false
         isReverse = false
-        speed = Constants.Input.BASE_SPEED
         rightDrive = 0.0
         leftDrive = 0.0
     }
@@ -49,42 +66,69 @@ public class TeleopController(
     @Suppress("ComplexMethod")
     override fun update() {
         // Driver
-        speed = 1.0
         isSlow = false
-        speed = Constants.Input.BASE_SPEED
-
-        if (mDriver.getTriggerAxis(Hand.kLeft) > Constants.Input.CONTROLLER_MARGIN) {
-            mSubsystems.drivetrain.setPercent(mDriver.getTriggerAxis(Hand.kLeft), mDriver.getTriggerAxis(Hand.kLeft)*-1)
-        } else if (mDriver.getTriggerAxis(Hand.kRight) > Constants.Input.CONTROLLER_MARGIN) {
-            mSubsystems.drivetrain.setPercent(mDriver.getTriggerAxis(Hand.kLeft), mDriver.getTriggerAxis(Hand.kLeft)*-1)
-        } else {
-            // make better
-            if (mDriver.getAButton()) isReverse = !isReverse
-            if (isReverse) speed *= -1
-
-            if (mDriver.getTriggerAxis(Hand.kLeft) > Constants.Input.CONTROLLER_MARGIN)
-                speed *= Math.max(1.0 - mDriver.getTriggerAxis(Hand.kLeft), Constants.Input.MINIMAL_SLOW)
-
-            rightDrive = mDriver.getX(Hand.kRight)
-            leftDrive = mDriver.getX(Hand.kLeft)
-            if (rightDrive > Constants.Input.CONTROLLER_MARGIN) rightDrive = 0.0
-            if (leftDrive > Constants.Input.CONTROLLER_MARGIN) rightDrive = 0.0
-            mSubsystems.drivetrain.setPercent(leftDrive * speed, rightDrive * speed)
-            mSubsystems.updateAll()
+        speed = Input.BASE_SPEED
+        if (mDriver.getAButton()) { isReverse = !isReverse }
+        if (isReverse) { speed *= -1 }
+        if (mDriver.getBumper(Hand.kLeft) || mDriver.getBumper(Hand.kLeft)) {
+            speed *= Input.SLOW
         }
-        // Add flip
+
+        mSubsystems.drivetrain.setPercent(
+            driveHelper.calculateOutput(
+                mDriver.getY(Hand.kLeft) * speed,
+                mDriver.getX(Hand.kLeft),
+                isQuickTurn,
+                isHighGear
+            )
+        )
+
+        // Climb control
+        if (mDriver.getBumperPressed(Hand.kRight) || mCoDriver.getBumperPressed(Hand.kLeft)) {
+            mSubsystems.climber.climb()
+        }
 
         // Codriver
-        if (mCoDriver.getBumperPressed(Hand.kLeft)) liftIndex--
-        if (mCoDriver.getBumperPressed(Hand.kRight)) liftIndex++
+        // Valve control
+        if (mCoDriver.getBumperPressed(Hand.kLeft) || mCoDriver.getBumperPressed(Hand.kRight))
+            mSubsystems.vacuum.release()
+        // Vacuum control
+        if (mCoDriver.getTriggerAxis(Hand.kLeft) > Input.DEADBAND) {
+            mSubsystems.vacuum.pickBall(mCoDriver.getTriggerAxis(Hand.kLeft))
+        } else if (mCoDriver.getTriggerAxis(Hand.kRight) > Input.DEADBAND) {
+            mSubsystems.vacuum.pickHatch(mCoDriver.getTriggerAxis(Hand.kRight))
+        } else { mSubsystems.vacuum.setPercent(0.0) }
+        // button control
+        if (mCoDriver.getAButtonPressed()) {
+            mSubsystems.lift.setPosistion(LiftHeight.HATCH_LOW)
+        } else if (mCoDriver.getBButtonPressed()) {
+            mSubsystems.lift.setPosistion(LiftHeight.HATCH_MID)
+        } else if (mCoDriver.getYButtonPressed())
+            mSubsystems.lift.setPosistion(LiftHeight.HATCH_HIGH)
+        else if (mCoDriver.getPOV() == 0) {
+            mSubsystems.lift.setPosistion(LiftHeight.BALL_HIGH)
+            mSubsystems.wrist.setPosition(WristPosistions.BALL_HIGH)
+        } else if (mCoDriver.getPOV() == 90) {
+            mSubsystems.lift.setPosistion(LiftHeight.BALL_MID)
+            mSubsystems.wrist.setPosition(WristPosistions.BALL_MID)
+        } else if (mCoDriver.getPOV() == 180) {
+            mSubsystems.lift.setPosistion(LiftHeight.BALL_LOW)
+            mSubsystems.wrist.setPosition(WristPosistions.BALL_LOW)
+        }
 
-        if (liftIndex != lastLiftIndex)
-            mSubsystems.lift.setPoint(LiftHeight.values()[liftIndex].value)
+        if (mCoDriver.getXButtonPressed()) {
+            mSubsystems.wrist.setPosition(WristPosistions.BACKWARD)
+        }
+        if (mCoDriver.getPOV() == 90) {
+            mSubsystems.wrist.setPosition(WristPosistions.FORWARD)
+        }
 
-        if (mCoDriver.getAButtonPressed())
-            mSubsystems.vacuum.toogleValve()
-
-        if (mCoDriver.getBumper(Hand.kLeft) || mCoDriver.getBumper(Hand.kRight))
-            mSubsystems.vacuum.pump = true
+        // Manuel Lift control
+        if (Math.abs(mCoDriver.getY(Hand.kLeft)) > Input.DEADBAND && isManuelOverride) {
+            mSubsystems.lift.setPercent(mCoDriver.getY(Hand.kLeft))
+        }
+        if (Math.abs(mCoDriver.getY(Hand.kRight)) > Input.DEADBAND && isManuelOverride) {
+            mSubsystems.wrist.setPercent(mCoDriver.getY(Hand.kLeft))
+        }
     }
 }

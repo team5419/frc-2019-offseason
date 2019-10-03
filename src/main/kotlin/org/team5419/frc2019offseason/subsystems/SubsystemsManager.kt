@@ -2,10 +2,10 @@ package org.team5419.frc2019offseason.subsystems
 
 public class SubsystemsManager(
     mDrivetrain: Drivetrain,
-    mLift: Lift,
     mWrist: Wrist,
-    mClimber: Climber,
-    mVacuum: Vacuum
+    mVacuum: Vacuum,
+    mLift: Lift,
+    mClimber: Climber
 ) {
 
     public val drivetrain: Drivetrain
@@ -18,8 +18,8 @@ public class SubsystemsManager(
         drivetrain = mDrivetrain
         lift = mLift
         wrist = mWrist
-        climber = mClimber
         vacuum = mVacuum
+        climber = mClimber
     }
 
     public fun updateAll() {

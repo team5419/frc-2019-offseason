@@ -6,12 +6,11 @@ import edu.wpi.first.wpilibj.XboxController
 import org.team5419.frc2019offseason.Constants
 
 import org.team5419.frc2019offseason.subsystems.Drivetrain
-import org.team5419.frc2019offseason.subsystems.Climber
-import org.team5419.frc2019offseason.subsystems.Wrist
 import org.team5419.frc2019offseason.subsystems.Lift
 import org.team5419.frc2019offseason.subsystems.Vacuum
 import org.team5419.frc2019offseason.subsystems.SubsystemsManager
-
+import org.team5419.frc2019offseason.subsystems.Wrist
+import org.team5419.frc2019offseason.subsystems.Climber
 import org.team5419.frc2019offseason.controllers.AutoController
 import org.team5419.frc2019offseason.controllers.TeleopController
 
@@ -35,7 +34,11 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     private val mLiftSlave: LazyTalonSRX
 
     private val mVacuumMaster: LazyTalonSRX
-    private val mSolenoid: Solenoid
+    private val mReleaseSolenoid: Solenoid
+    private val mHatchSolenoid: Solenoid
+
+    private val mClimberMaster: LazyTalonSRX
+    private val mClimberSlave: LazyTalonSRX
 
     private val mWristMaster: LazyTalonSRX
 
@@ -51,6 +54,7 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     private val mTeleopController: TeleopController
 
     init {
+
         // initilize Drivetrain
         mLeftMaster = LazyTalonSRX(Constants.Drivetrain.LEFT_MASTER_TALON_PORT)
         mLeftSlave = LazyVictorSPX(Constants.Drivetrain.LEFT_SLAVE_TALON_PORT)
@@ -74,29 +78,51 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         )
 
         // initilize Wrist
-        mWristMaster = LazyTalonSRX(Constants.Lift.MASTER_TALON_PORT)
+        mWristMaster = LazyTalonSRX(Constants.Wrist.MASTER_TALON_PORT)
         mWrist = Wrist(
             mWristMaster
         )
+        mWrist.lift = mLift
+        mLift.wrist = mWrist
 
         // initilize Climber
-        mClimber = Climber()
+        mClimberMaster = LazyTalonSRX(Constants.Climber.MASTER_TALON_PORT)
+        mClimberSlave = LazyTalonSRX(Constants.Climber.SLAVE_TALON_PORT)
+        mClimber = Climber(mClimberMaster, mClimberSlave)
 
         // initilize Vacuum
         mVacuumMaster = LazyTalonSRX(Constants.Vacuum.MASTER_TALON_PORT)
-        mSolenoid = Solenoid(Constants.Vacuum.SOLENOID_PORT)
+        mReleaseSolenoid = Solenoid(Constants.Vacuum.RELEASE_SOLNOID_PORT)
+        mHatchSolenoid = Solenoid(Constants.Vacuum.HATCH_SOLENOID_PORT)
         mVacuum = Vacuum(
             mVacuumMaster,
-            mSolenoid
+            mReleaseSolenoid,
+            mHatchSolenoid
         )
+
+        // reset hardware
+        mLeftMaster.configFactoryDefault()
+        mLeftSlave.configFactoryDefault()
+        mRightMaster.configFactoryDefault()
+        mRightSlave.configFactoryDefault()
+
+        mLiftMaster.configFactoryDefault()
+        mLiftSlave.configFactoryDefault()
+
+        mWristMaster.configFactoryDefault()
+
+        mVacuumMaster.configFactoryDefault()
+
+        mClimberMaster.configFactoryDefault()
+        mClimberSlave.configFactoryDefault()
 
         // initilize Subsystems Manager
         mSubsystemsManager = SubsystemsManager(
             mDrivetrain,
-            mLift,
             mWrist,
-            mClimber,
-            mVacuum
+            mVacuum,
+            mLift,
+            mClimber
         )
 
         // initilize controllers
@@ -106,8 +132,9 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         mCodriver = XboxController(Constants.Input.CODRIVER_PORT)
         mTeleopController = TeleopController(
             mSubsystemsManager,
-            mDriver,
-            mCodriver
+            driver,
+            coDriver,
+            TeleopController.ControlModes.CHEESY
         )
     }
 
@@ -128,17 +155,20 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     }
 
     override fun disabledPeriodic() {
+        // println(mLift.firstStagePosistion.toString())
     }
 
     // autonomous mode
 
     override fun autonomousInit() {
-        mAutoController.start()
+        // mAutoController.start()
+        teleopInit()
     }
 
     override fun autonomousPeriodic() {
-        mSubsystemsManager.updateAll()
-        mAutoController.update()
+        // mSubsystemsManager.updateAll()
+        // mAutoController.update()
+        teleopPeriodic()
     }
 
     // teleop mode

@@ -16,26 +16,38 @@ class Wrist(
         const val kWristSlot = 0
     }
 
+    private fun ticksToDegrees(ticks: Int): Double =
+        ticks / Constants.Wrist.ENCODER_TICKS_PER_ROTATION * 360.0
+    private fun degreesToTicks(heading: Double): Int =
+        (heading / 360.0 * Constants.Wrist.ENCODER_TICKS_PER_ROTATION).toInt()
     private val mMaster: LazyTalonSRX
-    private val isFlipped: Boolean = false
-    private val isFlipping: Boolean = false
-
-    public var setPoint = 0.0
+    private var position: Double
+        get() = ticksToDegrees(mMaster.getSelectedSensorPosition())
+    private var setPoint: Double
+    public var liftPos: Double
+    public val canRise: Boolean
+        get() = position < Constants.Wrist.MAX_RISE_ANGLE && setPoint < Constants.Wrist.MAX_RISE_ANGLE // 75.0
+    lateinit var lift: Lift
     // public var targetPosistion: WristPosistions
 
     // set posistion
-    public enum class WristPosistions(val value: Int) {
-        FORWARD(Constants.Wrist.FORWARD_TICKS),
-        MIDDLE(Constants.Wrist.MIDDLE_TICKS),
-        BACKWARD(Constants.Wrist.BACKWARD_TICKS)
+    public enum class WristPosistions(val value: Double) {
+        FORWARD(Constants.Wrist.FORWARD),
+        MIDDLE(Constants.Wrist.MIDDLE),
+        BACKWARD(Constants.Wrist.BACKWARD),
+        BALL_HIGH(Constants.Wrist.BALL_HIGH),
+        BALL_MID(Constants.Wrist.BALL_MID),
+        BALL_LOW(Constants.Wrist.BALL_LOW)
     }
 
     init {
         // config talon PIDF
         mMaster = masterTalon.apply {
             configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0) //
+            // configSelectedFeedbackCoefficient(-1.0)
+            setSelectedSensorPosition(0)
             setSensorPhase(true) // check
-            setInverted(false) // check this
+            setInverted(true) // check this
 
             configClosedLoopPeakOutput(kWristSlot, 1.0)
 
@@ -48,7 +60,7 @@ class Wrist(
             selectProfileSlot(kWristSlot, 0)
             configAllowableClosedloopError(0, 0, 0)
 
-            enableCurrentLimit(false)
+            enableCurrentLimit(true)
             configPeakCurrentDuration(kWristSlot, 0)
             configPeakCurrentLimit(kWristSlot, 0)
             @Suppress("MagicNumber")
@@ -58,23 +70,43 @@ class Wrist(
             configReverseSoftLimitThreshold(Constants.Wrist.MIN_ENCODER_TICKS, kWristSlot)
             configForwardSoftLimitEnable(true, 0)
             configReverseSoftLimitEnable(true, 0)
+            configPeakOutputForward(0.1)
+            configPeakOutputReverse(0.1)
         }
 
         setPoint = 0.0
-        // posistion = WristPosistions.FORWARD
+        position = WristPosistions.FORWARD.value
+        liftPos = 0.0
     }
 
-    public fun setPosistion(point: WristPosistions) {
-        // targetPosistion = point
-        setPoint(point.value.toDouble())
+    public fun zero() {
+        setPoint = 0.0
+        position = WristPosistions.FORWARD.value
     }
 
-    public fun setPoint(point: Double) {
-        mMaster.set(ControlMode.Position, point)
+    public fun setPercent(percent: Double) {
+        mMaster.set(ControlMode.PercentOutput, percent)
+    }
+
+    public fun setPosition(point: WristPosistions) {
+        setPoint = point.value
+        if (
+            (position < Constants.Wrist.MAX_RISE_ANGLE &&
+            point.value < Constants.Wrist.MAX_RISE_ANGLE) ||
+            lift.canFlip) {
+            setDegrees(point.value)
+        } else println("Can't set wrist posistion")
+    }
+
+    public fun setDegrees(heading: Double) {
+        setTicks(degreesToTicks(heading))
+    }
+
+    public fun setTicks(ticks: Int) {
+        mMaster.set(ControlMode.MotionMagic, ticks.toDouble())
     }
 
     public override fun update() {
-        println(mMaster.getSelectedSensorPosition(0))
     }
     public override fun stop() {}
     public override fun reset() {}
