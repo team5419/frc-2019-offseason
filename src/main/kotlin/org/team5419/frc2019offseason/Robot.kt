@@ -11,6 +11,7 @@ import org.team5419.frc2019offseason.subsystems.Vacuum
 import org.team5419.frc2019offseason.subsystems.SubsystemsManager
 import org.team5419.frc2019offseason.subsystems.Wrist
 import org.team5419.frc2019offseason.subsystems.Climber
+import org.team5419.frc2019offseason.subsystems.Vision
 import org.team5419.frc2019offseason.controllers.AutoController
 import org.team5419.frc2019offseason.controllers.TeleopController
 
@@ -49,6 +50,7 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     private val mWrist: Wrist
     private val mClimber: Climber
     private val mVacuum: Vacuum
+    private val mVision: Vision
 
     private val mSubsystemsManager: SubsystemsManager
     private val mAutoController: AutoController
@@ -100,6 +102,8 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
             mHatchSolenoid
         )
 
+        mVision = Vision()
+
         // reset hardware
         mLeftMaster.configFactoryDefault()
         mLeftSlave.configFactoryDefault()
@@ -122,7 +126,8 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
             mWrist,
             mVacuum,
             mLift,
-            mClimber
+            mClimber,
+            mVision
         )
 
         // initilize controllers
@@ -149,6 +154,8 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     // disabled mode
 
     override fun disabledInit() {
+        mVision.ledState = Vision.LEDState.OFF
+
         mSubsystemsManager.resetAll()
         mTeleopController.reset()
         mAutoController.reset()

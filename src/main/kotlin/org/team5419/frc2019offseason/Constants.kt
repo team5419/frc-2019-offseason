@@ -121,6 +121,29 @@ public object Constants {
         public const val SECOND_STAGE_EPSILON = 10.0
     }
 
+    object Vision {
+        public var CAMERA_HEIGHT = 33.0
+        public var CAMERA_VERTICAL_ANGLE = 0.0
+        public var CAMERA_HORIZONTAL_ANGLE = 7.0
+        public var HATCH_TARGET_HEIGHT = 29.0
+        public var BALL_TARGET_HEIGHT = 36.0
+
+        public var TARGET_DISTANCE = 24.0 // inches
+
+        public var ACCEPTABLE_ANGLE_ERROR = 3.0 // degrees(?)
+        public var ACCEPTABLE_DISTANCE_ERROR = 2.0 // inches (?)
+
+        public var ANGLE_KP = 1.0
+        public var ANGLE_KI = 0.0
+        public var ANGLE_KD = 0.1
+        public var ANGLE_KF = 0.0
+
+        public var DISTANCE_KP = 0.35
+        public var DISTANCE_KI = 0.0
+        public var DISTANCE_KD = 0.0
+        public var DISTANCE_KF = 0.0
+    }
+
     object PID {
         public const val MAX_VELOCITY_SETPOINT = 100.0 // inches per seconds
 
