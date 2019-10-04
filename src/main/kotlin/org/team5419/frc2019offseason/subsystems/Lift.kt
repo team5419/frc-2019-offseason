@@ -92,8 +92,10 @@ class Lift(
             // configPeakCurrentLimit(0, 0)
             configContinuousCurrentLimit(25, 0) // amps
             enableVoltageCompensation(false)
-            configForwardSoftLimitThreshold(Constants.Lift.MIN_ENCODER_TICKS, 0)
-            configReverseSoftLimitThreshold(Constants.Lift.MAX_ENCODER_TICKS, 0)
+            configForwardSoftLimitThreshold(-inchesToTicks(Constants.Lift.MIN_ENCODER_HEIGHT), 0)
+            configReverseSoftLimitThreshold(-inchesToTicks(Constants.Lift.MAX_ENCODER_HEIGHT), 0)
+            // configForwardSoftLimitThreshold(Constants.Lift.MIN_ENCODER_TICKS, 0)
+            // configReverseSoftLimitThreshold(Constants.Lift.MAX_ENCODER_TICKS, 0)
             configForwardSoftLimitEnable(true, 0)
             configReverseSoftLimitEnable(true, 0)
 

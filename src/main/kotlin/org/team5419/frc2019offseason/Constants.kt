@@ -107,17 +107,19 @@ public object Constants {
 
         // tf?
         public const val ENCODER_TICKS_PER_ROTATION = 4096.0
-        public const val INCHES_PER_ROTATION = 4.4
-        public const val MOTION_MAGIC_VELOCITY = 11000
-        public const val MOTION_MAGIC_ACCELERATION = 11000
-        public const val MAX_ENCODER_TICKS = -41890
-        public const val MIN_ENCODER_TICKS = 0
+        public const val INCHES_PER_ROTATION = 4.4 // inches the elevator moves for 4096 ticks of the encoder
+        public const val MOTION_MAGIC_VELOCITY = 11000 // encoder ticks per 100ms
+        public const val MOTION_MAGIC_ACCELERATION = 11000 // encoder ticks per 100ms per 100ms
+        public const val MAX_ENCODER_HEIGHT = 45.0 // inches
+        public const val MIN_ENCODER_HEIGHT = 0.0 // inches
+        // public const val MAX_ENCODER_TICKS = -41890
+        // public const val MIN_ENCODER_TICKS = 0
         // pid
         public const val KP = 0.5
         public const val KI = 0.0
         public const val KD = 0.0
-        public const val KF = 0.01
-        public const val KF2 = 0.02
+        public const val KF = 0.0 // ALWAYS ZERO
+        public const val KF2 = 0.0 // ALWAYS ZERO
         public const val SECOND_STAGE_EPSILON = 10.0
     }
 
