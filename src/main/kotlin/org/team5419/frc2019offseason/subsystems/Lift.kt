@@ -10,7 +10,7 @@ import org.team5419.fault.Subsystem
 
 import org.team5419.frc2019offseason.Constants
 
-@Suppress("MaxLineLength")
+@Suppress("MaxLineLength", "TooManyFunctions")
 class Lift(
     masterTalon: LazyTalonSRX,
     slaveTalon: LazyTalonSRX
@@ -47,8 +47,8 @@ class Lift(
         ticks.toDouble() / Constants.Lift.ENCODER_TICKS_PER_ROTATION.toDouble() * Constants.Lift.INCHES_PER_ROTATION
     private fun inchesToTicks(inches: Double): Int =
         (inches / Constants.Lift.INCHES_PER_ROTATION * Constants.Lift.ENCODER_TICKS_PER_ROTATION).toInt()
-    private fun canRise(height: Double) : Boolean {
-        println("${wrist.canRise} ${firstStagePosition < Constants.Lift.MAX_FLIP_HIGHT} ${height < Constants.Lift.MAX_FLIP_HIGHT} ${firstStagePosition} ${height}")
+    private fun canRise(height: Double): Boolean {
+        println("${wrist.canRise} ${firstStagePosition < Constants.Lift.MAX_FLIP_HIGHT} ${height < Constants.Lift.MAX_FLIP_HIGHT} $firstStagePosition $height")
         return wrist.canRise || (firstStagePosition < Constants.Lift.MAX_FLIP_HIGHT && height < Constants.Lift.MAX_FLIP_HIGHT)
     }
 
@@ -68,8 +68,8 @@ class Lift(
     init {
         mMaster = masterTalon.apply {
             configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0) //
-            setSensorPhase(true) // check
-            setInverted(false) // check this
+            setSensorPhase(true)
+            setInverted(false)
             setSelectedSensorPosition(0)
             configClosedLoopPeakOutput(kElevatorSlot, 1.0)
 
