@@ -6,6 +6,7 @@ public object Constants {
     public const val ROBOT_UPDATE_PERIOD = 0.005
     public const val TALON_UPDATE_PERIOD_MS = 1
     public const val TALON_PIDF_UPDATE_PERIOD_MS = 1
+    public const val MAX_OUTPUT = 0.1
 
     object Input {
         public const val DRIVER_PORT = 0

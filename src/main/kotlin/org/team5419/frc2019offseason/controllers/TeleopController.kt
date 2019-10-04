@@ -9,6 +9,7 @@ import org.team5419.fault.Controller
 import org.team5419.fault.input.CheesyDriveHelper
 import org.team5419.fault.input.TankDriveHelper
 import org.team5419.fault.input.DriveHelper
+import org.team5419.fault.input.DriveSignal
 
 import edu.wpi.first.wpilibj.XboxController
 import edu.wpi.first.wpilibj.GenericHID.Hand
@@ -74,14 +75,16 @@ public class TeleopController(
             speed *= Input.SLOW
         }
 
-        mSubsystems.drivetrain.setPercent(
-            driveHelper.calculateOutput(
-                mDriver.getY(Hand.kLeft) * speed,
-                mDriver.getX(Hand.kLeft),
-                isQuickTurn,
-                isHighGear
-            )
+        val ds: DriveSignal = driveHelper.calculateOutput(
+            mDriver.getY(Hand.kLeft) * speed,
+            mDriver.getX(Hand.kLeft),
+            isQuickTurn,
+            isHighGear
         )
+        // println("$ds.left $ds.right")
+        mSubsystems.drivetrain.setPercent(ds)
+
+        // mSubsystems.drivetrain.setPercent(DriveSignal(1.0, 1.0))
 
         // Climb control
         if (mDriver.getBumperPressed(Hand.kRight) || mCoDriver.getBumperPressed(Hand.kLeft)) {

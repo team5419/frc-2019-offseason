@@ -70,6 +70,8 @@ class Drivetrain(
                 Constants.TALON_PIDF_UPDATE_PERIOD_MS.toDouble(), 0x00, 0, 0)
             configSetParameter(ParamEnum.ePIDLoopPeriod,
                 Constants.TALON_PIDF_UPDATE_PERIOD_MS.toDouble(), 0x00, 1, 0)
+            configPeakOutputForward(Constants.MAX_OUTPUT)
+            configPeakOutputReverse(Constants.MAX_OUTPUT)
         }
 
         mLeftSlave = leftSlave.apply {
@@ -103,6 +105,8 @@ class Drivetrain(
                 Constants.TALON_PIDF_UPDATE_PERIOD_MS.toDouble(), 0x00, 0, 0)
             configSetParameter(ParamEnum.ePIDLoopPeriod,
                 Constants.TALON_PIDF_UPDATE_PERIOD_MS.toDouble(), 0x00, 1, 0)
+            configPeakOutputForward(Constants.MAX_OUTPUT)
+            configPeakOutputReverse(Constants.MAX_OUTPUT)
         }
         mRightSlave = rightSlave.apply {
             follow(mRightMaster)

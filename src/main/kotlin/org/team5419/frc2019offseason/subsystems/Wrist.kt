@@ -70,8 +70,8 @@ class Wrist(
             configReverseSoftLimitThreshold(Constants.Wrist.MIN_ENCODER_TICKS, kWristSlot)
             configForwardSoftLimitEnable(true, 0)
             configReverseSoftLimitEnable(true, 0)
-            configPeakOutputForward(0.1)
-            configPeakOutputReverse(0.1)
+            configPeakOutputForward(Constants.MAX_OUTPUT)
+            configPeakOutputReverse(Constants.MAX_OUTPUT)
         }
 
         setPoint = 0.0
