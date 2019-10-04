@@ -8,8 +8,9 @@ import com.ctre.phoenix.motorcontrol.InvertType
 import org.team5419.fault.hardware.LazyTalonSRX
 import org.team5419.fault.Subsystem
 
-import org.team5419.frc2019offseason.Constants.Lift
+import org.team5419.frc2019offseason.Constants
 
+@Suppress("MaxLineLength", "TooManyFunctions")
 class Lift(
     masterTalon: LazyTalonSRX,
     slaveTalon: LazyTalonSRX
@@ -22,32 +23,40 @@ class Lift(
     private var mMaster: LazyTalonSRX
     private var mSlave: LazyTalonSRX
     lateinit var wrist: Wrist
-    var firstStagePosistion: Double
-        get() = ticksToInches(-mMaster.getSelectedSensorPosition(0))
-    var secondStagePosistion: Double
-        get() = Math.max(ticksToInches(-mMaster.getSelectedSensorPosition(0)) - Lift.SECOND_STAGE_HIGHT, 0.0)
+    var firstStagePosition: Double
+        get() = ticksToInches(-mMaster.getSelectedSensorPosition(kElevatorSlot))
+    var secondStagePosition: Double
+        get() = Math.max(ticksToInches(-mMaster.getSelectedSensorPosition(kElevatorSlot)) - Constants.Lift.SECOND_STAGE_HIGHT, 0.0)
     var setPoint: Double
     var isSecondStage: Boolean
-    val canFlip: Boolean get() = 4.0 > firstStagePosistion && 4.0 > setPoint
+    val canFlip: Boolean get() = 4.0 > firstStagePosition && 4.0 > setPoint
     // confirm resting hight
     public enum class LiftHeight(
         val value: Double = 0.0
     ) {
-        BOTTOM(Lift.STOW_HEIGHT),
-        HATCH_LOW(Lift.HATCH_LOW_HEIGHT),
-        HATCH_MID(Lift.HATCH_MID_HEIGHT),
-        HATCH_HIGH(Lift.HATCH_HIGH_HEIGHT),
-        BALL_LOW(Lift.BALL_LOW_HEIGHT),
-        BALL_MID(Lift.BALL_MID_HEIGHT),
-        BALL_HIGH(Lift.BALL_HIGH_HEIGHT)
+        BOTTOM(Constants.Lift.STOW_HEIGHT),
+        HATCH_LOW(Constants.Lift.HATCH_LOW_HEIGHT),
+        HATCH_MID(Constants.Lift.HATCH_MID_HEIGHT),
+        HATCH_HIGH(Constants.Lift.HATCH_HIGH_HEIGHT),
+        BALL_LOW(Constants.Lift.BALL_LOW_HEIGHT),
+        BALL_MID(Constants.Lift.BALL_MID_HEIGHT),
+        BALL_HIGH(Constants.Lift.BALL_HIGH_HEIGHT)
     }
 
     private fun ticksToInches(ticks: Int): Double =
-        ticks.toDouble() / Lift.ENCODER_TICKS_PER_ROTATION.toDouble() * Lift.INCHES_PER_ROTATION
+        ticks.toDouble() / Constants.Lift.ENCODER_TICKS_PER_ROTATION.toDouble() * Constants.Lift.INCHES_PER_ROTATION
     private fun inchesToTicks(inches: Double): Int =
-        (inches / Lift.INCHES_PER_ROTATION * Lift.ENCODER_TICKS_PER_ROTATION).toInt()
+        (inches / Constants.Lift.INCHES_PER_ROTATION * Constants.Lift.ENCODER_TICKS_PER_ROTATION).toInt()
+    private fun canRise(height: Double): Boolean {
+        println("""${wrist.canRise}
+            ${firstStagePosition < Constants.Lift.MAX_FLIP_HIGHT}
+            ${height < Constants.Lift.MAX_FLIP_HIGHT} $firstStagePosition $height""")
+        return wrist.canRise ||
+                (firstStagePosition < Constants.Lift.MAX_FLIP_HIGHT &&
+                    height < Constants.Lift.MAX_FLIP_HIGHT)
+    }
 
-    private var mBrakeMode: Boolean = false
+    private var mBrakeMode: Boolean = true
     set(value) {
         if (value == field) return
         if (value) {
@@ -63,48 +72,52 @@ class Lift(
     init {
         mMaster = masterTalon.apply {
             configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0) //
-            setSensorPhase(true) // check
-            setInverted(false) // check this
+            setSensorPhase(true)
+            setInverted(false)
             setSelectedSensorPosition(0)
             configClosedLoopPeakOutput(kElevatorSlot, 1.0)
 
-            config_kP(kElevatorSlot, Lift.KP, 0)
-            config_kI(kElevatorSlot, Lift.KI, 0)
-            config_kD(kElevatorSlot, Lift.KD, 0)
-            config_kF(kElevatorSlot, Lift.KF, 0)
-            configMotionCruiseVelocity(Lift.MOTION_MAGIC_VELOCITY, 0)
-            configMotionAcceleration(Lift.MOTION_MAGIC_ACCELERATION, 0)
+            config_kP(kElevatorSlot, Constants.Lift.KP, 0)
+            config_kI(kElevatorSlot, Constants.Lift.KI, 0)
+            config_kD(kElevatorSlot, Constants.Lift.KD, 0)
+            config_kF(kElevatorSlot, Constants.Lift.KF, 0)
+            configMotionCruiseVelocity(Constants.Lift.MOTION_MAGIC_VELOCITY, 0)
+            configMotionAcceleration(Constants.Lift.MOTION_MAGIC_ACCELERATION, 0)
             selectProfileSlot(kElevatorSlot, 0)
             // configAllowableClosedloopError(0, 0, 0)
-            configPeakOutputForward(0.1)
-            configPeakOutputReverse(0.1)
+            configPeakOutputForward(Constants.MAX_OUTPUT)
+            configPeakOutputReverse(Constants.MIN_OUTPUT)
             enableCurrentLimit(false)
             // configPeakCurrentDuration(0, 0)
             // configPeakCurrentLimit(0, 0)
             configContinuousCurrentLimit(25, 0) // amps
             enableVoltageCompensation(false)
-            configForwardSoftLimitThreshold(Lift.MIN_ENCODER_TICKS, 0)
-            configReverseSoftLimitThreshold(Lift.MAX_ENCODER_TICKS, 0)
+            configForwardSoftLimitThreshold(Constants.Lift.MIN_ENCODER_TICKS, 0)
+            configReverseSoftLimitThreshold(Constants.Lift.MAX_ENCODER_TICKS, 0)
             configForwardSoftLimitEnable(true, 0)
             configReverseSoftLimitEnable(true, 0)
+
+            setNeutralMode(NeutralMode.Brake)
         }
 
         mSlave = slaveTalon.apply {
             follow(mMaster)
             setInverted(InvertType.FollowMaster)
+
+            setNeutralMode(NeutralMode.Brake)
         }
 
         // setpoint = LiftHeight.getHeight()
         setPoint = 0.0
-        firstStagePosistion = 0.0
-        secondStagePosistion = Lift.SECOND_STAGE_HIGHT
+        firstStagePosition = 0.0
+        secondStagePosition = Constants.Lift.SECOND_STAGE_HIGHT
         isSecondStage = false
     }
 
     public fun zero() {
         setPoint = 0.0
-        firstStagePosistion = 0.0
-        secondStagePosistion = Lift.SECOND_STAGE_HIGHT
+        firstStagePosition = 0.0
+        secondStagePosition = Constants.Lift.SECOND_STAGE_HIGHT
         isSecondStage = false
     }
 
@@ -113,14 +126,15 @@ class Lift(
     }
 
     public fun setPosistion(height: LiftHeight) {
-        if ((firstStagePosistion < Lift.MAX_FLIP_HIGHT && firstStagePosistion < Lift.MAX_FLIP_HIGHT) || wrist.canRise) {
+        println("set posistion $height.value")
+        if (canRise(height.value)) {
             setTicks(inchesToTicks(height.value))
             setPoint = height.value
         } else println("Can't set lift posistion")
     }
 
     public fun setTicks(ticks: Int) {
-        println("posistion $ticks")
+        println("error ${mMaster.getClosedLoopError(0)}")
         mMaster.set(ControlMode.MotionMagic, ticks.toDouble())
     }
 
@@ -128,16 +142,20 @@ class Lift(
         setTicks(inchesToTicks(inches))
     }
 
+    @Suppress("MaxLineLength")
     public override fun update() {
-        if (!isSecondStage && firstStagePosistion + Lift.SECOND_STAGE_EPSILON > Lift.SECOND_STAGE_HIGHT) {
-            mMaster.config_kF(kElevatorSlot, Lift.KF2, 0)
+        if (!isSecondStage &&
+            firstStagePosition + Constants.Lift.SECOND_STAGE_EPSILON > Constants.Lift.SECOND_STAGE_HIGHT) {
+            mMaster.config_kF(kElevatorSlot, Constants.Lift.KF2, 0)
             isSecondStage = true
-        } else if (isSecondStage && Lift.SECOND_STAGE_HIGHT + Lift.SECOND_STAGE_EPSILON > secondStagePosistion) {
-            mMaster.config_kF(kElevatorSlot, Lift.KF, 0)
+        } else if (isSecondStage &&
+            Constants.Lift.SECOND_STAGE_HIGHT + Constants.Lift.SECOND_STAGE_EPSILON > secondStagePosition) {
+            mMaster.config_kF(kElevatorSlot, Constants.Lift.KF, 0)
             isSecondStage = false
         }
         // println(mMaster.getSelectedSensorPosition(0))
-        // println("Stage 1: " + firstStagePosistion.toString())
+        // println("Stage 1: " + firstStagePosition.toString())
+        println(-mMaster.getClosedLoopError(0))
     }
 
     public override fun stop() {

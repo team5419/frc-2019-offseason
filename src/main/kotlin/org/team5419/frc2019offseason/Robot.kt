@@ -20,13 +20,11 @@ import org.team5419.fault.hardware.LazyVictorSPX
 import edu.wpi.first.wpilibj.Solenoid
 
 class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
+    // input
+    private val mDriver: XboxController
+    private val mCodriver: XboxController
 
-    private val driver: XboxController
-    private val coDriver: XboxController
-
-    var rightDrive: Double = 0.0
-    var leftDrive: Double = 0.0
-
+    // hardware
     private val mLeftMaster: LazyTalonSRX
     private val mLeftSlave: LazyVictorSPX
 
@@ -42,9 +40,11 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
 
     private val mClimberMaster: LazyTalonSRX
     private val mClimberSlave: LazyTalonSRX
+    private val mLockTalon: LazyTalonSRX
 
     private val mWristMaster: LazyTalonSRX
 
+    // subsystems
     private val mDrivetrain: Drivetrain
     private val mLift: Lift
     private val mWrist: Wrist
@@ -64,43 +64,23 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
 
         mRightMaster = LazyTalonSRX(Constants.Drivetrain.RIGHT_MASTER_TALON_PORT)
         mRightSlave = LazyVictorSPX(Constants.Drivetrain.RIGHT_SLAVE_TALON_PORT)
-        mDrivetrain = Drivetrain(
-            mLeftMaster,
-            mLeftSlave,
-            mRightMaster,
-            mRightSlave
-        )
 
         // initilize Lift
         mLiftMaster = LazyTalonSRX(Constants.Lift.MASTER_TALON_PORT)
         mLiftSlave = LazyTalonSRX(Constants.Lift.SLAVE_TALON_PORT)
-        mLift = Lift(
-            mLiftMaster,
-            mLiftSlave
-        )
 
         // initilize Wrist
         mWristMaster = LazyTalonSRX(Constants.Wrist.MASTER_TALON_PORT)
-        mWrist = Wrist(
-            mWristMaster
-        )
-        mWrist.lift = mLift
-        mLift.wrist = mWrist
 
         // initilize Climber
         mClimberMaster = LazyTalonSRX(Constants.Climber.MASTER_TALON_PORT)
         mClimberSlave = LazyTalonSRX(Constants.Climber.SLAVE_TALON_PORT)
-        mClimber = Climber(mClimberMaster, mClimberSlave)
+        mLockTalon = LazyTalonSRX(Constants.Climber.LOCK_TALON_PORT)
 
         // initilize Vacuum
         mVacuumMaster = LazyTalonSRX(Constants.Vacuum.MASTER_TALON_PORT)
         mReleaseSolenoid = Solenoid(Constants.Vacuum.RELEASE_SOLNOID_PORT)
         mHatchSolenoid = Solenoid(Constants.Vacuum.HATCH_SOLENOID_PORT)
-        mVacuum = Vacuum(
-            mVacuumMaster,
-            mReleaseSolenoid,
-            mHatchSolenoid
-        )
 
         mVision = Vision()
 
@@ -109,16 +89,36 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         mLeftSlave.configFactoryDefault()
         mRightMaster.configFactoryDefault()
         mRightSlave.configFactoryDefault()
-
         mLiftMaster.configFactoryDefault()
         mLiftSlave.configFactoryDefault()
-
         mWristMaster.configFactoryDefault()
-
         mVacuumMaster.configFactoryDefault()
 
         mClimberMaster.configFactoryDefault()
         mClimberSlave.configFactoryDefault()
+        mLockTalon.configFactoryDefault()
+
+        mDrivetrain = Drivetrain(
+            mLeftMaster,
+            mLeftSlave,
+            mRightMaster,
+            mRightSlave
+        )
+        mLift = Lift(
+            mLiftMaster,
+            mLiftSlave
+        )
+        mWrist = Wrist(
+            mWristMaster
+        )
+        mWrist.lift = mLift
+        mLift.wrist = mWrist
+        mClimber = Climber(mClimberMaster, mClimberSlave, mLockTalon)
+        mVacuum = Vacuum(
+            mVacuumMaster,
+            mReleaseSolenoid,
+            mHatchSolenoid
+        )
 
         // initilize Subsystems Manager
         mSubsystemsManager = SubsystemsManager(
@@ -133,12 +133,12 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         // initilize controllers
         mAutoController = AutoController()
 
-        driver = XboxController(0)
-        coDriver = XboxController(1)
+        mDriver = XboxController(Constants.Input.DRIVER_PORT)
+        mCodriver = XboxController(Constants.Input.CODRIVER_PORT)
         mTeleopController = TeleopController(
             mSubsystemsManager,
-            driver,
-            coDriver,
+            mDriver,
+            mCodriver,
             TeleopController.ControlModes.CHEESY
         )
     }
@@ -187,5 +187,11 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     override fun teleopPeriodic() {
         mSubsystemsManager.updateAll()
         mTeleopController.update()
+    }
+
+    override fun testInit() {
+    }
+
+    override fun testPeriodic() {
     }
 }

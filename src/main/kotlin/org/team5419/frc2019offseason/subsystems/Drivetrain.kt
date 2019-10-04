@@ -12,7 +12,6 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice
 import org.team5419.fault.Subsystem
 import org.team5419.fault.hardware.LazyTalonSRX
 import org.team5419.fault.hardware.LazyVictorSPX
-import org.team5419.fault.math.Position
 import org.team5419.fault.util.Utils
 import org.team5419.fault.input.DriveSignal
 
@@ -41,7 +40,19 @@ class Drivetrain(
             field = value
         }
 
-    private val mPosition = Position()
+    private var speed = 1.0
+    public var isSlow: Boolean = false
+        set(value) {
+            if (value == field) return
+            field = value
+            if (value) speed = Constants.Input.SLOW_COEFFICIENT
+            else speed /= speed
+        }
+    public var isReverse: Boolean = false
+        set(value) {
+            if (value == field) return
+            else speed *= -1
+        }
 
     init {
         mLeftMaster = leftMaster.apply {
@@ -70,6 +81,8 @@ class Drivetrain(
                 Constants.TALON_PIDF_UPDATE_PERIOD_MS.toDouble(), 0x00, 0, 0)
             configSetParameter(ParamEnum.ePIDLoopPeriod,
                 Constants.TALON_PIDF_UPDATE_PERIOD_MS.toDouble(), 0x00, 1, 0)
+            configPeakOutputForward(Constants.MAX_OUTPUT)
+            configPeakOutputReverse(Constants.MIN_OUTPUT)
         }
 
         mLeftSlave = leftSlave.apply {
@@ -103,6 +116,8 @@ class Drivetrain(
                 Constants.TALON_PIDF_UPDATE_PERIOD_MS.toDouble(), 0x00, 0, 0)
             configSetParameter(ParamEnum.ePIDLoopPeriod,
                 Constants.TALON_PIDF_UPDATE_PERIOD_MS.toDouble(), 0x00, 1, 0)
+            configPeakOutputForward(Constants.MAX_OUTPUT)
+            configPeakOutputReverse(Constants.MIN_OUTPUT)
         }
         mRightSlave = rightSlave.apply {
             follow(mRightMaster)
