@@ -4,7 +4,6 @@ import org.team5419.fault.Subsystem
 import edu.wpi.first.wpilibj.Solenoid
 import org.team5419.fault.hardware.LazyTalonSRX
 import com.ctre.phoenix.motorcontrol.ControlMode
-import edu.wpi.first.wpilibj.Timer
 
 class Vacuum(
     masterTalon: LazyTalonSRX,

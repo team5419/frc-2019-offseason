@@ -90,14 +90,14 @@ public class TeleopController(
         // Climb control
         if (mDriver.getBumperPressed(Hand.kRight) && mCoDriver.getBumperPressed(Hand.kLeft)) {
             mClimber.unlock()
-            if(!mClimber.isUnlocking){
+            if (!mClimber.isUnlocking) {
                 mClimber.climb()
             }
         }
 
         // Codriver
         // Valve control
-        if (mCoDriver.getBumperPressed(Hand.kLeft) || mCoDriver.getBumperPressed(Hand.kRight)){
+        if (mCoDriver.getBumperPressed(Hand.kLeft) || mCoDriver.getBumperPressed(Hand.kRight)) {
             mSubsystems.vacuum.release()
         }
 
