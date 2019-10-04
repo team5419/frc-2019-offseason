@@ -71,7 +71,7 @@ class Wrist(
             configForwardSoftLimitEnable(true, 0)
             configReverseSoftLimitEnable(true, 0)
             configPeakOutputForward(Constants.MAX_OUTPUT)
-            configPeakOutputReverse(Constants.MAX_OUTPUT)
+            configPeakOutputReverse(Constants.MIN_OUTPUT)
         }
 
         setPoint = 0.0

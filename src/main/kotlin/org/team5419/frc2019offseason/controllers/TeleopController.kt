@@ -2,11 +2,14 @@ package org.team5419.frc2019offseason.controllers
 
 import org.team5419.frc2019offseason.subsystems.SubsystemsManager
 import org.team5419.frc2019offseason.Constants.Input
+import org.team5419.frc2019offseason.subsystems.Wrist.WristPosistions
+import org.team5419.frc2019offseason.subsystems.Lift.LiftHeight
 
 import org.team5419.fault.Controller
 import org.team5419.fault.input.CheesyDriveHelper
 import org.team5419.fault.input.TankDriveHelper
 import org.team5419.fault.input.DriveHelper
+import org.team5419.fault.input.DriveSignal
 
 import edu.wpi.first.wpilibj.XboxController
 import edu.wpi.first.wpilibj.GenericHID.Hand
@@ -63,7 +66,6 @@ public class TeleopController(
 
     @Suppress("ComplexMethod")
     override fun update() {
-        /*
         // Driver
         isSlow = false
         speed = 0.0
@@ -123,7 +125,7 @@ public class TeleopController(
         }
         if (mCoDriver.getPOV() == 90) {
             mSubsystems.wrist.setPosition(WristPosistions.FORWARD)
-        } */
+        }
 
         mSubsystems.lift.setPercent(mCoDriver.getY(Hand.kLeft) * 0.5)
         // Manuel Lift control
