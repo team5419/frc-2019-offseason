@@ -144,15 +144,17 @@ class Lift(
 
     @Suppress("MaxLineLength")
     public override fun update() {
-        println(1023.0 * mMaster.getMotorOutputPercent() / mMaster.getSelectedSensorVelocity(0).toDouble())
+        // println(1023.0 * mMaster.getMotorOutputPercent() / mMaster.getSelectedSensorVelocity(0).toDouble())
         if (!isSecondStage &&
             firstStagePosition + Constants.Lift.SECOND_STAGE_EPSILON > Constants.Lift.SECOND_STAGE_HIGHT) {
             mMaster.config_kF(kElevatorSlot, Constants.Lift.KF2, 0)
             isSecondStage = true
+            println("second stage")
         } else if (isSecondStage &&
             Constants.Lift.SECOND_STAGE_HIGHT + Constants.Lift.SECOND_STAGE_EPSILON > secondStagePosition) {
             mMaster.config_kF(kElevatorSlot, Constants.Lift.KF, 0)
             isSecondStage = false
+            println("first stage")
         }
     }
 

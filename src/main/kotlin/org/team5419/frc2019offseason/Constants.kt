@@ -50,7 +50,8 @@ public object Constants {
         public const val MASTER_TALON_PORT = 2
         public const val RELEASE_SOLNOID_PORT = 0
         public const val HATCH_SOLENOID_PORT = 1
-        public const val CURRENT_THRESHOLD = 2.125
+        public const val RESTING_THRESHOLD = 0.5
+        public const val MIN_THRESHOLD = 0.5
 
         public const val MOTION_MAGIC_VELOCITY = 11000
         public const val MOTION_MAGIC_ACCELERATION = 11000
@@ -64,6 +65,7 @@ public object Constants {
         public const val LOCK_TALON_PORT = 7
         public const val MAX_OUTPUT_PERCENTAGE = 0.9
         public const val LOCK_OUTPUT = 0.9
+        public const val UNLOCKING_RUN_TIME = 3.0
     }
 
     object Wrist {
@@ -72,10 +74,10 @@ public object Constants {
         public const val FORWARD = 0.0
         public const val MIDDLE = 90.0
         public const val BACKWARD = 180.0
-        public const val BALL_ANGLE = 20.0
-        public const val BALL_HIGH = 20.0
-        public const val BALL_MID = 20.0
-        public const val BALL_LOW = 20.0
+        public const val BALL_ANGLE = 160.0
+        public const val BALL_HIGH = 160.0
+        public const val BALL_MID = 160.0
+        public const val BALL_LOW = 160.0
         public const val MAX_RISE_ANGLE = 75.0
 
         public const val ENCODER_TICKS_PER_ROTATION = 4096.0
@@ -111,8 +113,8 @@ public object Constants {
         // tf?
         public const val ENCODER_TICKS_PER_ROTATION = 4096.0
         public const val INCHES_PER_ROTATION = 4.4 // inches the elevator moves for 4096 ticks of the encoder
-        public const val MOTION_MAGIC_VELOCITY = 50.0 // inches per second
-        public const val MOTION_MAGIC_ACCELERATION = 100.0 // inches per second per second
+        public const val MOTION_MAGIC_VELOCITY = 300.0 // inches per second
+        public const val MOTION_MAGIC_ACCELERATION = 800.0 // inches per second per second
         // public const val MOTION_MAGIC_VELOCITY = 11000 // encoder ticks per 100ms
         // public const val MOTION_MAGIC_ACCELERATION = 11000 // encoder ticks per 100ms per 100ms
         public const val MAX_ENCODER_HEIGHT = 45.0 // inches
@@ -120,11 +122,11 @@ public object Constants {
         // public const val MAX_ENCODER_TICKS = -41890
         // public const val MIN_ENCODER_TICKS = 0
         // pid
-        public const val KP = 1.0
+        public const val KP = 1.75
         public const val KI = 0.0
-        public const val KD = 0.0
-        public const val KF = 0.0 // ALWAYS ZERO
-        public const val KF2 = 0.0 // ALWAYS ZERO
+        public const val KD = 0.9
+        public const val KF = 0.4 // ALWAYS ZERO
+        public const val KF2 = 0.6 // ALWAYS ZERO
         public const val SECOND_STAGE_EPSILON = 10.0
     }
 

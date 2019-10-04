@@ -9,6 +9,7 @@ import org.team5419.frc2019offseason.subsystems.Drivetrain
 import org.team5419.frc2019offseason.subsystems.Wrist
 import org.team5419.frc2019offseason.subsystems.Lift
 import org.team5419.frc2019offseason.subsystems.Vacuum
+import org.team5419.frc2019offseason.subsystems.Climber
 
 import org.team5419.fault.Controller
 import org.team5419.fault.input.SpaceDriveHelper
@@ -32,11 +33,10 @@ public class TeleopController(
     private val mDrivetrain: Drivetrain
     private val mLift: Lift
     private val mWrist: Wrist
-    // private val mClimber: Climber
+    private val mClimber: Climber
     private val mVacuum: Vacuum
 
     private var isReverse: Boolean = false
-    private var isUnlocked: Boolean = false
     private var speed = Input.BASE_SPEED
     private var leftDrive: Double = 0.0
     private var rightDrive: Double = 0.0
@@ -61,6 +61,7 @@ public class TeleopController(
         mLift = mSubsystems.lift
         mWrist = mSubsystems.wrist
         mVacuum = mSubsystems.vacuum
+        mClimber = mSubsystems.climber
     }
 
     override fun start() {
@@ -87,18 +88,18 @@ public class TeleopController(
         mSubsystems.drivetrain.setPercent(ds)
 
         // Climb control
-        if (mDriver.getBumperPressed(Hand.kRight) || mCoDriver.getBumperPressed(Hand.kLeft)) {
-            if (isUnlocked == false) {
-                mSubsystems.climber.unlock()
-                isUnlocked = true
+        if (mDriver.getBumperPressed(Hand.kRight) && mCoDriver.getBumperPressed(Hand.kLeft)) {
+            mClimber.unlock()
+            if(!mClimber.isUnlocking){
+                mClimber.climb()
             }
-            mSubsystems.climber.climb()
         }
 
         // Codriver
         // Valve control
-        if (mCoDriver.getBumperPressed(Hand.kLeft) || mCoDriver.getBumperPressed(Hand.kRight))
+        if (mCoDriver.getBumperPressed(Hand.kLeft) || mCoDriver.getBumperPressed(Hand.kRight)){
             mSubsystems.vacuum.release()
+        }
 
         // Vacuum control
         if (mCoDriver.getTriggerAxis(Hand.kLeft) > Input.DEADBAND) {

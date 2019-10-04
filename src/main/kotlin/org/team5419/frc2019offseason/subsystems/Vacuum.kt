@@ -1,7 +1,6 @@
 package org.team5419.frc2019offseason.subsystems
 
 import org.team5419.fault.Subsystem
-import org.team5419.frc2019offseason.Constants
 import edu.wpi.first.wpilibj.Solenoid
 import org.team5419.fault.hardware.LazyTalonSRX
 import com.ctre.phoenix.motorcontrol.ControlMode
@@ -13,14 +12,11 @@ class Vacuum(
     hatchSolenoid: Solenoid
 
 ) : Subsystem() {
-    private val mTimer: Timer = Timer()
-
     private val mTalon: LazyTalonSRX
     private val mReleaseSolenoid: Solenoid
     private val mHatchSolenoid: Solenoid
     private var isClearingValve: Boolean = false
     private var hasPeice: Boolean = false
-    private var isPumping: Boolean = false
     public var hatchValve: Boolean = false
         get() = mHatchSolenoid.get()
         set(value) {
@@ -42,7 +38,6 @@ class Vacuum(
     }
 
     public fun release() {
-        isPumping = false
         realeaseValve = true
         hatchValve = true
         hasPeice = false
@@ -52,30 +47,34 @@ class Vacuum(
         realeaseValve = false
         hatchValve = false
         setPercent(percent)
-        isPumping = true
     }
 
     public fun pickHatch(percent: Double) {
         realeaseValve = false
         hatchValve = true
         setPercent(percent)
-        isPumping = true
     }
 
     public fun setPercent(percent: Double) {
-        if (percent == 0.0) isPumping = false
-        mTalon.set(ControlMode.PercentOutput, percent)
+        // if (percent == 0.0) isPumping = false
+        mTalon.set(ControlMode.PercentOutput, Math.max(percent, 0.25))
     }
 
     public override fun update() {
-        hasPeice = hasPeice || mTalon.getOutputCurrent() >= Constants.Vacuum.CURRENT_THRESHOLD
-        if (hasPeice && mTalon.getOutputCurrent() < Constants.Vacuum.CURRENT_THRESHOLD)
-            setPercent(1.0)
-        else if (!isPumping) mTalon.set(ControlMode.PercentOutput, 0.0)
+        println("${mTalon.getOutputCurrent()}")
+        // hasPeice = hasPeice || mTalon.getOutputCurrent() >= Constants.Vacuum.RESTING_THRESHOLD
+        // if (hasPeice && !isPumping){
+        //     mTalon.set(ControlMode.PercentOutput, 0.2)
+        // }
+        // else if(!hasPeice && !isPumping){
+        //     mTalon.set(ControlMode.PercentOutput, 0.0)
+        // }
     }
 
     public override fun stop() {
-        release()
+        mTalon.set(ControlMode.PercentOutput, 0.0)
+        mReleaseSolenoid.set(true)
+        mHatchSolenoid.set(true)
     }
     public override fun reset() { stop() }
 }

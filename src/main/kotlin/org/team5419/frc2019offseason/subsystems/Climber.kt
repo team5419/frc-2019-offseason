@@ -4,15 +4,23 @@ import org.team5419.frc2019offseason.Constants
 import org.team5419.fault.Subsystem
 import org.team5419.fault.hardware.LazyTalonSRX
 import org.team5419.fault.hardware.LazyVictorSPX
+import edu.wpi.first.wpilibj.Timer
 
 import com.ctre.phoenix.motorcontrol.ControlMode
+
 
 class Climber(masterTalon: LazyTalonSRX, slaveTalon: LazyVictorSPX, lockTalon: LazyTalonSRX) : Subsystem() {
 
     private val mMasterTalon: LazyTalonSRX
     private val mSlaveTalon: LazyVictorSPX
     private val mLockTalon: LazyTalonSRX
+    private val mTimer: Timer = Timer()
+    public var isUnlocked: Boolean = false
+    public var isUnlocking: Boolean = false
+
+
     init {
+
         mMasterTalon = masterTalon
         mSlaveTalon = slaveTalon
         mLockTalon = lockTalon
@@ -31,14 +39,24 @@ class Climber(masterTalon: LazyTalonSRX, slaveTalon: LazyVictorSPX, lockTalon: L
     }
 
     public fun climb() { // for driver
-        mMasterTalon.set(ControlMode.PercentOutput, Constants.Climber.MAX_OUTPUT_PERCENTAGE.toDouble())
+        if(isUnlocked){
+            mMasterTalon.set(ControlMode.PercentOutput, Constants.Climber.MAX_OUTPUT_PERCENTAGE.toDouble())
+        }
     }
 
     public fun unlock() {
         mLockTalon.set(ControlMode.PercentOutput, Constants.Climber.LOCK_OUTPUT.toDouble())
+        isUnlocking = true
+        mTimer.start()
     }
 
-    public override fun update() {}
+    public override fun update() {
+        if(isUnlocking && mTimer.get() > Constants.Climber.UNLOCKING_RUN_TIME){
+            mTimer.stop()
+            isUnlocking = false
+            isUnlocked = true
+        }
+    }
     public override fun stop() {
         mMasterTalon.set(ControlMode.PercentOutput, 0.0)
     }
