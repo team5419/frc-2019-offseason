@@ -48,7 +48,7 @@ class Lift(
     private fun inchesToTicks(inches: Double): Int =
         (inches / Constants.Lift.INCHES_PER_ROTATION * Constants.Lift.ENCODER_TICKS_PER_ROTATION).toInt()
     private fun canRise(height: Double): Boolean {
-        println("${wrist.canRise} ${firstStagePosition < Constants.Lift.MAX_FLIP_HIGHT} ${height < Constants.Lift.MAX_FLIP_HIGHT} ${firstStagePosition} ${height}")
+        println("${wrist.canRise} ${firstStagePosition < Constants.Lift.MAX_FLIP_HIGHT} ${height < Constants.Lift.MAX_FLIP_HIGHT} $firstStagePosition $height")
         return wrist.canRise ||
                 (firstStagePosition < Constants.Lift.MAX_FLIP_HIGHT &&
                     height < Constants.Lift.MAX_FLIP_HIGHT)
