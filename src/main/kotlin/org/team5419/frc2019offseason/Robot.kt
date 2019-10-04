@@ -10,7 +10,7 @@ import org.team5419.frc2019offseason.subsystems.Lift
 import org.team5419.frc2019offseason.subsystems.Vacuum
 import org.team5419.frc2019offseason.subsystems.SubsystemsManager
 import org.team5419.frc2019offseason.subsystems.Wrist
-import org.team5419.frc2019offseason.subsystems.Climber
+// import org.team5419.frc2019offseason.subsystems.Climber
 import org.team5419.frc2019offseason.controllers.AutoController
 import org.team5419.frc2019offseason.controllers.TeleopController
 
@@ -39,15 +39,15 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     private val mReleaseSolenoid: Solenoid
     private val mHatchSolenoid: Solenoid
 
-    private val mClimberMaster: LazyTalonSRX
-    private val mClimberSlave: LazyTalonSRX
+    // private val mClimberMaster: LazyTalonSRX
+    // private val mClimberSlave: LazyTalonSRX
 
     private val mWristMaster: LazyTalonSRX
 
     private val mDrivetrain: Drivetrain
     private val mLift: Lift
     private val mWrist: Wrist
-    private val mClimber: Climber
+    // private val mClimber: Climber
     private val mVacuum: Vacuum
 
     private val mSubsystemsManager: SubsystemsManager
@@ -71,8 +71,8 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         mWristMaster = LazyTalonSRX(Constants.Wrist.MASTER_TALON_PORT)
 
         // initilize Climber
-        mClimberMaster = LazyTalonSRX(Constants.Climber.MASTER_TALON_PORT)
-        mClimberSlave = LazyTalonSRX(Constants.Climber.SLAVE_TALON_PORT)
+        // mClimberMaster = LazyTalonSRX(Constants.Climber.MASTER_TALON_PORT)
+        // mClimberSlave = LazyTalonSRX(Constants.Climber.SLAVE_TALON_PORT)
 
         // initilize Vacuum
         mVacuumMaster = LazyTalonSRX(Constants.Vacuum.MASTER_TALON_PORT)
@@ -84,16 +84,12 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         mLeftSlave.configFactoryDefault()
         mRightMaster.configFactoryDefault()
         mRightSlave.configFactoryDefault()
-
         mLiftMaster.configFactoryDefault()
         mLiftSlave.configFactoryDefault()
-
         mWristMaster.configFactoryDefault()
-
         mVacuumMaster.configFactoryDefault()
-
-        mClimberMaster.configFactoryDefault()
-        mClimberSlave.configFactoryDefault()
+        // mClimberMaster.configFactoryDefault()
+        // mClimberSlave.configFactoryDefault()
 
         mDrivetrain = Drivetrain(
             mLeftMaster,
@@ -110,7 +106,7 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         )
         mWrist.lift = mLift
         mLift.wrist = mWrist
-        mClimber = Climber(mClimberMaster, mClimberSlave)
+        // mClimber = Climber(mClimberMaster, mClimberSlave)
         mVacuum = Vacuum(
             mVacuumMaster,
             mReleaseSolenoid,
@@ -122,8 +118,8 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
             mDrivetrain,
             mWrist,
             mVacuum,
-            mLift,
-            mClimber
+            mLift
+            // mClimber
         )
 
         // initilize controllers

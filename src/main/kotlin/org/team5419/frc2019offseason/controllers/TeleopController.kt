@@ -1,15 +1,12 @@
 package org.team5419.frc2019offseason.controllers
 
 import org.team5419.frc2019offseason.subsystems.SubsystemsManager
-import org.team5419.frc2019offseason.subsystems.Wrist.WristPosistions
-import org.team5419.frc2019offseason.subsystems.Lift.LiftHeight
 import org.team5419.frc2019offseason.Constants.Input
 
 import org.team5419.fault.Controller
 import org.team5419.fault.input.CheesyDriveHelper
 import org.team5419.fault.input.TankDriveHelper
 import org.team5419.fault.input.DriveHelper
-import org.team5419.fault.input.DriveSignal
 
 import edu.wpi.first.wpilibj.XboxController
 import edu.wpi.first.wpilibj.GenericHID.Hand
@@ -32,7 +29,7 @@ public class TeleopController(
     private var rightDrive: Double = 0.0
     private var driveHelper: DriveHelper
 
-    private var isManuelOverride = false
+    private var isManuelOverride = true
     private val isHighGear: Boolean get() = mDriver.getTriggerAxis(Hand.kLeft) > Input.DEADBAND
     private val isQuickTurn: Boolean get() = mDriver.getTriggerAxis(Hand.kRight) > Input.DEADBAND
 
@@ -66,9 +63,10 @@ public class TeleopController(
 
     @Suppress("ComplexMethod")
     override fun update() {
+        /*
         // Driver
         isSlow = false
-        speed = Input.BASE_SPEED
+        speed = 0.0
         if (mDriver.getAButton()) { isReverse = !isReverse }
         if (isReverse) { speed *= -1 }
         if (mDriver.getBumper(Hand.kLeft) || mDriver.getBumper(Hand.kLeft)) {
@@ -87,9 +85,9 @@ public class TeleopController(
         // mSubsystems.drivetrain.setPercent(DriveSignal(1.0, 1.0))
 
         // Climb control
-        if (mDriver.getBumperPressed(Hand.kRight) || mCoDriver.getBumperPressed(Hand.kLeft)) {
-            mSubsystems.climber.climb()
-        }
+        // if (mDriver.getBumperPressed(Hand.kRight) || mCoDriver.getBumperPressed(Hand.kLeft)) {
+        //     mSubsystems.climber.climb()
+        // }
 
         // Codriver
         // Valve control
@@ -111,7 +109,7 @@ public class TeleopController(
         else if (mCoDriver.getPOV() == 0) {
             mSubsystems.lift.setPosistion(LiftHeight.BALL_HIGH)
             mSubsystems.wrist.setPosition(WristPosistions.BALL_HIGH)
-        } else if (mCoDriver.getPOV() == 90) {
+        } else if (mCoDriver.getPOV() == 270) {
             mSubsystems.lift.setPosistion(LiftHeight.BALL_MID)
             mSubsystems.wrist.setPosition(WristPosistions.BALL_MID)
         } else if (mCoDriver.getPOV() == 180) {
@@ -120,18 +118,20 @@ public class TeleopController(
         }
 
         if (mCoDriver.getXButtonPressed()) {
+            println("backward")
             mSubsystems.wrist.setPosition(WristPosistions.BACKWARD)
         }
         if (mCoDriver.getPOV() == 90) {
             mSubsystems.wrist.setPosition(WristPosistions.FORWARD)
-        }
+        } */
 
+        mSubsystems.lift.setPercent(mCoDriver.getY(Hand.kLeft) * 0.5)
         // Manuel Lift control
-        if (Math.abs(mCoDriver.getY(Hand.kLeft)) > Input.DEADBAND && isManuelOverride) {
-            mSubsystems.lift.setPercent(mCoDriver.getY(Hand.kLeft))
-        }
-        if (Math.abs(mCoDriver.getY(Hand.kRight)) > Input.DEADBAND && isManuelOverride) {
-            mSubsystems.wrist.setPercent(mCoDriver.getY(Hand.kLeft))
-        }
+        // if (Math.abs(mCoDriver.getY(Hand.kLeft)) > Input.DEADBAND && isManuelOverride) {
+        //     mSubsystems.lift.setPercent(mCoDriver.getY(Hand.kLeft) * 0.5)
+        // }
+        // if (Math.abs(mCoDriver.getY(Hand.kRight)) > Input.DEADBAND && isManuelOverride) {
+        //     mSubsystems.wrist.setPercent(mCoDriver.getY(Hand.kLeft) * 0.5)
+        // }
     }
 }

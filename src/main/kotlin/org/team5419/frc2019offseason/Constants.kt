@@ -6,7 +6,7 @@ public object Constants {
     public const val ROBOT_UPDATE_PERIOD = 0.005
     public const val TALON_UPDATE_PERIOD_MS = 1
     public const val TALON_PIDF_UPDATE_PERIOD_MS = 1
-    public const val MAX_OUTPUT = 0.1
+    public const val MAX_OUTPUT = 1.0
 
     object Input {
         public const val DRIVER_PORT = 0
@@ -57,8 +57,8 @@ public object Constants {
     }
 
     object Climber {
-        public const val MASTER_TALON_PORT = 28 // check this later
-        public const val SLAVE_TALON_PORT = 29 // check this later
+        public const val MASTER_TALON_PORT = 4 // check this later
+        public const val SLAVE_TALON_PORT = 11 // check this later
         public const val MAX_OUTPUT_PERCENTAGE = 90.0
     }
 
@@ -92,7 +92,6 @@ public object Constants {
         // talon port
         public const val MASTER_TALON_PORT = 3
         public const val SLAVE_TALON_PORT = 5
-
         // inches
         public const val STOW_HEIGHT = 0.0
         public const val HATCH_LOW_HEIGHT = 7.0

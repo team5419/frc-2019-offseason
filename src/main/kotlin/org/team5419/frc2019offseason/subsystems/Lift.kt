@@ -122,7 +122,7 @@ class Lift(
     }
 
     public fun setTicks(ticks: Int) {
-        println("error $mMaster.get")
+        println("error ${mMaster.getClosedLoopError(0)}")
         mMaster.set(ControlMode.MotionMagic, ticks.toDouble())
     }
 
