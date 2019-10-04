@@ -47,6 +47,10 @@ class Lift(
         ticks.toDouble() / Constants.Lift.ENCODER_TICKS_PER_ROTATION.toDouble() * Constants.Lift.INCHES_PER_ROTATION
     private fun inchesToTicks(inches: Double): Int =
         (inches / Constants.Lift.INCHES_PER_ROTATION * Constants.Lift.ENCODER_TICKS_PER_ROTATION).toInt()
+    private fun canRise(height: Double) : Boolean {
+        println("${wrist.canRise} ${firstStagePosition < Constants.Lift.MAX_FLIP_HIGHT} ${height < Constants.Lift.MAX_FLIP_HIGHT} ${firstStagePosition} ${height}")
+        return wrist.canRise || (firstStagePosition < Constants.Lift.MAX_FLIP_HIGHT && height < Constants.Lift.MAX_FLIP_HIGHT)
+    }
 
     private var mBrakeMode: Boolean = false
     set(value) {
@@ -115,8 +119,7 @@ class Lift(
 
     public fun setPosistion(height: LiftHeight) {
         println("set posistion $height.value")
-        if ((firstStagePosition < Constants.Lift.MAX_FLIP_HIGHT &&
-                height.value < Constants.Lift.MAX_FLIP_HIGHT) || wrist.canRise) {
+        if (canRise(height.value)) {
             setTicks(inchesToTicks(height.value))
             setPoint = height.value
         } else println("Can't set lift posistion")
