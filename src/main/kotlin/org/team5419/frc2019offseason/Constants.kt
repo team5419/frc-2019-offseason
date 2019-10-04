@@ -1,6 +1,5 @@
 package org.team5419.frc2019offseason
 
-@SuppressWarnings("MagicNumber")
 public object Constants {
 
     public const val ROBOT_UPDATE_PERIOD = 0.005
@@ -13,7 +12,6 @@ public object Constants {
         public const val CODRIVER_PORT = 1
         public const val DEADBAND = 0.02
         public const val BASE_SPEED = 1.0
-        public const val BASE_INVERSE_SPEED = 0.1
         public const val SLOW_COEFFICIENT = 1.0
         public const val SLOW = 0.4
         public const val SPIN_SPEED = 0.5
@@ -30,7 +28,7 @@ public object Constants {
         // units
         public const val ENCODER_TICKS_PER_ROTATION = 4096
         public const val TURN_UNITS_PER_ROTATION = 3600 // for gyro
-        public const val PIGEON_UNITS_PER_ROTATION = 8192
+        // public const val PIGEON_UNITS_PER_ROTATION = 8192
         // dimensions
         public const val WHEEL_BASE = 27.0 // inches
         public const val WHEEL_DIAMETER = 6.0 // inches
@@ -57,9 +55,11 @@ public object Constants {
     }
 
     object Climber {
-        public const val MASTER_TALON_PORT = 28 // check this later
-        public const val SLAVE_TALON_PORT = 29 // check this later
-        public const val MAX_OUTPUT_PERCENTAGE = 90.0
+        public const val MASTER_TALON_PORT = 4
+        public const val SLAVE_TALON_PORT = 11
+        public const val LOCK_TALON_PORT = 7
+        public const val MAX_OUTPUT_PERCENTAGE = 0.9
+        public const val LOCK_OUTPUT = 0.9
     }
 
     object Wrist {
@@ -74,8 +74,7 @@ public object Constants {
         public const val BALL_LOW = 20.0
         public const val MAX_RISE_ANGLE = 75.0
 
-        public const val ENCODER_TICKS_PER_ROTATION = 4096
-        public const val ENCODER_TICKS_BALL_POSITSTION = 1692
+        public const val ENCODER_TICKS_PER_ROTATION = 409
 
         public const val KP = 0.7
         public const val KI = 0.0

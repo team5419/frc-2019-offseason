@@ -27,6 +27,7 @@ public class TeleopController(
 
     private var isSlow: Boolean = false
     private var isReverse: Boolean = false
+    private var isUnlocked: Boolean = false
     private var speed = Input.BASE_SPEED
     private var leftDrive: Double = 0.0
     private var rightDrive: Double = 0.0
@@ -71,7 +72,7 @@ public class TeleopController(
         speed = Input.BASE_SPEED
         if (mDriver.getAButton()) { isReverse = !isReverse }
         if (isReverse) { speed *= -1 }
-        if (mDriver.getBumper(Hand.kLeft) || mDriver.getBumper(Hand.kLeft)) {
+        if (mDriver.getBumper(Hand.kRight) || mDriver.getBumper(Hand.kLeft)) {
             speed *= Input.SLOW
         }
 
@@ -88,6 +89,10 @@ public class TeleopController(
 
         // Climb control
         if (mDriver.getBumperPressed(Hand.kRight) || mCoDriver.getBumperPressed(Hand.kLeft)) {
+            if (isUnlocked == false) {
+                mSubsystems.climber.unlock()
+                isUnlocked = true
+            }
             mSubsystems.climber.climb()
         }
 
@@ -108,13 +113,14 @@ public class TeleopController(
             mSubsystems.lift.setPosistion(LiftHeight.HATCH_MID)
         } else if (mCoDriver.getYButtonPressed())
             mSubsystems.lift.setPosistion(LiftHeight.HATCH_HIGH)
-        else if (mCoDriver.getPOV() == 0) {
+        else if ((mCoDriver.getPOV() >= 340 && mCoDriver.getPOV() <= 360) ||
+            (mCoDriver.getPOV() >= 0 && mCoDriver.getPOV() <= 20)) {
             mSubsystems.lift.setPosistion(LiftHeight.BALL_HIGH)
             mSubsystems.wrist.setPosition(WristPosistions.BALL_HIGH)
-        } else if (mCoDriver.getPOV() == 90) {
+        } else if (mCoDriver.getPOV() >= 250 && mCoDriver.getPOV() <= 290) {
             mSubsystems.lift.setPosistion(LiftHeight.BALL_MID)
             mSubsystems.wrist.setPosition(WristPosistions.BALL_MID)
-        } else if (mCoDriver.getPOV() == 180) {
+        } else if (mCoDriver.getPOV() >= 160 && mCoDriver.getPOV() <= 200) {
             mSubsystems.lift.setPosistion(LiftHeight.BALL_LOW)
             mSubsystems.wrist.setPosition(WristPosistions.BALL_LOW)
         }
@@ -122,7 +128,7 @@ public class TeleopController(
         if (mCoDriver.getXButtonPressed()) {
             mSubsystems.wrist.setPosition(WristPosistions.BACKWARD)
         }
-        if (mCoDriver.getPOV() == 90) {
+        if (mCoDriver.getPOV() >= 70 && mCoDriver.getPOV() <= 110) {
             mSubsystems.wrist.setPosition(WristPosistions.FORWARD)
         }
 

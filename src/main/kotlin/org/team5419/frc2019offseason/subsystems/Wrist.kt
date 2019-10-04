@@ -63,7 +63,6 @@ class Wrist(
             enableCurrentLimit(true)
             configPeakCurrentDuration(kWristSlot, 0)
             configPeakCurrentLimit(kWristSlot, 0)
-            @Suppress("MagicNumber")
             configContinuousCurrentLimit(25, 0) // amps
             enableVoltageCompensation(false)
             configForwardSoftLimitThreshold(Constants.Wrist.MAX_ENCODER_TICKS, kWristSlot)
