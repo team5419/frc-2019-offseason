@@ -5,19 +5,35 @@ import org.team5419.fault.Subsystem
 import org.team5419.fault.hardware.LazyTalonSRX
 import com.ctre.phoenix.motorcontrol.ControlMode
 
-class Climber(masterTalon: LazyTalonSRX, slaveTalon: LazyTalonSRX) : Subsystem() {
+class Climber(masterTalon: LazyTalonSRX, slaveTalon: LazyTalonSRX, lockTalon: LazyTalonSRX) : Subsystem() {
 
     private val mMasterTalon: LazyTalonSRX
     private val mSlaveTalon: LazyTalonSRX
-
+    private val mLockTalon: LazyTalonSRX
     init {
         mMasterTalon = masterTalon
         mSlaveTalon = slaveTalon
+        mLockTalon = lockTalon
+
+        mMasterTalon.apply {
+            configVoltageCompSaturation(10.0, 0)
+        }
         mSlaveTalon.follow(mMasterTalon)
+        mLockTalon.apply {
+            configNominalOutputForward(0.0, 0)
+            configNominalOutputReverse(0.0, 0)
+            configPeakOutputForward(.9, 0)
+            configPeakOutputReverse(-.9, 0)
+            configVoltageCompSaturation(10.0, 0)
+        }
     }
 
     public fun climb() { // for driver
         mMasterTalon.set(ControlMode.PercentOutput, Constants.Climber.MAX_OUTPUT_PERCENTAGE.toDouble())
+    }
+
+    public fun unlock() {
+        mLockTalon.set(ControlMode.PercentOutput, Constants.Climber.LOCK_OUTPUT.toDouble())
     }
 
     public override fun update() {}

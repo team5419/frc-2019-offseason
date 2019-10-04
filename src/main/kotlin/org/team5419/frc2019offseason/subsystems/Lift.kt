@@ -24,9 +24,9 @@ class Lift(
     private var mSlave: LazyTalonSRX
     lateinit var wrist: Wrist
     var firstStagePosition: Double
-        get() = ticksToInches(-mMaster.getSelectedSensorPosition(0))
+        get() = ticksToInches(-mMaster.getSelectedSensorPosition(kElevatorSlot))
     var secondStagePosition: Double
-        get() = Math.max(ticksToInches(-mMaster.getSelectedSensorPosition(0)) - Constants.Lift.SECOND_STAGE_HIGHT, 0.0)
+        get() = Math.max(ticksToInches(-mMaster.getSelectedSensorPosition(kElevatorSlot)) - Constants.Lift.SECOND_STAGE_HIGHT, 0.0)
     var setPoint: Double
     var isSecondStage: Boolean
     val canFlip: Boolean get() = 4.0 > firstStagePosition && 4.0 > setPoint
