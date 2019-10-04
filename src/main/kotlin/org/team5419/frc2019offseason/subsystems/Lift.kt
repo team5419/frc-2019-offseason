@@ -48,7 +48,7 @@ class Lift(
     private fun inchesToTicks(inches: Double): Int =
         (inches / Constants.Lift.INCHES_PER_ROTATION * Constants.Lift.ENCODER_TICKS_PER_ROTATION).toInt()
     private fun canRise(height: Double): Boolean {
-        println("${wrist.canRise} ${firstStagePosition < Constants.Lift.MAX_FLIP_HIGHT} ${height < Constants.Lift.MAX_FLIP_HIGHT} $firstStagePosition $height")
+        // println("${wrist.canRise} ${firstStagePosition < Constants.Lift.MAX_FLIP_HIGHT} ${height < Constants.Lift.MAX_FLIP_HIGHT} $firstStagePosition $height")
         return wrist.canRise ||
                 (firstStagePosition < Constants.Lift.MAX_FLIP_HIGHT &&
                     height < Constants.Lift.MAX_FLIP_HIGHT)
@@ -91,8 +91,8 @@ class Lift(
             // configPeakCurrentLimit(0, 0)
             configContinuousCurrentLimit(25, 0) // amps
             enableVoltageCompensation(false)
-            configForwardSoftLimitThreshold(-inchesToTicks(Constants.Lift.MIN_ENCODER_HEIGHT), 0)
-            configReverseSoftLimitThreshold(-inchesToTicks(Constants.Lift.MAX_ENCODER_HEIGHT), 0)
+            configForwardSoftLimitThreshold(inchesToTicks(Constants.Lift.MAX_ENCODER_HEIGHT), 0)
+            configReverseSoftLimitThreshold(inchesToTicks(Constants.Lift.MIN_ENCODER_HEIGHT), 0)
             // configForwardSoftLimitThreshold(Constants.Lift.MIN_ENCODER_TICKS, 0)
             // configReverseSoftLimitThreshold(Constants.Lift.MAX_ENCODER_TICKS, 0)
             configForwardSoftLimitEnable(true, 0)
@@ -135,7 +135,6 @@ class Lift(
     }
 
     public fun setTicks(ticks: Int) {
-        println("error ${mMaster.getClosedLoopError(0)}")
         mMaster.set(ControlMode.MotionMagic, ticks.toDouble())
     }
 
@@ -145,6 +144,7 @@ class Lift(
 
     @Suppress("MaxLineLength")
     public override fun update() {
+        println(1023.0 * mMaster.getMotorOutputPercent() / mMaster.getSelectedSensorVelocity(0).toDouble())
         if (!isSecondStage &&
             firstStagePosition + Constants.Lift.SECOND_STAGE_EPSILON > Constants.Lift.SECOND_STAGE_HIGHT) {
             mMaster.config_kF(kElevatorSlot, Constants.Lift.KF2, 0)
@@ -154,9 +154,6 @@ class Lift(
             mMaster.config_kF(kElevatorSlot, Constants.Lift.KF, 0)
             isSecondStage = false
         }
-        // println(mMaster.getSelectedSensorPosition(0))
-        // println("Stage 1: " + firstStagePosition.toString())
-        println(-mMaster.getClosedLoopError(0))
     }
 
     public override fun stop() {

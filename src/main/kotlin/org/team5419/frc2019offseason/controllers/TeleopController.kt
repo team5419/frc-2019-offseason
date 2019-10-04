@@ -11,9 +11,7 @@ import org.team5419.frc2019offseason.subsystems.Lift
 import org.team5419.frc2019offseason.subsystems.Vacuum
 
 import org.team5419.fault.Controller
-import org.team5419.fault.input.CheesyDriveHelper
 import org.team5419.fault.input.SpaceDriveHelper
-import org.team5419.fault.input.TankDriveHelper
 import org.team5419.fault.input.DriveHelper
 import org.team5419.fault.input.DriveSignal
 
@@ -86,7 +84,6 @@ public class TeleopController(
             isQuickTurn,
             isHighGear
         )
-        println(ds)
         mSubsystems.drivetrain.setPercent(ds)
 
         // Climb control
@@ -130,7 +127,6 @@ public class TeleopController(
         }
 
         if (mCoDriver.getXButtonPressed()) {
-            println("backward")
             mWrist.setPosition(WristPosistions.BACKWARD)
         }
         if (mCoDriver.getPOV() >= 70 && mCoDriver.getPOV() <= 110) {
