@@ -66,7 +66,6 @@ public class TeleopController(
     }
 
     override fun start() {
-        isSlow = false
         isReverse = false
         rightDrive = 0.0
         leftDrive = 0.0
