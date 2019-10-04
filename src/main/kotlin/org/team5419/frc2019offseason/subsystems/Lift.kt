@@ -48,11 +48,15 @@ class Lift(
     private fun inchesToTicks(inches: Double): Int =
         (inches / Constants.Lift.INCHES_PER_ROTATION * Constants.Lift.ENCODER_TICKS_PER_ROTATION).toInt()
     private fun canRise(height: Double): Boolean {
-        println("${wrist.canRise} ${firstStagePosition < Constants.Lift.MAX_FLIP_HIGHT} ${height < Constants.Lift.MAX_FLIP_HIGHT} $firstStagePosition $height")
-        return wrist.canRise || (firstStagePosition < Constants.Lift.MAX_FLIP_HIGHT && height < Constants.Lift.MAX_FLIP_HIGHT)
+        println("""${wrist.canRise}
+            ${firstStagePosition < Constants.Lift.MAX_FLIP_HIGHT}
+            ${height < Constants.Lift.MAX_FLIP_HIGHT} $firstStagePosition $height""")
+        return wrist.canRise ||
+                (firstStagePosition < Constants.Lift.MAX_FLIP_HIGHT &&
+                    height < Constants.Lift.MAX_FLIP_HIGHT)
     }
 
-    private var mBrakeMode: Boolean = false
+    private var mBrakeMode: Boolean = true
     set(value) {
         if (value == field) return
         if (value) {
@@ -92,11 +96,15 @@ class Lift(
             configReverseSoftLimitThreshold(Constants.Lift.MAX_ENCODER_TICKS, 0)
             configForwardSoftLimitEnable(true, 0)
             configReverseSoftLimitEnable(true, 0)
+
+            setNeutralMode(NeutralMode.Brake)
         }
 
         mSlave = slaveTalon.apply {
             follow(mMaster)
             setInverted(InvertType.FollowMaster)
+
+            setNeutralMode(NeutralMode.Brake)
         }
 
         // setpoint = LiftHeight.getHeight()
