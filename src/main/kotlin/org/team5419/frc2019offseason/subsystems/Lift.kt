@@ -78,7 +78,7 @@ class Lift(
             selectProfileSlot(kElevatorSlot, 0)
             // configAllowableClosedloopError(0, 0, 0)
             configPeakOutputForward(Constants.MAX_OUTPUT)
-            configPeakOutputReverse(Constants.MAX_OUTPUT)
+            configPeakOutputReverse(Constants.MIN_OUTPUT)
             enableCurrentLimit(false)
             // configPeakCurrentDuration(0, 0)
             // configPeakCurrentLimit(0, 0)
@@ -115,14 +115,15 @@ class Lift(
 
     public fun setPosistion(height: LiftHeight) {
         println("set posistion $height.value")
-        if ((firstStagePosition < Constants.Lift.MAX_FLIP_HIGHT && firstStagePosition < Constants.Lift.MAX_FLIP_HIGHT) || wrist.canRise) {
+        if ((firstStagePosition < Constants.Lift.MAX_FLIP_HIGHT &&
+                height.value < Constants.Lift.MAX_FLIP_HIGHT) || wrist.canRise) {
             setTicks(inchesToTicks(height.value))
             setPoint = height.value
         } else println("Can't set lift posistion")
     }
 
     public fun setTicks(ticks: Int) {
-        println("error $mMaster.get")
+        println("error ${mMaster.getClosedLoopError(0)}")
         mMaster.set(ControlMode.MotionMagic, ticks.toDouble())
     }
 
@@ -132,15 +133,18 @@ class Lift(
 
     @Suppress("MaxLineLength")
     public override fun update() {
-        if (!isSecondStage && firstStagePosition + Constants.Lift.SECOND_STAGE_EPSILON > Constants.Lift.SECOND_STAGE_HIGHT) {
+        if (!isSecondStage &&
+            firstStagePosition + Constants.Lift.SECOND_STAGE_EPSILON > Constants.Lift.SECOND_STAGE_HIGHT) {
             mMaster.config_kF(kElevatorSlot, Constants.Lift.KF2, 0)
             isSecondStage = true
-        } else if (isSecondStage && Constants.Lift.SECOND_STAGE_HIGHT + Constants.Lift.SECOND_STAGE_EPSILON > secondStagePosition) {
+        } else if (isSecondStage &&
+            Constants.Lift.SECOND_STAGE_HIGHT + Constants.Lift.SECOND_STAGE_EPSILON > secondStagePosition) {
             mMaster.config_kF(kElevatorSlot, Constants.Lift.KF, 0)
             isSecondStage = false
         }
         // println(mMaster.getSelectedSensorPosition(0))
         // println("Stage 1: " + firstStagePosition.toString())
+        println(-mMaster.getClosedLoopError(0))
     }
 
     public override fun stop() {

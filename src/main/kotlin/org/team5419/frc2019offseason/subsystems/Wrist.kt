@@ -26,7 +26,7 @@ class Wrist(
     private var setPoint: Double
     public var liftPos: Double
     public val canRise: Boolean
-        get() = position < Constants.Wrist.MAX_RISE_ANGLE && setPoint < Constants.Wrist.MAX_RISE_ANGLE // 75.0
+        get() = position > Constants.Wrist.MAX_RISE_ANGLE && setPoint > Constants.Wrist.MAX_RISE_ANGLE // 75.0
     lateinit var lift: Lift
     // public var targetPosistion: WristPosistions
 
@@ -70,7 +70,7 @@ class Wrist(
             configForwardSoftLimitEnable(true, 0)
             configReverseSoftLimitEnable(true, 0)
             configPeakOutputForward(Constants.MAX_OUTPUT)
-            configPeakOutputReverse(Constants.MAX_OUTPUT)
+            configPeakOutputReverse(Constants.MIN_OUTPUT)
         }
 
         setPoint = 0.0
@@ -97,11 +97,12 @@ class Wrist(
         } else println("Can't set wrist posistion")
     }
 
-    public fun setDegrees(heading: Double) {
+    private fun setDegrees(heading: Double) {
         setTicks(degreesToTicks(heading))
     }
 
-    public fun setTicks(ticks: Int) {
+    private fun setTicks(ticks: Int) {
+        println("wrist ticks: $ticks")
         mMaster.set(ControlMode.MotionMagic, ticks.toDouble())
     }
 

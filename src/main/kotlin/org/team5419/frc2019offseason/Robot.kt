@@ -86,12 +86,9 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         mLeftSlave.configFactoryDefault()
         mRightMaster.configFactoryDefault()
         mRightSlave.configFactoryDefault()
-
         mLiftMaster.configFactoryDefault()
         mLiftSlave.configFactoryDefault()
-
         mWristMaster.configFactoryDefault()
-
         mVacuumMaster.configFactoryDefault()
 
         mClimberMaster.configFactoryDefault()
