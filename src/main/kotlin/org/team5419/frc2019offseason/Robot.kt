@@ -39,6 +39,7 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
 
     private val mClimberMaster: LazyTalonSRX
     private val mClimberSlave: LazyTalonSRX
+    private val mLockTalon: LazyTalonSRX
 
     private val mWristMaster: LazyTalonSRX
 
@@ -72,6 +73,7 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         // initilize Climber
         mClimberMaster = LazyTalonSRX(Constants.Climber.MASTER_TALON_PORT)
         mClimberSlave = LazyTalonSRX(Constants.Climber.SLAVE_TALON_PORT)
+        mLockTalon = LazyTalonSRX(Constants.Climber.LOCK_TALON_PORT)
 
         // initilize Vacuum
         mVacuumMaster = LazyTalonSRX(Constants.Vacuum.MASTER_TALON_PORT)
@@ -83,16 +85,14 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         mLeftSlave.configFactoryDefault()
         mRightMaster.configFactoryDefault()
         mRightSlave.configFactoryDefault()
-
         mLiftMaster.configFactoryDefault()
         mLiftSlave.configFactoryDefault()
-
         mWristMaster.configFactoryDefault()
-
         mVacuumMaster.configFactoryDefault()
 
         mClimberMaster.configFactoryDefault()
         mClimberSlave.configFactoryDefault()
+        mLockTalon.configFactoryDefault()
 
         mDrivetrain = Drivetrain(
             mLeftMaster,
@@ -109,7 +109,7 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         )
         mWrist.lift = mLift
         mLift.wrist = mWrist
-        mClimber = Climber(mClimberMaster, mClimberSlave)
+        mClimber = Climber(mClimberMaster, mClimberSlave, mLockTalon)
         mVacuum = Vacuum(
             mVacuumMaster,
             mReleaseSolenoid,
