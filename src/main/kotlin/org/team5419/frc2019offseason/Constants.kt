@@ -75,7 +75,7 @@ public object Constants {
         public const val BALL_LOW = 20.0
         public const val MAX_RISE_ANGLE = 75.0
 
-        public const val ENCODER_TICKS_PER_ROTATION = 409
+        public const val ENCODER_TICKS_PER_ROTATION = 4096
 
         public const val KP = 1.0
         public const val KI = 0.0

@@ -29,7 +29,7 @@ class Lift(
         get() = Math.max(ticksToInches(-mMaster.getSelectedSensorPosition(kElevatorSlot)) - Constants.Lift.SECOND_STAGE_HIGHT, 0.0)
     var setPoint: Double
     var isSecondStage: Boolean
-    val canFlip: Boolean get() = 4.0 > firstStagePosition && 4.0 > setPoint
+    val canFlip: Boolean get() = Constants.Lift.MAX_FLIP_HIGHT > firstStagePosition && Constants.Lift.MAX_FLIP_HIGHT > setPoint
     // confirm resting hight
     public enum class LiftHeight(
         val value: Double = 0.0
@@ -48,14 +48,11 @@ class Lift(
     private fun inchesToTicks(inches: Double): Int =
         (inches / Constants.Lift.INCHES_PER_ROTATION * Constants.Lift.ENCODER_TICKS_PER_ROTATION).toInt()
     private fun canRise(height: Double): Boolean {
-        println("""${wrist.canRise}
-            ${firstStagePosition < Constants.Lift.MAX_FLIP_HIGHT}
-            ${height < Constants.Lift.MAX_FLIP_HIGHT} $firstStagePosition $height""")
+        println("${wrist.canRise} ${firstStagePosition < Constants.Lift.MAX_FLIP_HIGHT} ${height < Constants.Lift.MAX_FLIP_HIGHT} ${firstStagePosition} ${height}")
         return wrist.canRise ||
                 (firstStagePosition < Constants.Lift.MAX_FLIP_HIGHT &&
                     height < Constants.Lift.MAX_FLIP_HIGHT)
     }
-
     private var mBrakeMode: Boolean = true
     set(value) {
         if (value == field) return
