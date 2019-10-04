@@ -3,19 +3,16 @@ package org.team5419.frc2019offseason
 @SuppressWarnings("MagicNumber")
 public object Constants {
 
-    public const val ROBOT_UPDATE_PERIOD = 0.005
-    public const val TALON_UPDATE_PERIOD_MS = 1
-    public const val TALON_PIDF_UPDATE_PERIOD_MS = 1
+    public const val ROBOT_UPDATE_PERIOD = 0.005 // how fast the robot update period runs
+    public const val TALON_UPDATE_PERIOD_MS = 10 // how often the talon is updated on the CAN network, in ms
+    public const val TALON_PIDF_UPDATE_PERIOD_MS = 1 // how often the PIDF loop on the talons runs in ms
 
     object Input {
-        public const val DRIVER_PORT = 0
-        public const val CODRIVER_PORT = 1
-        public const val DEADBAND = 0.02
-        public const val BASE_SPEED = 1.0
-        public const val BASE_INVERSE_SPEED = 0.1
-        public const val SLOW_COEFFICIENT = 1.0
-        public const val SLOW = 0.4
-        public const val SPIN_SPEED = 0.5
+        public const val DRIVER_PORT = 0 // xbox controller port
+        public const val CODRIVER_PORT = 1 // xbox controller port
+        public const val DEADBAND = 0.02 // xbox controller deadband(for all variable inputs except POV)
+        public const val BASE_SPEED = 1.0 // default max drivetrain speed (percent output)
+        public const val SLOW = 0.4 // the speed is multiplied by this when the slow button is pressed
     }
 
     object Drivetrain {
@@ -27,19 +24,19 @@ public object Constants {
         // gyro
         public const val GYRO_PORT = 13
         // units
-        public const val ENCODER_TICKS_PER_ROTATION = 4096
+        public const val ENCODER_TICKS_PER_ROTATION = 4096 // encoder ticks when encoder shaft is rotated 360 degrees
         public const val TURN_UNITS_PER_ROTATION = 3600 // for gyro
-        public const val PIGEON_UNITS_PER_ROTATION = 8192
+        public const val PIGEON_UNITS_PER_ROTATION = 8192 // can't remember what this is
         // dimensions
         public const val WHEEL_BASE = 27.0 // inches
         public const val WHEEL_DIAMETER = 6.0 // inches
-        public const val WHEEL_RADIUS = WHEEL_DIAMETER / 2.0
-        public const val WHEEL_CIR = WHEEL_DIAMETER * Math.PI
+        public const val WHEEL_RADIUS = WHEEL_DIAMETER / 2.0 // inches
+        public const val WHEEL_CIR = WHEEL_DIAMETER * Math.PI // inches
         // pidf
         public const val VEL_KP = 0.7
         public const val VEL_KI = 0.0
         public const val VEL_KD = 0.0
-        public const val VEL_KF = 0.0
+        public const val VEL_KF = 0.0 // should be tuned
         public const val TALON_PIDF_UPDATE_PERIOD_MS = 1
     }
 

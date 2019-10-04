@@ -132,8 +132,8 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         mCodriver = XboxController(Constants.Input.CODRIVER_PORT)
         mTeleopController = TeleopController(
             mSubsystemsManager,
-            driver,
-            coDriver,
+            mDriver,
+            mCodriver,
             TeleopController.ControlModes.CHEESY
         )
     }
