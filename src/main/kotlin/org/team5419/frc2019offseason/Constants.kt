@@ -11,11 +11,14 @@ public object Constants {
     object Input {
         public const val DRIVER_PORT = 0 // xbox controller port
         public const val CODRIVER_PORT = 1 // xbox controller port
-        public const val DEADBAND = 0.02 // xbox controller deadband(for all variable inputs except POV)
+        public const val DEADBAND = 0.07 // xbox controller deadband(for all variable inputs except POV)
         public const val BASE_SPEED = 1.0 // default max drivetrain speed (percent output)
         public const val SLOW = 0.4 // the speed is multiplied by this when the slow button is pressed
         public const val SLOW_COEFFICIENT = 1.0
         public const val SPIN_SPEED = 0.5
+        public const val JOYSTICK_DEADBAND = 0.07
+        public const val TURN_MULT = 0.4
+        public const val SLOW_MULT = 0.5
     }
 
     object Drivetrain {

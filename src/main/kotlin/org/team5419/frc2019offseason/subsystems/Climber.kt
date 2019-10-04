@@ -3,12 +3,14 @@ package org.team5419.frc2019offseason.subsystems
 import org.team5419.frc2019offseason.Constants
 import org.team5419.fault.Subsystem
 import org.team5419.fault.hardware.LazyTalonSRX
+import org.team5419.fault.hardware.LazyVictorSPX
+
 import com.ctre.phoenix.motorcontrol.ControlMode
 
-class Climber(masterTalon: LazyTalonSRX, slaveTalon: LazyTalonSRX, lockTalon: LazyTalonSRX) : Subsystem() {
+class Climber(masterTalon: LazyTalonSRX, slaveTalon: LazyVictorSPX, lockTalon: LazyTalonSRX) : Subsystem() {
 
     private val mMasterTalon: LazyTalonSRX
-    private val mSlaveTalon: LazyTalonSRX
+    private val mSlaveTalon: LazyVictorSPX
     private val mLockTalon: LazyTalonSRX
     init {
         mMasterTalon = masterTalon

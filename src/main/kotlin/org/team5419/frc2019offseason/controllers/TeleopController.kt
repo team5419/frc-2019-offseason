@@ -2,6 +2,7 @@ package org.team5419.frc2019offseason.controllers
 
 import org.team5419.frc2019offseason.subsystems.SubsystemsManager
 import org.team5419.frc2019offseason.Constants.Input
+import org.team5419.frc2019offseason.Constants
 import org.team5419.frc2019offseason.subsystems.Wrist.WristPosistions
 import org.team5419.frc2019offseason.subsystems.Lift.LiftHeight
 import org.team5419.frc2019offseason.subsystems.Drivetrain
@@ -11,6 +12,7 @@ import org.team5419.frc2019offseason.subsystems.Vacuum
 
 import org.team5419.fault.Controller
 import org.team5419.fault.input.CheesyDriveHelper
+import org.team5419.fault.input.SpaceDriveHelper
 import org.team5419.fault.input.TankDriveHelper
 import org.team5419.fault.input.DriveHelper
 import org.team5419.fault.input.DriveSignal
@@ -35,7 +37,6 @@ public class TeleopController(
     // private val mClimber: Climber
     private val mVacuum: Vacuum
 
-    private var isSlow: Boolean = false
     private var isReverse: Boolean = false
     private var isUnlocked: Boolean = false
     private var speed = Input.BASE_SPEED
@@ -44,7 +45,7 @@ public class TeleopController(
     private var driveHelper: DriveHelper
 
     private var isManuelOverride = true
-    private val isHighGear: Boolean get() = mDriver.getTriggerAxis(Hand.kLeft) > Input.DEADBAND
+    private val isHighGear: Boolean get() = mDriver.getTriggerAxis(Hand.kLeft) > 0.3
     private val isQuickTurn: Boolean get() = mDriver.getTriggerAxis(Hand.kRight) > 0.3
 
     public enum class ControlModes { TANK, CHEESY }
@@ -53,15 +54,11 @@ public class TeleopController(
         mDriver = driver
         mCoDriver = codriver
         mSubsystems = subsystems
-        if (controlMode == ControlModes.TANK) {
-            driveHelper = TankDriveHelper(Input.DEADBAND, 1.0)
-        } else {
-            val config: CheesyDriveHelper.CheesyDriveConfig = CheesyDriveHelper.CheesyDriveConfig()
-            config.apply {
-                deadband = Input.DEADBAND
-            }
-            driveHelper = CheesyDriveHelper(config)
-        }
+        driveHelper = SpaceDriveHelper(
+            { Constants.Input.JOYSTICK_DEADBAND },
+            { Constants.Input.TURN_MULT },
+            { Constants.Input.SLOW_MULT }
+        )
         mDrivetrain = mSubsystems.drivetrain
         mLift = mSubsystems.lift
         mWrist = mSubsystems.wrist
@@ -82,18 +79,15 @@ public class TeleopController(
     @Suppress("ComplexMethod")
     override fun update() {
         // Driver
-        isSlow = false
-        speed = 0.0
         if (mDriver.getAButton()) { mDrivetrain.isReverse = !mDrivetrain.isReverse }
-        if (mDriver.getBumper(Hand.kLeft)) { mDrivetrain.isSlow = true } else mDrivetrain.isSlow = false
 
         val ds: DriveSignal = driveHelper.calculateOutput(
             mDriver.getY(Hand.kLeft),
-            mDriver.getX(Hand.kLeft),
+            -mDriver.getX(Hand.kRight),
             isQuickTurn,
             isHighGear
         )
-        // println("$ds.left $ds.right")
+        println(ds)
         mSubsystems.drivetrain.setPercent(ds)
 
         // Climb control

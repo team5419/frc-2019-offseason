@@ -159,7 +159,7 @@ class Drivetrain(
 
     public fun setPercent(driveSignal: DriveSignal) {
         mLeftMaster.set(ControlMode.PercentOutput, driveSignal.left)
-        mRightMaster.set(ControlMode.PercentOutput, driveSignal.left)
+        mRightMaster.set(ControlMode.PercentOutput, driveSignal.right)
         brakeMode = driveSignal.brakeMode
     }
 
