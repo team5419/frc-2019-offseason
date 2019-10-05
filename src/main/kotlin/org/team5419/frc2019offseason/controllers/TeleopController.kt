@@ -103,7 +103,7 @@ public class TeleopController(
 
         // Codriver
         // Valve control
-        if (mCoDriver.getBumperPressed(Hand.kLeft) || mCoDriver.getBumperPressed(Hand.kRight)) {
+        if (mCoDriver.getBumper(Hand.kLeft) || mCoDriver.getBumper(Hand.kRight)) {
             mSubsystems.vacuum.release()
         } else {
             mVacuum.setPercent(1.0)
