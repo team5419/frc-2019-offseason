@@ -36,7 +36,8 @@ class Wrist(
         BACKWARD(Constants.Wrist.BACKWARD),
         HATCH(Constants.Wrist.HATCH_ANGLE),
         BALL(Constants.Wrist.BALL_ANGLE),
-        HUMAN_PLAYER_BALL(Constants.Wrist.HUMAN_PLAYER)
+        HUMAN_PLAYER_BALL(Constants.Wrist.HUMAN_PLAYER),
+        DEFENSE(90.0)
         // HUMAN_PLAYER_HATCH(Constants.Wrist.)
     }
 
@@ -92,7 +93,7 @@ class Wrist(
         setPoint = point.value
         if (
             (position < Constants.Wrist.MAX_RISE_ANGLE && setPoint < Constants.Wrist.MAX_RISE_ANGLE) ||
-            (position > Constants.Wrist.MIN_RISE_ANGLE && setPoint > Constants.Wrist.MIN_RISE_ANGLE) ||
+            (position > 110.0 && setPoint > 110.0) ||
             lift.canFlip) {
             setDegrees(point.value)
         } else println("Can't set wrist posistion")

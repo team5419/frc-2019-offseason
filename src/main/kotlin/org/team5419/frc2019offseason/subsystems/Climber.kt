@@ -51,6 +51,7 @@ class Climber(masterTalon: LazyTalonSRX, slaveTalon: LazyVictorSPX, lockTalon: L
     public override fun update() {
         if (isUnlocking && mTimer.get() > Constants.Climber.UNLOCKING_RUN_TIME) {
             mTimer.stop()
+            mLockTalon.set(ControlMode.PercentOutput, 0.0)
             isUnlocking = false
             isUnlocked = true
         }
