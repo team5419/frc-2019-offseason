@@ -89,7 +89,7 @@ public object Constants {
         public const val KF = 0.0
 
         public const val MOTION_MAGIC_VELOCITY = 11000
-        public const val MOTION_MAGIC_ACCELERATION = 11000
+        public const val MOTION_MAGIC_ACCELERATION = 5000
         public const val MAX_ENCODER_TICKS = 2048
         public const val MIN_ENCODER_TICKS = 0
     }

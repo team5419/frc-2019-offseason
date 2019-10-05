@@ -56,7 +56,7 @@ class Vacuum(
 
     public fun setPercent(percent: Double) {
         // if (percent == 0.0) isPumping = false
-        mTalon.set(ControlMode.PercentOutput, Math.max(percent, 0.35))
+        mTalon.set(ControlMode.PercentOutput, Math.max(percent, 1.0))
     }
 
     public override fun update() {
