@@ -74,10 +74,11 @@ public object Constants {
         public const val FORWARD = 0.0
         public const val MIDDLE = 90.0
         public const val BACKWARD = 180.0
-        public const val HATCH_ANGLE = 170.0
-        public const val BALL_ANGLE = 160.0
+        public const val HATCH_ANGLE = 160.0
+        public const val BALL_ANGLE = 130.0
         public const val MIN_RISE_ANGLE = 135.0
         public const val MAX_RISE_ANGLE = 75.0
+        // public const val HUMAN_PLAYER = 0.0
         public const val HUMAN_PLAYER = 140.0
 
         public const val ENCODER_TICKS_PER_ROTATION = 4096.0
@@ -116,16 +117,16 @@ public object Constants {
         public const val MOTION_MAGIC_ACCELERATION = 800.0 // inches per second per second
         // public const val MOTION_MAGIC_VELOCITY = 11000 // encoder ticks per 100ms
         // public const val MOTION_MAGIC_ACCELERATION = 11000 // encoder ticks per 100ms per 100ms
-        public const val MAX_ENCODER_HEIGHT = 45.0 // inches
+        public const val MAX_ENCODER_HEIGHT = 52.0 // inches
         public const val MIN_ENCODER_HEIGHT = 0.0 // inches
         // public const val MAX_ENCODER_TICKS = -41890
         // public const val MIN_ENCODER_TICKS = 0
         // pid
-        public const val KP = 1.75
+        public const val KP = 1.25
         public const val KI = 0.0
-        public const val KD = 0.9
-        public const val KF = 0.4 // ALWAYS ZERO
-        public const val KF2 = 0.6 // ALWAYS ZERO
+        public const val KD = 0.5
+        public const val KF = 0.4
+        public const val KF2 = 0.6
         public const val SECOND_STAGE_EPSILON = 10.0
     }
 

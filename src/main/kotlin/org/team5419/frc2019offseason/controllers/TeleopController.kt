@@ -128,11 +128,11 @@ public class TeleopController(
             mLift.setPosistion(LiftHeight.BALL_LOW)
             mWrist.setPosition(WristPosistions.BALL)
         } else if (mCoDriver.getStickButtonPressed(Hand.kRight)) {
-            mWrist.setPosition(WristPosistions.HUMAN_PLAYER)
+            mWrist.setPosition(WristPosistions.BALL)
         }
 
         if (mCoDriver.getXButtonPressed()) {
-            mWrist.setPosition(WristPosistions.BACKWARD)
+            mWrist.setPosition(WristPosistions.HATCH)
         }
         if (mCoDriver.getPOV() >= 70 && mCoDriver.getPOV() <= 110) {
             mWrist.setPosition(WristPosistions.FORWARD)

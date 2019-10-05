@@ -26,8 +26,7 @@ class Wrist(
     private var setPoint: Double
     public var liftPos: Double
     public val canRise: Boolean
-        get() = (position < Constants.Wrist.MAX_RISE_ANGLE && setPoint < Constants.Wrist.MAX_RISE_ANGLE) ||
-        (position > Constants.Wrist.MIN_RISE_ANGLE && setPoint > Constants.Wrist.MIN_RISE_ANGLE) // 75.0
+        get() = (position > 120.0 && setPoint > 120.0)
     lateinit var lift: Lift
     // public var targetPosistion: WristPosistions
 
@@ -37,7 +36,8 @@ class Wrist(
         BACKWARD(Constants.Wrist.BACKWARD),
         HATCH(Constants.Wrist.HATCH_ANGLE),
         BALL(Constants.Wrist.BALL_ANGLE),
-        HUMAN_PLAYER(Constants.Wrist.HUMAN_PLAYER)
+        HUMAN_PLAYER_BALL(Constants.Wrist.HUMAN_PLAYER)
+        // HUMAN_PLAYER_HATCH(Constants.Wrist.)
     }
 
     init {
