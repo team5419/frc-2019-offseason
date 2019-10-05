@@ -101,27 +101,20 @@ public class TeleopController(
             mClimber.stop()
         }
 
-        // Climber
-        if (mDriver.getXButtonPressed()) {
-            mClimber.unlock()
-        }
-
-        if (mDriver.getYButtonPressed()) {
-            mClimber.climb()
-        }
-
         // Codriver
         // Valve control
         if (mCoDriver.getBumperPressed(Hand.kLeft) || mCoDriver.getBumperPressed(Hand.kRight)) {
             mSubsystems.vacuum.release()
+        } else {
+            mVacuum.setPercent(1.0)
         }
 
         // Vacuum control
         if (mCoDriver.getTriggerAxis(Hand.kLeft) > Input.DEADBAND) {
-            mVacuum.pickBall(mCoDriver.getTriggerAxis(Hand.kLeft))
+            mVacuum.pickBall()
         } else if (mCoDriver.getTriggerAxis(Hand.kRight) > Input.DEADBAND) {
-            mVacuum.pickHatch(mCoDriver.getTriggerAxis(Hand.kRight))
-        } else { mSubsystems.vacuum.setPercent(0.0) }
+            mVacuum.pickHatch()
+        }
 
         // button control
         if (mCoDriver.getAButtonPressed()) {

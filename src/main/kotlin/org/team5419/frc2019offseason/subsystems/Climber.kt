@@ -33,8 +33,8 @@ class Climber(masterTalon: LazyTalonSRX, slaveTalon: LazyVictorSPX, lockTalon: L
         mLockTalon.apply {
             configNominalOutputForward(0.0, 0)
             configNominalOutputReverse(0.0, 0)
-            configPeakOutputForward(0.5, 0)
-            configPeakOutputReverse(-0.5, 0)
+            configPeakOutputForward(0.2, 0)
+            configPeakOutputReverse(-0.2, 0)
             configVoltageCompSaturation(12.0, 0)
             // configOpenloopRamp(1.0, 0)
         }
@@ -68,7 +68,7 @@ class Climber(masterTalon: LazyTalonSRX, slaveTalon: LazyVictorSPX, lockTalon: L
             mTimer.start()
             unlockTimes += 1
         }
-        if (unlockTimes > 4) {
+        if (unlockTimes > 1) {
             stopUnlocking()
         }
     }

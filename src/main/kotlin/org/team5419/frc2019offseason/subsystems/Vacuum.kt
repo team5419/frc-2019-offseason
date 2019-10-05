@@ -43,21 +43,21 @@ class Vacuum(
         mTalon.set(ControlMode.PercentOutput, 0.0)
     }
 
-    public fun pickBall(percent: Double) {
+    public fun pickBall() {
         realeaseValve = false
         hatchValve = false
-        setPercent(percent)
+        setPercent(1.0)
     }
 
-    public fun pickHatch(percent: Double) {
+    public fun pickHatch() {
         realeaseValve = false
         hatchValve = true
-        setPercent(percent)
+        setPercent(1.0)
     }
 
     public fun setPercent(percent: Double) {
         // if (percent == 0.0) isPumping = false
-        mTalon.set(ControlMode.PercentOutput, Math.max(percent, 1.0))
+        mTalon.set(ControlMode.PercentOutput, percent)
     }
 
     public override fun update() {
