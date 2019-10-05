@@ -16,6 +16,8 @@ class Climber(masterTalon: LazyTalonSRX, slaveTalon: LazyVictorSPX, lockTalon: L
     private val mTimer: Timer = Timer()
     public var isUnlocked: Boolean = false
     public var isUnlocking: Boolean = false
+    public var unlockOut: Double = 0.0
+    public var unlockTimes: Int = 0
 
     init {
 
@@ -24,36 +26,50 @@ class Climber(masterTalon: LazyTalonSRX, slaveTalon: LazyVictorSPX, lockTalon: L
         mLockTalon = lockTalon
 
         mMasterTalon.apply {
-            configVoltageCompSaturation(10.0, 0)
+            configVoltageCompSaturation(12.0, 0)
+            configOpenloopRamp(1.0, 0)
         }
         mSlaveTalon.follow(mMasterTalon)
         mLockTalon.apply {
             configNominalOutputForward(0.0, 0)
             configNominalOutputReverse(0.0, 0)
-            configPeakOutputForward(.9, 0)
-            configPeakOutputReverse(-.9, 0)
-            configVoltageCompSaturation(10.0, 0)
+            configPeakOutputForward(0.5, 0)
+            configPeakOutputReverse(-0.5, 0)
+            configVoltageCompSaturation(12.0, 0)
+            // configOpenloopRamp(1.0, 0)
         }
     }
 
     public fun climb() { // for driver
-        if (isUnlocked) {
-            mMasterTalon.set(ControlMode.PercentOutput, Constants.Climber.MAX_OUTPUT_PERCENTAGE.toDouble())
-        }
+        mMasterTalon.set(ControlMode.PercentOutput, -Constants.Climber.MAX_OUTPUT_PERCENTAGE.toDouble())
     }
 
     public fun unlock() {
-        mLockTalon.set(ControlMode.PercentOutput, Constants.Climber.LOCK_OUTPUT.toDouble())
+        unlockOut = Constants.Climber.LOCK_OUTPUT.toDouble()
         isUnlocking = true
+        mLockTalon.set(ControlMode.PercentOutput, unlockOut)
         mTimer.start()
     }
 
+    public fun stopUnlocking() {
+        isUnlocking = false
+        unlockOut = 0.0
+        unlockTimes = 0
+        mTimer.reset()
+        mLockTalon.set(ControlMode.PercentOutput, 0.0)
+    }
+
     public override fun update() {
-        if (isUnlocking && mTimer.get() > Constants.Climber.UNLOCKING_RUN_TIME) {
+        if (isUnlocking && mTimer.get() > Constants.Climber.UNLOCKING_PULSE_TIME) {
+            unlockOut = -unlockOut
+            mLockTalon.set(ControlMode.PercentOutput, unlockOut)
             mTimer.stop()
-            mLockTalon.set(ControlMode.PercentOutput, 0.0)
-            isUnlocking = false
-            isUnlocked = true
+            mTimer.reset()
+            mTimer.start()
+            unlockTimes += 1
+        }
+        if (unlockTimes > 4) {
+            stopUnlocking()
         }
     }
     public override fun stop() {

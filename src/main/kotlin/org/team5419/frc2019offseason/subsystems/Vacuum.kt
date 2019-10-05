@@ -40,6 +40,7 @@ class Vacuum(
         realeaseValve = true
         hatchValve = true
         hasPeice = false
+        mTalon.set(ControlMode.PercentOutput, 0.0)
     }
 
     public fun pickBall(percent: Double) {

@@ -64,8 +64,9 @@ public object Constants {
         public const val SLAVE_TALON_PORT = 11
         public const val LOCK_TALON_PORT = 7
         public const val MAX_OUTPUT_PERCENTAGE = 0.9
-        public const val LOCK_OUTPUT = 0.9
+        public const val LOCK_OUTPUT = 0.5
         public const val UNLOCKING_RUN_TIME = 3.0
+        public const val UNLOCKING_PULSE_TIME = 0.75
     }
 
     object Wrist {

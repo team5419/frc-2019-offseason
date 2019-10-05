@@ -87,12 +87,19 @@ public class TeleopController(
         mSubsystems.drivetrain.setPercent(ds)
 
         // Climb control
-        // if (mDriver.getBumperPressed(Hand.kRight) && mCoDriver.getBumperPressed(Hand.kLeft)) {
-        //     mClimber.unlock()
-        //     if (!mClimber.isUnlocking) {
-        //         mClimber.climb()
-        //     }
-        // }
+        if (mDriver.getXButtonPressed()) {
+            mClimber.unlock()
+        }
+        if (mDriver.getXButtonReleased()) {
+            mClimber.stopUnlocking()
+        }
+
+        if (mDriver.getYButtonPressed()) {
+            mClimber.climb()
+        }
+        if (mDriver.getYButtonReleased()) {
+            mClimber.stop()
+        }
 
         // Climber
         if (mDriver.getXButtonPressed()) {
