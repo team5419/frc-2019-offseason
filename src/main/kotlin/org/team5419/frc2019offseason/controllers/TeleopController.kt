@@ -103,17 +103,16 @@ public class TeleopController(
 
         // Codriver
         // Valve control
-        if (mCoDriver.getBumper(Hand.kLeft) || mCoDriver.getBumper(Hand.kRight)) {
-            mSubsystems.vacuum.release()
-        } else {
-            mVacuum.setPercent(1.0)
-        }
 
         // Vacuum control
         if (mCoDriver.getTriggerAxis(Hand.kLeft) > Input.DEADBAND) {
             mVacuum.pickBall()
         } else if (mCoDriver.getTriggerAxis(Hand.kRight) > Input.DEADBAND) {
             mVacuum.pickHatch()
+        } else if (mCoDriver.getBumper(Hand.kLeft) || mCoDriver.getBumper(Hand.kRight)) {
+            mSubsystems.vacuum.release()
+        } else {
+            mVacuum.setPercent(0.2)
         }
 
         // button control
