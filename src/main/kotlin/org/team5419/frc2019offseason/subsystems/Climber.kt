@@ -27,7 +27,7 @@ class Climber(masterTalon: LazyTalonSRX, slaveTalon: LazyVictorSPX, lockTalon: L
 
         mMasterTalon.apply {
             configVoltageCompSaturation(12.0, 0)
-            configOpenloopRamp(1.0, 0)
+            configOpenloopRamp(0.1, 0)
         }
         mSlaveTalon.follow(mMasterTalon)
         mLockTalon.apply {

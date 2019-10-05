@@ -8,6 +8,7 @@ import org.team5419.fault.Subsystem
 
 import org.team5419.frc2019offseason.Constants
 
+@SuppressWarnings("TooManyFunctions")
 class Wrist(
     masterTalon: LazyTalonSRX
 ) : Subsystem() {
@@ -20,13 +21,14 @@ class Wrist(
         ticks / Constants.Wrist.ENCODER_TICKS_PER_ROTATION * 360.0
     private fun degreesToTicks(heading: Double): Int =
         (heading / 360.0 * Constants.Wrist.ENCODER_TICKS_PER_ROTATION).toInt()
-    private val mMaster: LazyTalonSRX
+    public val mMaster: LazyTalonSRX
     public var position: Double
         get() = ticksToDegrees(mMaster.getSelectedSensorPosition())
     private var setPoint: Double
     public var liftPos: Double
     public val canRise: Boolean
         get() = (position > 110.0 && setPoint > 110.0)
+    private var isZeroed = false
     lateinit var lift: Lift
     // public var targetPosistion: WristPosistions
 
@@ -82,6 +84,12 @@ class Wrist(
     public fun zero() {
         setPoint = 0.0
         position = WristPosistions.FORWARD.value
+        mMaster.setSelectedSensorPosition(0)
+    }
+
+    public fun startZero() {
+        mMaster.overrideSoftLimitsEnable(false)
+        setPercent(-0.2)
     }
 
     public fun setPercent(percent: Double) {
@@ -109,6 +117,11 @@ class Wrist(
     }
 
     public override fun update() {
+        if (mMaster.getSensorCollection().isRevLimitSwitchClosed() && !isZeroed) {
+            zero()
+            mMaster.overrideSoftLimitsEnable(true)
+            isZeroed = true
+        }
     }
     public override fun stop() {}
     public override fun reset() {}

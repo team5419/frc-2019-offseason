@@ -67,6 +67,7 @@ public class TeleopController(
         isReverse = false
         rightDrive = 0.0
         leftDrive = 0.0
+        mWrist.startZero()
     }
 
     override fun reset() {
