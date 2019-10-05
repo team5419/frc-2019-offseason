@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.Timer
 
 import com.ctre.phoenix.motorcontrol.ControlMode
 
-
 class Climber(masterTalon: LazyTalonSRX, slaveTalon: LazyVictorSPX, lockTalon: LazyTalonSRX) : Subsystem() {
 
     private val mMasterTalon: LazyTalonSRX
@@ -17,7 +16,6 @@ class Climber(masterTalon: LazyTalonSRX, slaveTalon: LazyVictorSPX, lockTalon: L
     private val mTimer: Timer = Timer()
     public var isUnlocked: Boolean = false
     public var isUnlocking: Boolean = false
-
 
     init {
 
@@ -39,7 +37,7 @@ class Climber(masterTalon: LazyTalonSRX, slaveTalon: LazyVictorSPX, lockTalon: L
     }
 
     public fun climb() { // for driver
-        if(isUnlocked){
+        if (isUnlocked) {
             mMasterTalon.set(ControlMode.PercentOutput, Constants.Climber.MAX_OUTPUT_PERCENTAGE.toDouble())
         }
     }
@@ -51,7 +49,7 @@ class Climber(masterTalon: LazyTalonSRX, slaveTalon: LazyVictorSPX, lockTalon: L
     }
 
     public override fun update() {
-        if(isUnlocking && mTimer.get() > Constants.Climber.UNLOCKING_RUN_TIME){
+        if (isUnlocking && mTimer.get() > Constants.Climber.UNLOCKING_RUN_TIME) {
             mTimer.stop()
             isUnlocking = false
             isUnlocked = true

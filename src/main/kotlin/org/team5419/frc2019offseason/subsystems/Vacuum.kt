@@ -4,7 +4,6 @@ import org.team5419.fault.Subsystem
 import edu.wpi.first.wpilibj.Solenoid
 import org.team5419.fault.hardware.LazyTalonSRX
 import com.ctre.phoenix.motorcontrol.ControlMode
-import edu.wpi.first.wpilibj.Timer
 
 class Vacuum(
     masterTalon: LazyTalonSRX,
@@ -61,7 +60,7 @@ class Vacuum(
     }
 
     public override fun update() {
-        println("${mTalon.getOutputCurrent()}")
+        // println("${mTalon.getOutputCurrent()}")
         // hasPeice = hasPeice || mTalon.getOutputCurrent() >= Constants.Vacuum.RESTING_THRESHOLD
         // if (hasPeice && !isPumping){
         //     mTalon.set(ControlMode.PercentOutput, 0.2)

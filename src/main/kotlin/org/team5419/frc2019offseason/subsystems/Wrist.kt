@@ -21,23 +21,23 @@ class Wrist(
     private fun degreesToTicks(heading: Double): Int =
         (heading / 360.0 * Constants.Wrist.ENCODER_TICKS_PER_ROTATION).toInt()
     private val mMaster: LazyTalonSRX
-    private var position: Double
+    public var position: Double
         get() = ticksToDegrees(mMaster.getSelectedSensorPosition())
     private var setPoint: Double
     public var liftPos: Double
     public val canRise: Boolean
-        get() = position > Constants.Wrist.MAX_RISE_ANGLE && setPoint > Constants.Wrist.MAX_RISE_ANGLE // 75.0
+        get() = (position < Constants.Wrist.MAX_RISE_ANGLE && setPoint < Constants.Wrist.MAX_RISE_ANGLE) ||
+        (position > Constants.Wrist.MIN_RISE_ANGLE && setPoint > Constants.Wrist.MIN_RISE_ANGLE) // 75.0
     lateinit var lift: Lift
     // public var targetPosistion: WristPosistions
 
     // set posistion
     public enum class WristPosistions(val value: Double) {
         FORWARD(Constants.Wrist.FORWARD),
-        MIDDLE(Constants.Wrist.MIDDLE),
         BACKWARD(Constants.Wrist.BACKWARD),
-        BALL_HIGH(Constants.Wrist.BALL_HIGH),
-        BALL_MID(Constants.Wrist.BALL_MID),
-        BALL_LOW(Constants.Wrist.BALL_LOW)
+        HATCH(Constants.Wrist.HATCH_ANGLE),
+        BALL(Constants.Wrist.BALL_ANGLE),
+        HUMAN_PLAYER(Constants.Wrist.HUMAN_PLAYER)
     }
 
     init {
@@ -90,8 +90,8 @@ class Wrist(
     public fun setPosition(point: WristPosistions) {
         setPoint = point.value
         if (
-            (position < Constants.Wrist.MAX_RISE_ANGLE &&
-            point.value < Constants.Wrist.MAX_RISE_ANGLE) ||
+            (position < Constants.Wrist.MAX_RISE_ANGLE && setPoint < Constants.Wrist.MAX_RISE_ANGLE) ||
+            (position > Constants.Wrist.MIN_RISE_ANGLE && setPoint > Constants.Wrist.MIN_RISE_ANGLE) ||
             lift.canFlip) {
             setDegrees(point.value)
         } else println("Can't set wrist posistion")
@@ -102,7 +102,7 @@ class Wrist(
     }
 
     private fun setTicks(ticks: Int) {
-        println("wrist ticks: $ticks")
+        // println("wrist: $position")
         mMaster.set(ControlMode.MotionMagic, ticks.toDouble())
     }
 

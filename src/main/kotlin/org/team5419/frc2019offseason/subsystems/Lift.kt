@@ -23,7 +23,7 @@ class Lift(
     private var mMaster: LazyTalonSRX
     private var mSlave: LazyTalonSRX
     lateinit var wrist: Wrist
-    var firstStagePosition: Double
+    public var firstStagePosition: Double
         get() = ticksToInches(-mMaster.getSelectedSensorPosition(kElevatorSlot))
     var secondStagePosition: Double
         get() = Math.max(ticksToInches(-mMaster.getSelectedSensorPosition(kElevatorSlot)) - Constants.Lift.SECOND_STAGE_HIGHT, 0.0)
@@ -34,7 +34,7 @@ class Lift(
     public enum class LiftHeight(
         val value: Double = 0.0
     ) {
-        BOTTOM(Constants.Lift.STOW_HEIGHT),
+        HUMAN_PLAYER(Constants.Lift.HUMAN_PLAYER),
         HATCH_LOW(Constants.Lift.HATCH_LOW_HEIGHT),
         HATCH_MID(Constants.Lift.HATCH_MID_HEIGHT),
         HATCH_HIGH(Constants.Lift.HATCH_HIGH_HEIGHT),
@@ -127,7 +127,7 @@ class Lift(
     }
 
     public fun setPosistion(height: LiftHeight) {
-        println("set posistion $height.value")
+        // println("set posistion $height.value")
         if (canRise(height.value)) {
             setTicks(inchesToTicks(height.value))
             setPoint = height.value
@@ -144,7 +144,6 @@ class Lift(
 
     @Suppress("MaxLineLength")
     public override fun update() {
-        // println(1023.0 * mMaster.getMotorOutputPercent() / mMaster.getSelectedSensorVelocity(0).toDouble())
         if (!isSecondStage &&
             firstStagePosition + Constants.Lift.SECOND_STAGE_EPSILON > Constants.Lift.SECOND_STAGE_HIGHT) {
             mMaster.config_kF(kElevatorSlot, Constants.Lift.KF2, 0)

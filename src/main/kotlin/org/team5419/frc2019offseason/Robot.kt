@@ -138,14 +138,15 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         mTeleopController = TeleopController(
             mSubsystemsManager,
             mDriver,
-            mCodriver,
-            TeleopController.ControlModes.CHEESY
+            mCodriver
         )
+        mVision.ledState = Vision.LEDState.OFF
     }
 
     // robot
 
     override fun robotInit() {
+        mVision.ledState = Vision.LEDState.OFF
     }
 
     override fun robotPeriodic() {
@@ -154,15 +155,14 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     // disabled mode
 
     override fun disabledInit() {
-        mVision.ledState = Vision.LEDState.OFF
-
         mSubsystemsManager.resetAll()
         mTeleopController.reset()
         mAutoController.reset()
     }
 
     override fun disabledPeriodic() {
-        // println(mLift.firstStagePosistion.toString())
+        println(mLift.firstStagePosition.toString())
+        println(mWrist.position.toString())
     }
 
     // autonomous mode

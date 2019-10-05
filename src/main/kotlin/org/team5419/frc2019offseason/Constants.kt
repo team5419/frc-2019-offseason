@@ -74,17 +74,17 @@ public object Constants {
         public const val FORWARD = 0.0
         public const val MIDDLE = 90.0
         public const val BACKWARD = 180.0
+        public const val HATCH_ANGLE = 170.0
         public const val BALL_ANGLE = 160.0
-        public const val BALL_HIGH = 160.0
-        public const val BALL_MID = 160.0
-        public const val BALL_LOW = 160.0
+        public const val MIN_RISE_ANGLE = 135.0
         public const val MAX_RISE_ANGLE = 75.0
+        public const val HUMAN_PLAYER = 140.0
 
         public const val ENCODER_TICKS_PER_ROTATION = 4096.0
 
         public const val KP = 1.0
         public const val KI = 0.0
-        public const val KD = 0.3
+        public const val KD = 0.1
         public const val KF = 0.0
 
         public const val MOTION_MAGIC_VELOCITY = 11000
@@ -98,14 +98,13 @@ public object Constants {
         public const val MASTER_TALON_PORT = 3
         public const val SLAVE_TALON_PORT = 5
         // inches
-        public const val STOW_HEIGHT = 0.0
         public const val HATCH_LOW_HEIGHT = 0.0
-        public const val HATCH_MID_HEIGHT = 22.0
-        public const val HATCH_HIGH_HEIGHT = 45.0
+        public const val HATCH_MID_HEIGHT = 26.18
+        public const val HATCH_HIGH_HEIGHT = 51.0
         public const val BALL_LOW_HEIGHT = 0.0
-        public const val BALL_MID_HEIGHT = 0.0
-        public const val BALL_HIGH_HEIGHT = 0.0
-        public const val BALL_HUMAN_PLAYER_HEIGHT = 0.0
+        public const val BALL_MID_HEIGHT = 26.3
+        public const val BALL_HIGH_HEIGHT = 51.0
+        public const val HUMAN_PLAYER = 14.7
         public const val SECOND_STAGE_HIGHT = 22.865
         public const val MAX_HEIGHT = 50.0
         public const val MAX_FLIP_HIGHT = 4.0
