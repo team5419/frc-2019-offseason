@@ -26,7 +26,7 @@ class Wrist(
     private var setPoint: Double
     public var liftPos: Double
     public val canRise: Boolean
-        get() = (position > 120.0 && setPoint > 120.0)
+        get() = (position > 110.0 && setPoint > 110.0)
     lateinit var lift: Lift
     // public var targetPosistion: WristPosistions
 
@@ -87,6 +87,7 @@ class Wrist(
         mMaster.set(ControlMode.PercentOutput, percent)
     }
 
+    @Suppress("ComplexCondition")
     public fun setPosition(point: WristPosistions) {
         setPoint = point.value
         if (
