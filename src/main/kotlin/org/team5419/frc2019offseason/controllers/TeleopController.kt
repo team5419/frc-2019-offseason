@@ -106,9 +106,9 @@ public class TeleopController(
         // Valve control
 
         // Vacuum control
-        if (mCoDriver.getTriggerAxis(Hand.kLeft) > Input.DEADBAND) {
+        if (mCoDriver.getRawButton(7)) {
             mVacuum.pickBall()
-        } else if (mCoDriver.getTriggerAxis(Hand.kRight) > Input.DEADBAND) {
+        } else if (mCoDriver.getRawButton(8)) {
             mVacuum.pickHatch()
         } else if (mCoDriver.getBumper(Hand.kLeft) || mCoDriver.getBumper(Hand.kRight)) {
             mSubsystems.vacuum.release()
@@ -117,10 +117,10 @@ public class TeleopController(
         }
 
         // button control
-        if (mCoDriver.getAButtonPressed()) {
+        if (mCoDriver.getBButtonPressed()) {
             mLift.setPosistion(LiftHeight.HATCH_LOW)
             mWrist.setPosition(WristPosistions.HATCH)
-        } else if (mCoDriver.getBButtonPressed()) {
+        } else if (mCoDriver.getXButtonPressed()) {
             mLift.setPosistion(LiftHeight.HATCH_MID)
             mWrist.setPosition(WristPosistions.HATCH)
         } else if (mCoDriver.getYButtonPressed()) {
@@ -136,20 +136,20 @@ public class TeleopController(
         } else if (mCoDriver.getPOV() >= 160 && mCoDriver.getPOV() <= 200) {
             mLift.setPosistion(LiftHeight.BALL_LOW)
             mWrist.setPosition(WristPosistions.BALL)
-        } else if (mCoDriver.getStickButtonPressed(Hand.kRight)) {
+        } else if (mCoDriver.getRawButtonPressed(12)) {
             mWrist.setPosition(WristPosistions.BALL)
-        } else if (mCoDriver.getStickButtonPressed(Hand.kLeft)) {
+        } else if (mCoDriver.getRawButtonPressed(11)) {
             mLift.setPosistion(LiftHeight.HUMAN_PLAYER)
             mWrist.setPosition(WristPosistions.BALL)
         }
 
-        if (mCoDriver.getXButtonPressed()) {
+        if (mCoDriver.getAButtonPressed()) {
             mWrist.setPosition(WristPosistions.HATCH)
         }
         if (mCoDriver.getPOV() >= 70 && mCoDriver.getPOV() <= 110) {
             mWrist.setPosition(WristPosistions.FORWARD)
         }
-        if (mCoDriver.getBackButtonPressed()) {
+        if (mCoDriver.getRawButtonPressed(14)) {
             mWrist.setPosition(WristPosistions.DEFENSE)
         }
 
