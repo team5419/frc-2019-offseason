@@ -39,7 +39,7 @@ class Wrist(
         HATCH(Constants.Wrist.HATCH_ANGLE),
         BALL(Constants.Wrist.BALL_ANGLE),
         HUMAN_PLAYER_BALL(Constants.Wrist.HUMAN_PLAYER),
-        DEFENSE(90.0)
+        DEFENSE(80.0)
         // HUMAN_PLAYER_HATCH(Constants.Wrist.)
     }
 

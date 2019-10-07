@@ -75,7 +75,7 @@ public object Constants {
         public const val FORWARD = 0.0
         public const val MIDDLE = 90.0
         public const val BACKWARD = 180.0
-        public const val HATCH_ANGLE = 170.0
+        public const val HATCH_ANGLE = 175.0
         public const val BALL_ANGLE = 130.0
         public const val MIN_RISE_ANGLE = 135.0
         public const val MAX_RISE_ANGLE = 75.0

@@ -35,7 +35,7 @@ public class TeleopController(
     private val mClimber: Climber
     private val mVacuum: Vacuum
 
-    private var isReverse: Boolean = false
+    private var isReverse: Double = 1.0
     private var speed = Input.BASE_SPEED
     private var leftDrive: Double = 0.0
     private var rightDrive: Double = 0.0
@@ -64,7 +64,7 @@ public class TeleopController(
     }
 
     override fun start() {
-        isReverse = false
+        isReverse = 1.0
         rightDrive = 0.0
         leftDrive = 0.0
         mWrist.startZero()
@@ -77,10 +77,10 @@ public class TeleopController(
     @Suppress("ComplexMethod")
     override fun update() {
         // Driver
-        if (mDriver.getAButton()) { mDrivetrain.isReverse = !mDrivetrain.isReverse }
+        if (mDriver.getAButtonPressed()) { isReverse = -isReverse }
 
         val ds: DriveSignal = driveHelper.calculateOutput(
-            mDriver.getY(Hand.kLeft),
+            mDriver.getY(Hand.kLeft) * isReverse,
             -mDriver.getX(Hand.kRight),
             isQuickTurn,
             isHighGear
@@ -143,6 +143,9 @@ public class TeleopController(
             mWrist.setPosition(WristPosistions.BALL)
         }
 
+        if (mDriver.getStartButtonPressed()) {
+            mWrist.startZero()
+        }
         if (mCoDriver.getAButtonPressed()) {
             mWrist.setPosition(WristPosistions.HATCH)
         }
