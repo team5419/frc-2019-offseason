@@ -1,53 +1,80 @@
 package org.team5419.frc2019offseason.subsystems
 
 import org.team5419.fault.Subsystem
-
 import edu.wpi.first.wpilibj.Solenoid
 import org.team5419.fault.hardware.LazyTalonSRX
 import com.ctre.phoenix.motorcontrol.ControlMode
-import edu.wpi.first.wpilibj.Timer
 
 class Vacuum(
     masterTalon: LazyTalonSRX,
-    solnoid: Solenoid
-) : Subsystem() {
-    private val mTimer: Timer = Timer()
+    releaseSolenoid: Solenoid,
+    hatchSolenoid: Solenoid
 
+) : Subsystem() {
     private val mTalon: LazyTalonSRX
-    private val mSolenoid: Solenoid
-    public var pump: Boolean = false
-    private var suck: Boolean = false
+    private val mReleaseSolenoid: Solenoid
+    private val mHatchSolenoid: Solenoid
+    private var isClearingValve: Boolean = false
+    private var hasPeice: Boolean = false
+    public var hatchValve: Boolean = false
+        get() = mHatchSolenoid.get()
+        set(value) {
+            mHatchSolenoid.set(value)
+            field = value
+        }
+
+    public var realeaseValve: Boolean = false
+        get() = mReleaseSolenoid.get()
+        set(value) {
+            mReleaseSolenoid.set(value)
+            field = value
+        }
 
     init {
         mTalon = masterTalon
-        mSolenoid = solnoid
+        mReleaseSolenoid = releaseSolenoid
+        mHatchSolenoid = hatchSolenoid
     }
 
-    public fun setValve(value: Boolean) {
-        mSolenoid.set(value)
-        suck = value
-        if (value) mTimer.start()
-        else {
-            mTimer.stop()
-            mTimer.reset()
-        }
+    public fun release() {
+        realeaseValve = true
+        hatchValve = true
+        hasPeice = false
+        mTalon.set(ControlMode.PercentOutput, 0.0)
     }
 
-    public fun toogleValve() = setValve(!mSolenoid.get())
+    public fun pickBall() {
+        realeaseValve = false
+        hatchValve = false
+        setPercent(1.0)
+    }
 
-    public fun setPercent(percent: Double) = mTalon.set(ControlMode.PercentOutput, percent)
+    public fun pickHatch() {
+        realeaseValve = false
+        hatchValve = true
+        setPercent(1.0)
+    }
+
+    public fun setPercent(percent: Double) {
+        // if (percent == 0.0) isPumping = false
+        mTalon.set(ControlMode.PercentOutput, percent)
+    }
 
     public override fun update() {
-        pump = pump || (suck && mTimer.get().toInt() % 2 == 1)
-        if (pump) mTalon.set(ControlMode.PercentOutput, 1.0)
-        else mTalon.set(ControlMode.PercentOutput, 0.0)
-        pump = false
+        // println("${mTalon.getOutputCurrent()}")
+        // hasPeice = hasPeice || mTalon.getOutputCurrent() >= Constants.Vacuum.RESTING_THRESHOLD
+        // if (hasPeice && !isPumping){
+        //     mTalon.set(ControlMode.PercentOutput, 0.2)
+        // }
+        // else if(!hasPeice && !isPumping){
+        //     mTalon.set(ControlMode.PercentOutput, 0.0)
+        // }
     }
 
     public override fun stop() {
-        pump = false
         mTalon.set(ControlMode.PercentOutput, 0.0)
-        mSolenoid.set(false)
+        mReleaseSolenoid.set(true)
+        mHatchSolenoid.set(true)
     }
     public override fun reset() { stop() }
 }
