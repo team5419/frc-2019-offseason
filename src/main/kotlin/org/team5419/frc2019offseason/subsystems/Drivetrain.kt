@@ -163,9 +163,7 @@ class Drivetrain(
         brakeMode = driveSignal.brakeMode
     }
 
-    public override fun update() {
-        // mPosition.update(leftDistance, rightDistance, heading.degrees)
-    }
+    public override fun update() {}
 
     public override fun stop() {
         setPercent(DriveSignal(0.0, 0.0, true))

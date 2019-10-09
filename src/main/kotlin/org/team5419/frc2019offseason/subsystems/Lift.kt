@@ -128,7 +128,7 @@ class Lift(
         mMaster.set(ControlMode.PercentOutput, speed)
     }
 
-    public fun setPosistion(height: LiftHeight) {
+    public fun setPosition(height: LiftHeight) {
         // println("set posistion $height.value")
         if (canRise(height.value)) {
             setTicks(inchesToTicks(height.value))

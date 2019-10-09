@@ -29,11 +29,13 @@ class Wrist(
     public val canRise: Boolean
         get() = (position > 110.0 && setPoint > 110.0)
     private var isZeroed = false
+    public var rawPosition: Int
+        get() = mMaster.getSelectedSensorPosition(0)
     lateinit var lift: Lift
-    // public var targetPosistion: WristPosistions
+    // public var targetPosistion: WristPosition
 
     // set posistion
-    public enum class WristPosistions(val value: Double) {
+    public enum class WristPosition(val value: Double) {
         FORWARD(Constants.Wrist.FORWARD),
         BACKWARD(Constants.Wrist.BACKWARD),
         HATCH(Constants.Wrist.HATCH_ANGLE),
@@ -46,11 +48,11 @@ class Wrist(
     init {
         // config talon PIDF
         mMaster = masterTalon.apply {
-            configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0) //
+            configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 0)
             // configSelectedFeedbackCoefficient(-1.0)
             setSelectedSensorPosition(0)
-            setSensorPhase(true) // check
-            setInverted(true) // check this
+            setSensorPhase(true)
+            setInverted(true)
 
             configClosedLoopPeakOutput(kWristSlot, 1.0)
 
@@ -77,13 +79,13 @@ class Wrist(
         }
 
         setPoint = 0.0
-        position = WristPosistions.FORWARD.value
+        position = WristPosition.FORWARD.value
         liftPos = 0.0
     }
 
     public fun zero() {
         setPoint = 0.0
-        position = WristPosistions.FORWARD.value
+        position = WristPosition.FORWARD.value
         mMaster.setSelectedSensorPosition(0)
     }
 
@@ -96,25 +98,29 @@ class Wrist(
         mMaster.set(ControlMode.PercentOutput, percent)
     }
 
+    public fun setPositionRaw(ticks: Int) {
+        mMaster.set(ControlMode.Position, (Constants.Wrist.POSITION_OFFSET + ticks).toDouble())
+    }
+
     @Suppress("ComplexCondition")
-    public fun setPosition(point: WristPosistions) {
+    public fun setPosition(point: WristPosition) {
         setPoint = point.value
         if (
             (position < Constants.Wrist.MAX_RISE_ANGLE && setPoint < Constants.Wrist.MAX_RISE_ANGLE) ||
             (position > 110.0 && setPoint > 110.0) ||
             lift.canFlip) {
-            setDegrees(point.value)
-        } else println("Can't set wrist posistion")
+            setPositionRaw(point.value.toInt())
+        } else println("Can't set wrist position")
     }
 
-    private fun setDegrees(heading: Double) {
-        setTicks(degreesToTicks(heading))
-    }
+    // private fun setDegrees(heading: Double) {
+    //     setTicks(degreesToTicks(heading))
+    // }
 
-    private fun setTicks(ticks: Int) {
-        // println("wrist: $position")
-        mMaster.set(ControlMode.MotionMagic, ticks.toDouble())
-    }
+    // private fun setTicks(ticks: Int) {
+    //     // println("wrist: $position")
+    //     mMaster.set(ControlMode.MotionMagic, ticks.toDouble())
+    // }
 
     public override fun update() {
         if (mMaster.getSensorCollection().isRevLimitSwitchClosed() && !isZeroed) {
