@@ -127,7 +127,7 @@ public class TeleopController(
             mLift.setPosistion(LiftHeight.HATCH_HIGH)
             mWrist.setPosition(WristPosistions.HATCH)
         } else if ((mCoDriver.getPOV() >= 340 && mCoDriver.getPOV() <= 360) ||
-            (mCoDriver.getPOV() >= 0 && mCoDriver.getPOV() <= 20)) {
+            (mCoDriver.getPOV() >= 1 && mCoDriver.getPOV() <= 20)) {
             mLift.setPosistion(LiftHeight.BALL_HIGH)
             mWrist.setPosition(WristPosistions.BALL)
         } else if (mCoDriver.getPOV() >= 250 && mCoDriver.getPOV() <= 290) {
