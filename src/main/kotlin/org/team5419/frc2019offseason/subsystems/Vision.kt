@@ -33,6 +33,7 @@ public class Vision : Subsystem() {
             mTable.getEntry("pipeline").setNumber(value.value)
             field = value
         }
+
     public val hasValidTarget: Boolean
         get() {
             return if (

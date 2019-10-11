@@ -41,7 +41,7 @@ public class TeleopController(
     private var rightDrive: Double = 0.0
     private var driveHelper: DriveHelper
 
-    private var isManuelOverride = true
+    private var isManualOverride = true
     private val isHighGear: Boolean get() = mDriver.getTriggerAxis(Hand.kLeft) > 0.3
     private val isQuickTurn: Boolean get() = mDriver.getTriggerAxis(Hand.kRight) > 0.3
 
@@ -103,7 +103,6 @@ public class TeleopController(
         }
 
         // Codriver
-        // Valve control
 
         // Vacuum control
         if (mCoDriver.getRawButton(7)) {
@@ -156,12 +155,11 @@ public class TeleopController(
             mWrist.setPosition(WristPosition.DEFENSE)
         }
 
-        // mSubsystems.lift.setPercent(mCoDriver.getY(Hand.kLeft) * 0.5)
-        // Manuel Lift control
-        // if (Math.abs(mCoDriver.getY(Hand.kLeft)) > Input.DEADBAND && isManuelOverride) {
+        // Manual Lift control
+        // if (Math.abs(mCoDriver.getY(Hand.kLeft)) > Input.DEADBAND && isManualOverride) {
         //     mSubsystems.lift.setPercent(mCoDriver.getY(Hand.kLeft) * 0.5)
         // }
-        // if (Math.abs(mCoDriver.getY(Hand.kRight)) > Input.DEADBAND && isManuelOverride) {
+        // if (Math.abs(mCoDriver.getY(Hand.kRight)) > Input.DEADBAND && isManualOverride) {
         //     mSubsystems.wrist.setPercent(mCoDriver.getY(Hand.kLeft) * 0.5)
         // }
     }
