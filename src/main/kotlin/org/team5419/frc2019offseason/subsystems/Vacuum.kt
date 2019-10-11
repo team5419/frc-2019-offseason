@@ -4,6 +4,7 @@ import org.team5419.fault.Subsystem
 import edu.wpi.first.wpilibj.Solenoid
 import org.team5419.fault.hardware.LazyTalonSRX
 import com.ctre.phoenix.motorcontrol.ControlMode
+import org.team5419.frc2019offseason.Constants
 
 class Vacuum(
     masterTalon: LazyTalonSRX,
@@ -14,6 +15,7 @@ class Vacuum(
     private val mTalon: LazyTalonSRX
     private val mReleaseSolenoid: Solenoid
     private val mHatchSolenoid: Solenoid
+    lateinit var mVision: Vision
     private var isClearingValve: Boolean = false
     private var hasPeice: Boolean = false
     public var hatchValve: Boolean = false
@@ -69,6 +71,10 @@ class Vacuum(
         // else if(!hasPeice && !isPumping){
         //     mTalon.set(ControlMode.PercentOutput, 0.0)
         // }
+        if (!hasPeice && mTalon.getOutputCurrent() >= Constants.Vacuum.RESTING_THRESHOLD) {
+            hasPeice = true
+            mVision.flashForSeconds(0.2)
+        }
     }
 
     public override fun stop() {

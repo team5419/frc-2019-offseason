@@ -103,6 +103,10 @@ public class Vision : Subsystem() {
         timer.start()
     }
 
+    public fun flashOnce() {
+        flashForSeconds(Constants.Vision.BLINCKS_PER_SECOND)
+    }
+
     public override fun update() {
         if (timer.get() >= mBlinkDuration) {
             mBlinking = false
