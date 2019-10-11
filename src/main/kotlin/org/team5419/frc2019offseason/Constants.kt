@@ -153,7 +153,7 @@ public object Constants {
         public var DISTANCE_KD = 0.0
         public var DISTANCE_KF = 0.0
 
-        public const val FLASH_FREQUENCY = 0.2 // check
+        public const val BLINKS_PER_SECOND = 0.2 // check
     }
 
     object Auto {

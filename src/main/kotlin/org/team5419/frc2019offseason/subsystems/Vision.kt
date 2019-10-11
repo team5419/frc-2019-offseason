@@ -104,7 +104,7 @@ public class Vision : Subsystem() {
     }
 
     public fun flashOnce() {
-        flashForSeconds(Constants.Vision.BLINCKS_PER_SECOND)
+        flashForSeconds(Constants.Vision.BLINKS_PER_SECOND)
     }
 
     public override fun update() {
