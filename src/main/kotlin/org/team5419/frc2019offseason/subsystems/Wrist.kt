@@ -16,11 +16,7 @@ class Wrist(
     companion object {
         const val kWristSlot = 0
     }
-
-    private fun ticksToDegrees(ticks: Int): Double =
-        ticks / Constants.Wrist.ENCODER_TICKS_PER_ROTATION * 360.0
-    private fun degreesToTicks(heading: Double): Int =
-        (heading / 360.0 * Constants.Wrist.ENCODER_TICKS_PER_ROTATION).toInt()
+    lateinit var lift: Lift
     public val mMaster: LazyTalonSRX
     public var position: Double
         get() = ticksToDegrees(mMaster.getSelectedSensorPosition())
@@ -29,7 +25,14 @@ class Wrist(
     public val canRise: Boolean
         get() = (position > 110.0 && setPoint > 110.0)
     private var isZeroed = false
-    lateinit var lift: Lift
+    val needsToFlipBackward: Boolean get() = (position > Constants.Wrist.MIN_RISE_ANGLE && setPoint < Constants.Wrist.MAX_RISE_ANGLE)
+    val needsToFlipForward: Boolean get() = (position < Constants.Wrist.MAX_RISE_ANGLE && setPoint > Constants.Wrist.MIN_RISE_ANGLE)
+    val needsToFlip: Boolean get() = needsToFlipForward || needsToFlipBackward
+    val isDangerousPosition: Boolean get() = (position > Constants.Wrist.MAX_RISE_ANGLE || position < Constants.Wrist.MIN_RISE_ANGLE)
+    val isDangerousSetPoint: Boolean get() = (setPoint > Constants.Wrist.MAX_RISE_ANGLE || setPoint < Constants.Wrist.MIN_RISE_ANGLE)
+    val isDangerous: Boolean get() = isDangerousPosition || isDangerousSetPoint
+    var isFlipping: Boolean
+    val isAtSetPoint: Boolean get() = Math.abs(mMaster.getSelectedSensorVelocity(0)) < 0.01
     // public var targetPosistion: WristPosistions
 
     // set posistion
@@ -79,7 +82,14 @@ class Wrist(
         setPoint = 0.0
         position = WristPosistions.FORWARD.value
         liftPos = 0.0
+        isFlipping = false
     }
+
+    private fun ticksToDegrees(ticks: Int): Double =
+        ticks / Constants.Wrist.ENCODER_TICKS_PER_ROTATION * 360.0
+
+    private fun degreesToTicks(heading: Double): Int =
+        (heading / 360.0 * Constants.Wrist.ENCODER_TICKS_PER_ROTATION).toInt()
 
     public fun zero() {
         setPoint = 0.0
@@ -99,12 +109,10 @@ class Wrist(
     @Suppress("ComplexCondition")
     public fun setPosition(point: WristPosistions) {
         setPoint = point.value
-        if (
-            (position < Constants.Wrist.MAX_RISE_ANGLE && setPoint < Constants.Wrist.MAX_RISE_ANGLE) ||
-            (position > 110.0 && setPoint > 110.0) ||
-            lift.canFlip) {
-            setDegrees(point.value)
-        } else println("Can't set wrist posistion")
+        if (!this.needsToFlip || lift.canFlip) {
+            mMaster.set(ControlMode.MotionMagic, setPoint)
+            this.isFlipping = true
+        }
     }
 
     private fun setDegrees(heading: Double) {
@@ -121,6 +129,11 @@ class Wrist(
             zero()
             mMaster.overrideSoftLimitsEnable(true)
             isZeroed = true
+        }
+
+        if (this.needsToFlip && lift.canFlip) {
+            mMaster.set(ControlMode.MotionMagic, setPoint)
+            this.isFlipping = true
         }
     }
     public override fun stop() {}

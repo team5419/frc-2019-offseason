@@ -23,13 +23,18 @@ class Lift(
     private var mMaster: LazyTalonSRX
     private var mSlave: LazyTalonSRX
     lateinit var wrist: Wrist
+
     public var firstStagePosition: Double
         get() = ticksToInches(-mMaster.getSelectedSensorPosition(kElevatorSlot))
     var secondStagePosition: Double
         get() = Math.max(ticksToInches(-mMaster.getSelectedSensorPosition(kElevatorSlot)) - Constants.Lift.SECOND_STAGE_HIGHT, 0.0)
     var setPoint: Double
     var isSecondStage: Boolean
+
+    var isLazyFlipping: Boolean
     val canFlip: Boolean get() = Constants.Lift.MAX_FLIP_HIGHT > firstStagePosition && Constants.Lift.MAX_FLIP_HIGHT > setPoint
+    public var state: States
+
     // confirm resting hight
     public enum class LiftHeight(
         val value: Double = 0.0
@@ -42,31 +47,33 @@ class Lift(
         BALL_MID(Constants.Lift.BALL_MID_HEIGHT),
         BALL_HIGH(Constants.Lift.BALL_HIGH_HEIGHT)
     }
+    public enum class States {
+        AT_SET_POINT,
+        MOVING_TO_FLIP_POSITION,
+        WAITING_FOR_FLIP,
+        MOVING_TO_SET_POINT
+    }
 
     private fun ticksToInches(ticks: Int): Double =
         ticks.toDouble() / Constants.Lift.ENCODER_TICKS_PER_ROTATION.toDouble() * Constants.Lift.INCHES_PER_ROTATION
     private fun inchesToTicks(inches: Double): Int =
         (inches / Constants.Lift.INCHES_PER_ROTATION * Constants.Lift.ENCODER_TICKS_PER_ROTATION).toInt()
     private fun canRise(height: Double): Boolean {
-        // println("""${wrist.canRise}
-        //     ${firstStagePosition < Constants.Lift.MAX_FLIP_HIGHT}
-        //     ${height < Constants.Lift.MAX_FLIP_HIGHT} $firstStagePosition $height""")
-        return wrist.canRise ||
-                (firstStagePosition < Constants.Lift.MAX_FLIP_HIGHT &&
-                    height < Constants.Lift.MAX_FLIP_HIGHT)
+        return wrist.canRise || (firstStagePosition < Constants.Lift.MAX_FLIP_HIGHT && height < Constants.Lift.MAX_FLIP_HIGHT)
     }
+
     private var mBrakeMode: Boolean = true
-    set(value) {
-        if (value == field) return
-        if (value) {
-            mMaster.setNeutralMode(NeutralMode.Brake)
-            mSlave.setNeutralMode(NeutralMode.Brake)
-        } else {
-            mMaster.setNeutralMode(NeutralMode.Coast)
-            mSlave.setNeutralMode(NeutralMode.Coast)
+        set(value) {
+            if (value == field) return
+            if (value) {
+                mMaster.setNeutralMode(NeutralMode.Brake)
+                mSlave.setNeutralMode(NeutralMode.Brake)
+            } else {
+                mMaster.setNeutralMode(NeutralMode.Coast)
+                mSlave.setNeutralMode(NeutralMode.Coast)
+            }
+            field = value
         }
-        field = value
-    }
 
     init {
         mMaster = masterTalon.apply {
@@ -115,6 +122,8 @@ class Lift(
         firstStagePosition = 0.0
         secondStagePosition = Constants.Lift.SECOND_STAGE_HIGHT
         isSecondStage = false
+        state = States.AT_SET_POINT
+        isLazyFlipping = false
     }
 
     public fun zero() {
@@ -130,17 +139,17 @@ class Lift(
 
     public fun setPosistion(height: LiftHeight) {
         // println("set posistion $height.value")
-        if (canRise(height.value)) {
-            setTicks(inchesToTicks(height.value))
-            setPoint = height.value
-        } else println("Can't set lift posistion")
+        setPoint = height.value
+        if (!wrist.isDangerous && !wrist.needsToFlip) {
+            this.setInches(height.value)
+        }
     }
 
-    public fun setTicks(ticks: Int) {
+    private fun setTicks(ticks: Int) {
         mMaster.set(ControlMode.MotionMagic, ticks.toDouble())
     }
 
-    public fun setInches(inches: Double) {
+    private fun setInches(inches: Double) {
         setTicks(inchesToTicks(inches))
     }
 
@@ -156,6 +165,11 @@ class Lift(
             mMaster.config_kF(kElevatorSlot, Constants.Lift.KF, 0)
             isSecondStage = false
             println("first stage")
+        }
+
+        if (wrist.needsToFlip && !this.canFlip) {
+            this.state = States.MOVING_TO_FLIP_POSITION
+            mMaster.set(ControlMode.MotionMagic, 0.0)
         }
     }
 
