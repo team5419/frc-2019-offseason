@@ -92,7 +92,7 @@ public object Constants {
         public const val MOTION_MAGIC_ACCELERATION = 5000
         public const val MAX_ENCODER_TICKS = 2048
         public const val MIN_ENCODER_TICKS = 0
-        public const val POSITION_OFFSET = 140
+        public const val POSITION_OFFSET = 120.0
     }
 
     object Lift {

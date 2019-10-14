@@ -161,6 +161,8 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     }
 
     override fun disabledPeriodic() {
+        // println(mWrist.mMaster.getSelectedSensorPosition(0))
+        println(mWrist.position)
     }
 
     // autonomous mode

@@ -18,12 +18,12 @@ class Wrist(
     }
 
     private fun ticksToDegrees(ticks: Int): Double =
-        ticks / Constants.Wrist.ENCODER_TICKS_PER_ROTATION * 360.0
+        (ticks.toDouble()) * 180.0 / 277.0
     private fun degreesToTicks(heading: Double): Int =
         (heading / 360.0 * Constants.Wrist.ENCODER_TICKS_PER_ROTATION).toInt()
     public val mMaster: LazyTalonSRX
     public var position: Double
-        get() = ticksToDegrees(mMaster.getSelectedSensorPosition())
+        get() = ticksToDegrees(mMaster.getSelectedSensorPosition(0))
     private var setPoint: Double
     public var liftPos: Double
     public val canRise: Boolean
@@ -98,8 +98,8 @@ class Wrist(
         mMaster.set(ControlMode.PercentOutput, percent)
     }
 
-    public fun setPositionRaw(ticks: Double) {
-        mMaster.set(ControlMode.MotionMagic, (Constants.Wrist.POSITION_OFFSET + ticks))
+    public fun setPositionRaw(ticks: Int) {
+        mMaster.set(ControlMode.MotionMagic, ticks.toDouble())
     }
 
     @Suppress("ComplexCondition")
@@ -109,13 +109,13 @@ class Wrist(
             (position < Constants.Wrist.MAX_RISE_ANGLE && setPoint < Constants.Wrist.MAX_RISE_ANGLE) ||
             (position > 110.0 && setPoint > 110.0) ||
             lift.canFlip) {
-            setPositionRaw(point.value.toDouble())
+            setDegrees(point.value.toDouble())
         } else println("Can't set wrist position")
     }
 
-    // private fun setDegrees(heading: Double) {
-    //     setTicks(degreesToTicks(heading))
-    // }
+    private fun setDegrees(heading: Double) {
+        setPositionRaw(degreesToTicks(heading))
+    }
 
     // private fun setTicks(ticks: Int) {
     //     // println("wrist: $position")
