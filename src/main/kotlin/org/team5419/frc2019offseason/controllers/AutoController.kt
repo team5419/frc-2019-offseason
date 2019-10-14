@@ -13,7 +13,7 @@ public class AutoController(
     private var mPrevError: Double
     private var mTotalError: Double
     private val mTimer: Timer
-    
+
     private val kP = 0.01
     private val kI = 0.0
     private val kD = 0.0
@@ -36,11 +36,10 @@ public class AutoController(
     }
 
     override fun reset() {
-
     }
 
     override fun update() {
-        if ( mSubsystems.vision.hasValidTarget ) {
+        if (mSubsystems.vision.hasValidTarget) {
             var error = mSubsystems.vision.targetXOffset
             mTotalError += error
 
@@ -56,14 +55,14 @@ public class AutoController(
             if (kD != 0.0) {
                 output += mTotalError * kD
             }
-            
+
             if (output > mMax) {
                 output = mMax
             } else if (output < -mMax) {
                 output = -mMax
             }
 
-            mSubsystems.drivetrain.setPercent( DriveSignal(+output, -output) )
+            mSubsystems.drivetrain.setPercent(DriveSignal(+output, -output))
 
             mPrevError = error
         }
