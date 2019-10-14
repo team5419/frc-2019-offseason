@@ -28,11 +28,18 @@ class Lift(
         get() = ticksToInches(-mMaster.getSelectedSensorPosition(kElevatorSlot))
     var secondStagePosition: Double
         get() = Math.max(ticksToInches(-mMaster.getSelectedSensorPosition(kElevatorSlot)) - Constants.Lift.SECOND_STAGE_HIGHT, 0.0)
-    var setPoint: Double
+    var setPoint: Double = 0.0 // the actuall set point of the elevator
+        set(value) {
+            field = value
+            mMaster.set(ControlMode.MotionMagic, value)
+        }
+    var targetPoint: Double // the soft set point - will default to wrist
     var isSecondStage: Boolean
 
     var isLazyFlipping: Boolean
-    val canFlip: Boolean get() = Constants.Lift.MAX_FLIP_HIGHT > firstStagePosition && Constants.Lift.MAX_FLIP_HIGHT > setPoint
+    val canFlip: Boolean get() =
+        Constants.Lift.MAX_FLIP_HIGHT > firstStagePosition &&
+        Constants.Lift.MAX_FLIP_HIGHT > setPoint
     public var state: States
 
     // confirm resting hight
@@ -59,7 +66,9 @@ class Lift(
     private fun inchesToTicks(inches: Double): Int =
         (inches / Constants.Lift.INCHES_PER_ROTATION * Constants.Lift.ENCODER_TICKS_PER_ROTATION).toInt()
     private fun canRise(height: Double): Boolean {
-        return wrist.canRise || (firstStagePosition < Constants.Lift.MAX_FLIP_HIGHT && height < Constants.Lift.MAX_FLIP_HIGHT)
+        return wrist.canRise ||
+            (firstStagePosition < Constants.Lift.MAX_FLIP_HIGHT &&
+            height < Constants.Lift.MAX_FLIP_HIGHT)
     }
 
     private var mBrakeMode: Boolean = true
@@ -119,6 +128,7 @@ class Lift(
 
         // setpoint = LiftHeight.getHeight()
         setPoint = 0.0
+        targetPoint = 0.0
         firstStagePosition = 0.0
         secondStagePosition = Constants.Lift.SECOND_STAGE_HIGHT
         isSecondStage = false
@@ -139,9 +149,9 @@ class Lift(
 
     public fun setPosistion(height: LiftHeight) {
         // println("set posistion $height.value")
-        setPoint = height.value
+        targetPoint = height.value
         if (!wrist.isDangerous && !wrist.needsToFlip) {
-            this.setInches(height.value)
+            setPoint = height.value
         }
     }
 
@@ -169,8 +179,12 @@ class Lift(
 
         if (wrist.needsToFlip && !this.canFlip) {
             this.state = States.MOVING_TO_FLIP_POSITION
-            mMaster.set(ControlMode.MotionMagic, 0.0)
+            if (this.setPoint > Constants.Lift.MAX_FLIP_HIGHT) setPoint = 0.0
+        } else if (!wrist.needsToFlip && !wrist.isDangerous) {
+            setPoint = targetPoint
+            this.state = States.MOVING_TO_SET_POINT
         }
+        if (this.canFlip && wrist.needsToFlip) this.state = States.WAITING_FOR_FLIP
     }
 
     public override fun stop() {
