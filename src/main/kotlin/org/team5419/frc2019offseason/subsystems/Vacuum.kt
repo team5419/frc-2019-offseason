@@ -17,7 +17,7 @@ class Vacuum(
     private val mHatchSolenoid: Solenoid
     lateinit var mVision: Vision
     private var isClearingValve: Boolean = false
-    private var hasPeice: Boolean = false
+    private var hasPiece: Boolean = false
     public var hatchValve: Boolean = false
         get() = mHatchSolenoid.get()
         set(value) {
@@ -41,7 +41,7 @@ class Vacuum(
     public fun release() {
         realeaseValve = true
         hatchValve = true
-        hasPeice = false
+        hasPiece = false
         mTalon.set(ControlMode.PercentOutput, 0.0)
     }
 
@@ -64,15 +64,15 @@ class Vacuum(
 
     public override fun update() {
         // println("${mTalon.getOutputCurrent()}")
-        // hasPeice = hasPeice || mTalon.getOutputCurrent() >= Constants.Vacuum.RESTING_THRESHOLD
-        // if (hasPeice && !isPumping){
+        // hasPiece = hasPiece || mTalon.getOutputCurrent() >= Constants.Vacuum.RESTING_THRESHOLD
+        // if (hasPiece && !isPumping){
         //     mTalon.set(ControlMode.PercentOutput, 0.2)
         // }
-        // else if(!hasPeice && !isPumping){
+        // else if(!hasPiece && !isPumping){
         //     mTalon.set(ControlMode.PercentOutput, 0.0)
         // }
-        if (!hasPeice && mTalon.getOutputCurrent() >= Constants.Vacuum.RESTING_THRESHOLD) {
-            hasPeice = true
+        if (!hasPiece && mTalon.getOutputCurrent() >= Constants.Vacuum.RESTING_THRESHOLD) {
+            hasPiece = true
             mVision.flashForSeconds(0.2)
         }
     }

@@ -103,8 +103,12 @@ public class Vision : Subsystem() {
         timer.start()
     }
 
+    public fun flashNumTimes(times: Int) {
+        flashForSeconds(Constants.Vision.BLINKS_PER_SECOND * times)
+    }
+
     public fun flashOnce() {
-        flashForSeconds(Constants.Vision.BLINKS_PER_SECOND)
+        flashNumTimes(1)
     }
 
     public override fun update() {
