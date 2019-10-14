@@ -78,7 +78,7 @@ class Vacuum(
 
         if (!hasPiece && rollingAverage >= Constants.Vacuum.RESTING_THRESHOLD) {
             hasPiece = true
-            mVision.flashForSeconds(0.2)
+            mVision.flashNumTimes(3)
         }
     }
 
