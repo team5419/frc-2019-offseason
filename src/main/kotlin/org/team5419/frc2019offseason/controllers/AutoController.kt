@@ -47,10 +47,15 @@ public class AutoController(
             var timeelapsed = mTimer.get()
             mTimer.reset()
 
-            var output =
-                error * kP
-              + (error - mPrevError) / timeelapsed * kI
-              + mTotalError * kD
+            var output = error * kP
+
+            if (kI != 0.0) {
+                output += (error - mPrevError) / timeelapsed * kI
+            }
+
+            if (kD != 0.0) {
+                output += mTotalError * kD
+            }
             
             if (output > mMax) {
                 output = mMax
