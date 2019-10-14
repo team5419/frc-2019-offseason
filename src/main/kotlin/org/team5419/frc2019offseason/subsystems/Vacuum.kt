@@ -35,7 +35,7 @@ class Vacuum(
         }
 
     private val rollingValues: Deque<Double> = LinkedList(Collections.nCopies(30, 0.0))
-    private val rollingAverage: Double
+    public val rollingAverage: Double
         get() {
             var sum = 0.0
             rollingValues.iterator().forEach { sum += it }

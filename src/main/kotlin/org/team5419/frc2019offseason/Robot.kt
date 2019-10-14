@@ -151,6 +151,7 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     }
 
     override fun robotPeriodic() {
+        println(mVacuum.rollingAverage)
     }
 
     // disabled mode
@@ -184,7 +185,8 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     }
 
     override fun teleopPeriodic() {
-        mSubsystemsManager.updateAll()
+        // mSubsystemsManager.updateAll()
+        mVacuum.update()
         mTeleopController.update()
     }
 
