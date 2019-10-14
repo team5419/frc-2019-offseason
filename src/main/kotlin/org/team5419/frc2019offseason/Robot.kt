@@ -132,7 +132,9 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         )
 
         // initilize controllers
-        mAutoController = AutoController()
+        mAutoController = AutoController(
+            mSubsystemsManager
+        )
 
         mDriver = XboxController(Constants.Input.DRIVER_PORT)
         mCodriver = XboxController(Constants.Input.CODRIVER_PORT)
