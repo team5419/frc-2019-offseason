@@ -38,12 +38,17 @@ public object Constants {
         public const val WHEEL_DIAMETER = 6.0 // inches
         public const val WHEEL_RADIUS = WHEEL_DIAMETER / 2.0 // inches
         public const val WHEEL_CIR = WHEEL_DIAMETER * Math.PI // inches
-        // pidf
+        // driving pidf
         public const val VEL_KP = 0.7
         public const val VEL_KI = 0.0
         public const val VEL_KD = 0.0
         public const val VEL_KF = 0.0 // should be tuned
         public const val TALON_PIDF_UPDATE_PERIOD_MS = 1
+        // auto align pidf
+        public const val ALIGN_KP = 0.7
+        public const val ALIGN_KI = 0.0
+        public const val ALIGN_KD = 0.0
+        public const val ALIGN_KF = 0.0 // should be tuned
     }
 
     object Vacuum {
