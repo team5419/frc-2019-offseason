@@ -13,6 +13,12 @@ public class AutoController(
     private var mPrevError: Double
     private var mTotalError: Double
     private val mTimer: Timer
+    
+    private val kP = 0.01
+    private val kI = 0.0
+    private val kD = 0.0
+
+    private val mMax = 1.0
 
     init {
         mSubsystems = subsystems
@@ -35,16 +41,22 @@ public class AutoController(
 
     override fun update() {
         if ( mSubsystems.vision.hasValidTarget ) {
-            var error = mSubsystems.vision.targetSkew
+            var error = mSubsystems.vision.targetXOffset
             mTotalError += error
 
             var timeelapsed = mTimer.get()
             mTimer.reset()
 
             var output =
-                error * 0.01
-              + (error - mPrevError) / timeelapsed * 0.01
-              + mTotalError * 0.01
+                error * kP
+              + (error - mPrevError) / timeelapsed * kI
+              + mTotalError * kD
+            
+            if (output > mMax) {
+                output = mMax
+            } else if (output < -mMax) {
+                output = -mMax
+            }
 
             mSubsystems.drivetrain.setPercent( DriveSignal(+output, -output) )
 
