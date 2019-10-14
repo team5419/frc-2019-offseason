@@ -135,6 +135,7 @@ class Wrist(
             mMaster.set(ControlMode.MotionMagic, setPoint)
             this.isFlipping = true
         }
+        this.isFlipping = this.isFlipping && this.needsToFlip
     }
     public override fun stop() {}
     public override fun reset() {}
