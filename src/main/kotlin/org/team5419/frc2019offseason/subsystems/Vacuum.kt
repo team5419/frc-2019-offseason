@@ -5,6 +5,9 @@ import edu.wpi.first.wpilibj.Solenoid
 import org.team5419.fault.hardware.LazyTalonSRX
 import com.ctre.phoenix.motorcontrol.ControlMode
 import org.team5419.frc2019offseason.Constants
+import java.util.Deque
+import java.util.LinkedList
+import java.util.Collections
 
 class Vacuum(
     masterTalon: LazyTalonSRX,
@@ -24,12 +27,19 @@ class Vacuum(
             mHatchSolenoid.set(value)
             field = value
         }
-
     public var realeaseValve: Boolean = false
         get() = mReleaseSolenoid.get()
         set(value) {
             mReleaseSolenoid.set(value)
             field = value
+        }
+
+    private val rollingValues: Deque<Double> = LinkedList(Collections.nCopies(30, 0.0))
+    private val rollingAverage: Double
+        get() {
+            var sum = 0.0
+            rollingValues.iterator().forEach { sum += it }
+            return sum / rollingValues.size
         }
 
     init {
@@ -63,15 +73,10 @@ class Vacuum(
     }
 
     public override fun update() {
-        // println("${mTalon.getOutputCurrent()}")
-        // hasPiece = hasPiece || mTalon.getOutputCurrent() >= Constants.Vacuum.RESTING_THRESHOLD
-        // if (hasPiece && !isPumping){
-        //     mTalon.set(ControlMode.PercentOutput, 0.2)
-        // }
-        // else if(!hasPiece && !isPumping){
-        //     mTalon.set(ControlMode.PercentOutput, 0.0)
-        // }
-        if (!hasPiece && mTalon.getOutputCurrent() >= Constants.Vacuum.RESTING_THRESHOLD) {
+        rollingValues.addFirst(mTalon.getOutputCurrent())
+        rollingValues.removeLast()
+
+        if (!hasPiece && rollingAverage >= Constants.Vacuum.RESTING_THRESHOLD) {
             hasPiece = true
             mVision.flashForSeconds(0.2)
         }
