@@ -29,7 +29,7 @@ class Wrist(
     public val canRise: Boolean
         get() = (position > 110.0 && setPoint > 110.0)
     private var isZeroed = false
-    public var rawPosition: Int
+    public var rawPosition: Int? = null
         get() = mMaster.getSelectedSensorPosition(0)
     lateinit var lift: Lift
     // public var targetPosistion: WristPosition
@@ -98,8 +98,8 @@ class Wrist(
         mMaster.set(ControlMode.PercentOutput, percent)
     }
 
-    public fun setPositionRaw(ticks: Int) {
-        mMaster.set(ControlMode.Position, (Constants.Wrist.POSITION_OFFSET + ticks).toDouble())
+    public fun setPositionRaw(ticks: Double) {
+        mMaster.set(ControlMode.MotionMagic, (Constants.Wrist.POSITION_OFFSET + ticks))
     }
 
     @Suppress("ComplexCondition")
@@ -109,7 +109,7 @@ class Wrist(
             (position < Constants.Wrist.MAX_RISE_ANGLE && setPoint < Constants.Wrist.MAX_RISE_ANGLE) ||
             (position > 110.0 && setPoint > 110.0) ||
             lift.canFlip) {
-            setPositionRaw(point.value.toInt())
+            setPositionRaw(point.value.toDouble())
         } else println("Can't set wrist position")
     }
 
