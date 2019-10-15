@@ -118,6 +118,11 @@ public class TeleopController(
             }
         }
 
+        if (mCoDriver.getValvePressed()) {
+            println("valve")
+            mVacuum.release() // how long should the valve be on?
+        }
+
         // button control
         if (mCoDriver.getHatchLow()) {
             mLift.setPosition(LiftHeight.HATCH_LOW)

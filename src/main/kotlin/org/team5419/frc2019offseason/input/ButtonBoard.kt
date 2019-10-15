@@ -19,11 +19,11 @@ public class ButtonBoard(joystick: Joystick, buttonBoard: Joystick) {
 
     public fun getHatchHumanPlayer() = mButtonBoard.getRawButtonPressed(1 + 1)
 
-    public fun getHatchLow() = mButtonBoard.getRawButtonPressed(2 + 1)
+    public fun getHatchLow() = mButtonBoard.getRawButtonPressed(3 + 1)
 
     public fun getHatchMid() = mButtonBoard.getRawButtonPressed(0 + 1)
 
-    public fun getHatchHigh() = mButtonBoard.getRawButtonPressed(3 + 1)
+    public fun getHatchHigh() = mButtonBoard.getRawButtonPressed(2 + 1)
 
     public fun getBallLow() = mButtonBoard.getRawButtonPressed(11 + 1)
 
