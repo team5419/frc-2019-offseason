@@ -73,7 +73,7 @@ public object Constants {
         public const val MASTER_TALON_PORT = 6 // to set
         // to check
         public const val FORWARD = 0.0 // need pot value
-        public const val MIDDLE = 90.0
+        public const val MIDDLE = 80.0
         public const val BACKWARD = 180.0
         public const val HATCH_ANGLE = 175.0
         public const val BALL_ANGLE = 130.0
@@ -83,16 +83,16 @@ public object Constants {
 
         public const val ENCODER_TICKS_PER_ROTATION = 4096.0
 
-        public const val KP = 1.0
+        public const val KP = 3.0
         public const val KI = 0.0
-        public const val KD = 0.1
+        public const val KD = 0.4
         public const val KF = 0.0
 
-        public const val MOTION_MAGIC_VELOCITY = 11000
-        public const val MOTION_MAGIC_ACCELERATION = 5000
+        public const val MOTION_MAGIC_VELOCITY = 110000
+        public const val MOTION_MAGIC_ACCELERATION = 500000
         public const val MAX_ENCODER_TICKS = 2048
         public const val MIN_ENCODER_TICKS = 0
-        public const val POSITION_OFFSET = 120.0
+        public const val POSITION_OFFSET = -71.0
     }
 
     object Lift {

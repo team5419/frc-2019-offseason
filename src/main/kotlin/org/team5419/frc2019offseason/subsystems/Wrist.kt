@@ -18,9 +18,9 @@ class Wrist(
     }
 
     private fun ticksToDegrees(ticks: Int): Double =
-        (ticks.toDouble()) * 180.0 / 277.0
+        (ticks.toDouble() + Constants.Wrist.POSITION_OFFSET) * 180.0 / (630 + Constants.Wrist.POSITION_OFFSET)
     private fun degreesToTicks(heading: Double): Int =
-        (heading / 360.0 * Constants.Wrist.ENCODER_TICKS_PER_ROTATION).toInt()
+        (heading / 180 * (630 + Constants.Wrist.POSITION_OFFSET) - Constants.Wrist.POSITION_OFFSET).toInt()
     public val mMaster: LazyTalonSRX
     public var position: Double
         get() = ticksToDegrees(mMaster.getSelectedSensorPosition(0))
@@ -50,7 +50,7 @@ class Wrist(
         mMaster = masterTalon.apply {
             configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 0)
             // configSelectedFeedbackCoefficient(-1.0)
-            setSelectedSensorPosition(0)
+            // setSelectedSensorPosition(0)
             setSensorPhase(true)
             setInverted(true)
 
@@ -99,6 +99,7 @@ class Wrist(
     }
 
     public fun setPositionRaw(ticks: Int) {
+        println(ticks)
         mMaster.set(ControlMode.MotionMagic, ticks.toDouble())
     }
 
@@ -109,11 +110,12 @@ class Wrist(
             (position < Constants.Wrist.MAX_RISE_ANGLE && setPoint < Constants.Wrist.MAX_RISE_ANGLE) ||
             (position > 110.0 && setPoint > 110.0) ||
             lift.canFlip) {
-            setDegrees(point.value.toDouble())
+                setDegrees(point.value.toDouble())
         } else println("Can't set wrist position")
     }
 
     private fun setDegrees(heading: Double) {
+        println("set degree")
         setPositionRaw(degreesToTicks(heading))
     }
 
@@ -123,11 +125,15 @@ class Wrist(
     // }
 
     public override fun update() {
+        // println(mMaster.getClosedLoopError(0))
         if (mMaster.getSensorCollection().isRevLimitSwitchClosed() && !isZeroed) {
             zero()
             mMaster.overrideSoftLimitsEnable(true)
             isZeroed = true
         }
+        println(mMaster.getSelectedSensorPosition(0).toString() + " " +
+            position + " " +
+            setPoint)
     }
     public override fun stop() {}
     public override fun reset() {}

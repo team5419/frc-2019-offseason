@@ -125,29 +125,32 @@ public class TeleopController(
         } else if (mCoDriver.getYButtonPressed()) {
             mLift.setPosition(LiftHeight.HATCH_HIGH)
             mWrist.setPosition(WristPosition.HATCH)
-        } else if (mCoDriver.getPOV() >= 340 || mCoDriver.getPOV() <= 20) {
-            mLift.setPosition(LiftHeight.BALL_HIGH)
-            mWrist.setPosition(WristPosition.BALL)
-        } else if (mCoDriver.getPOV() >= 250 && mCoDriver.getPOV() <= 290) {
-            mLift.setPosition(LiftHeight.BALL_MID)
-            mWrist.setPosition(WristPosition.BALL)
-        } else if (mCoDriver.getPOV() >= 160 && mCoDriver.getPOV() <= 200) {
-            mLift.setPosition(LiftHeight.BALL_LOW)
-            mWrist.setPosition(WristPosition.BALL)
-        } else if (mCoDriver.getRawButtonPressed(12)) {
-            mWrist.setPosition(WristPosition.BALL)
-        } else if (mCoDriver.getRawButtonPressed(11)) {
-            mLift.setPosition(LiftHeight.HUMAN_PLAYER)
-            mWrist.setPosition(WristPosition.BALL)
+        } else if (mCoDriver.getPOV() != -1) {
+            if (mCoDriver.getPOV() >= 340 || mCoDriver.getPOV() <= 20) {
+                mLift.setPosition(LiftHeight.BALL_HIGH)
+                mWrist.setPosition(WristPosition.BALL)
+            } else if (mCoDriver.getPOV() >= 250 && mCoDriver.getPOV() <= 290) {
+                mLift.setPosition(LiftHeight.BALL_MID)
+                mWrist.setPosition(WristPosition.BALL)
+            } else if (mCoDriver.getPOV() >= 160 && mCoDriver.getPOV() <= 200) {
+                mLift.setPosition(LiftHeight.BALL_LOW)
+                mWrist.setPosition(WristPosition.BALL)
+            } else if (mCoDriver.getRawButtonPressed(12)) {
+                mWrist.setPosition(WristPosition.BALL)
+            } else if (mCoDriver.getRawButtonPressed(11)) {
+                mLift.setPosition(LiftHeight.HUMAN_PLAYER)
+                mWrist.setPosition(WristPosition.BALL)
+            }
         }
 
-        if (mDriver.getStartButtonPressed()) {
-            mWrist.startZero()
-        }
+        // if (mDriver.getStartButtonPressed()) {
+        //     mWrist.startZero()
+        // }
         if (mCoDriver.getAButtonPressed()) {
             mWrist.setPosition(WristPosition.HATCH)
         }
         if (mCoDriver.getPOV() >= 70 && mCoDriver.getPOV() <= 110) {
+
             mWrist.setPosition(WristPosition.FORWARD)
         }
         if (mCoDriver.getRawButtonPressed(14)) {
