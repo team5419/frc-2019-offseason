@@ -10,6 +10,7 @@ import org.team5419.frc2019offseason.subsystems.Wrist
 import org.team5419.frc2019offseason.subsystems.Lift
 import org.team5419.frc2019offseason.subsystems.Vacuum
 import org.team5419.frc2019offseason.subsystems.Climber
+import org.team5419.frc2019offseason.input.ButtonBoard
 
 import org.team5419.fault.Controller
 import org.team5419.fault.input.SpaceDriveHelper
@@ -22,11 +23,11 @@ import edu.wpi.first.wpilibj.GenericHID.Hand
 public class TeleopController(
     subsystems: SubsystemsManager,
     driver: XboxController,
-    codriver: XboxController
+    codriver: ButtonBoard
 ) : Controller() {
 
     private val mDriver: XboxController
-    private val mCoDriver: XboxController
+    private val mCoDriver: ButtonBoard
     private val mSubsystems: SubsystemsManager
 
     private val mDrivetrain: Drivetrain
@@ -44,6 +45,8 @@ public class TeleopController(
     private var isManualOverride = true
     private val isHighGear: Boolean get() = mDriver.getTriggerAxis(Hand.kLeft) > 0.3
     private val isQuickTurn: Boolean get() = mDriver.getTriggerAxis(Hand.kRight) > 0.3
+
+    private var wristToggle = false
 
     public enum class ControlModes { TANK, CHEESY }
 
@@ -78,7 +81,6 @@ public class TeleopController(
     override fun update() {
         // Driver
         if (mDriver.getAButtonPressed()) { isReverse = -isReverse }
-
         val ds: DriveSignal = driveHelper.calculateOutput(
             mDriver.getY(Hand.kLeft) * isReverse,
             -mDriver.getX(Hand.kRight),
@@ -86,7 +88,6 @@ public class TeleopController(
             isHighGear
         )
         mSubsystems.drivetrain.setPercent(ds)
-
         // Climb control
         if (mDriver.getXButtonPressed()) {
             mClimber.unlock()
@@ -94,67 +95,65 @@ public class TeleopController(
         if (mDriver.getXButtonReleased()) {
             mClimber.stopUnlocking()
         }
-
         if (mDriver.getYButtonPressed()) {
             mClimber.climb()
         }
         if (mDriver.getYButtonReleased()) {
             mClimber.stop()
         }
+        if (mDriver.getBButtonPressed()) {
+            mWrist.setPosition(WristPosition.DEFENSE)
+        }
 
         // Codriver
 
         // Vacuum control
-        if (mCoDriver.getRawButton(7)) {
-            mVacuum.pickBall()
-        } else if (mCoDriver.getRawButton(8)) {
-            mVacuum.pickHatch()
-        } else if (mCoDriver.getBumper(Hand.kLeft) || mCoDriver.getBumper(Hand.kRight)) {
-            mSubsystems.vacuum.release()
-        } else {
-            mVacuum.setPercent(0.2)
-        }
+        // if (mCoDriver.getRawButton(7)) {
+        //     mVacuum.pickBall()
+        // } else if (mCoDriver.getRawButton(8)) {
+        //     mVacuum.pickHatch()
+        // } else if (mCoDriver.getBumper(Hand.kLeft) || mCoDriver.getBumper(Hand.kRight)) {
+        //     mSubsystems.vacuum.release()
+        // } else {
+        //     mVacuum.setPercent(0.2)
+        // }
 
         // button control
-        if (mCoDriver.getBButtonPressed()) {
+        if (mCoDriver.getHatchLow()) {
             mLift.setPosition(LiftHeight.HATCH_LOW)
             mWrist.setPosition(WristPosition.HATCH)
-        } else if (mCoDriver.getXButtonPressed()) {
+        } else if (mCoDriver.getHatchMid()) {
             mLift.setPosition(LiftHeight.HATCH_MID)
             mWrist.setPosition(WristPosition.HATCH)
-        } else if (mCoDriver.getYButtonPressed()) {
+        } else if (mCoDriver.getHatchHigh()) {
             mLift.setPosition(LiftHeight.HATCH_HIGH)
             mWrist.setPosition(WristPosition.HATCH)
-        } else if (mCoDriver.getPOV() != -1) {
-            if (mCoDriver.getPOV() >= 340 || mCoDriver.getPOV() <= 20) {
-                mLift.setPosition(LiftHeight.BALL_HIGH)
-                mWrist.setPosition(WristPosition.BALL)
-            } else if (mCoDriver.getPOV() >= 250 && mCoDriver.getPOV() <= 290) {
-                mLift.setPosition(LiftHeight.BALL_MID)
-                mWrist.setPosition(WristPosition.BALL)
-            } else if (mCoDriver.getPOV() >= 160 && mCoDriver.getPOV() <= 200) {
-                mLift.setPosition(LiftHeight.BALL_LOW)
-                mWrist.setPosition(WristPosition.BALL)
-            } else if (mCoDriver.getRawButtonPressed(12)) {
-                mWrist.setPosition(WristPosition.BALL)
-            } else if (mCoDriver.getRawButtonPressed(11)) {
-                mLift.setPosition(LiftHeight.HUMAN_PLAYER)
-                mWrist.setPosition(WristPosition.BALL)
-            }
+        } else if (mCoDriver.getBallLow()) {
+            mLift.setPosition(LiftHeight.BALL_HIGH)
+            mWrist.setPosition(WristPosition.BALL)
+        } else if (mCoDriver.getBallMid()) {
+            mLift.setPosition(LiftHeight.BALL_MID)
+            mWrist.setPosition(WristPosition.BALL)
+        } else if (mCoDriver.getBallHigh()) {
+            mLift.setPosition(LiftHeight.BALL_LOW)
+            mWrist.setPosition(WristPosition.BALL)
+        } /*else if (mCoDriver.getHatchHumanPlayer()) {
+            mWrist.setPosition(WristPosition.BALL)
+        }*/ else if (mCoDriver.getBallHumanPlayer()) {
+            mLift.setPosition(LiftHeight.HUMAN_PLAYER)
+            mWrist.setPosition(WristPosition.BALL)
         }
 
         // if (mDriver.getStartButtonPressed()) {
         //     mWrist.startZero()
         // }
-        if (mCoDriver.getAButtonPressed()) {
-            mWrist.setPosition(WristPosition.HATCH)
-        }
-        if (mCoDriver.getPOV() >= 70 && mCoDriver.getPOV() <= 110) {
-
-            mWrist.setPosition(WristPosition.FORWARD)
-        }
-        if (mCoDriver.getRawButtonPressed(14)) {
-            mWrist.setPosition(WristPosition.DEFENSE)
+        if (mCoDriver.getFlipWrist()) {
+            wristToggle = !wristToggle
+            if (wristToggle) {
+                mWrist.setPosition(WristPosition.FORWARD)
+            } else {
+                mWrist.setPosition(WristPosition.BACKWARD)
+            }
         }
 
         // Manual Lift control
