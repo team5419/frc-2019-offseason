@@ -14,15 +14,14 @@ import org.team5419.frc2019offseason.subsystems.Climber
 import org.team5419.frc2019offseason.subsystems.Vision
 import org.team5419.frc2019offseason.controllers.AutoController
 import org.team5419.frc2019offseason.controllers.TeleopController
+import org.team5419.frc2019offseason.input.ButtonBoard
 
 import org.team5419.fault.hardware.LazyTalonSRX
 import org.team5419.fault.hardware.LazyVictorSPX
 import edu.wpi.first.wpilibj.Solenoid
+import edu.wpi.first.wpilibj.Joystick
 
 class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
-    // input
-    private val mDriver: XboxController
-    private val mCodriver: XboxController
 
     // hardware
     private val mLeftMaster: LazyTalonSRX
@@ -56,6 +55,12 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     private val mAutoController: AutoController
     private val mTeleopController: TeleopController
 
+    // input
+    private val mDriver: XboxController
+    private val mJoystick: Joystick
+    private val mButtonBoard: Joystick
+    private val mCoDriver: ButtonBoard
+
     init {
 
         // initilize Drivetrain
@@ -83,6 +88,11 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         mHatchSolenoid = Solenoid(Constants.Vacuum.HATCH_SOLENOID_PORT)
 
         mVision = Vision()
+
+        // initialize inputs
+        mJoystick = Joystick(Constants.Input.JOYSTICK_PORT)
+        mButtonBoard = Joystick(Constants.Input.BUTTON_BOARD_PORT)
+        mCoDriver = ButtonBoard(mJoystick, mButtonBoard)
 
         // reset hardware
         mLeftMaster.configFactoryDefault()
@@ -134,11 +144,11 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         mAutoController = AutoController()
 
         mDriver = XboxController(Constants.Input.DRIVER_PORT)
-        mCodriver = XboxController(Constants.Input.CODRIVER_PORT)
+        // mCodriver = XboxController(Constants.Input.CODRIVER_PORT)
         mTeleopController = TeleopController(
             mSubsystemsManager,
             mDriver,
-            mCodriver
+            mCoDriver
         )
         mVision.ledState = Vision.LEDState.OFF
     }
@@ -161,8 +171,8 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     }
 
     override fun disabledPeriodic() {
-        println(mWrist.mMaster.getSelectedSensorPosition(0).toString() + ", " +
-                mWrist.position.toString())
+        // println(mWrist.mMaster.getSelectedSensorPosition(0))
+        // println(mWrist.position)
     }
 
     // autonomous mode
@@ -182,6 +192,7 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
 
     override fun teleopInit() {
         mTeleopController.start()
+        // mWrist.setPosition(mWrist.WristPosition.DEFENSE)
     }
 
     override fun teleopPeriodic() {

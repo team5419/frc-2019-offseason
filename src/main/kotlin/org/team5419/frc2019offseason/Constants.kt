@@ -19,6 +19,8 @@ public object Constants {
         public const val JOYSTICK_DEADBAND = 0.07
         public const val TURN_MULT = 0.4
         public const val SLOW_MULT = 0.5
+        public const val JOYSTICK_PORT = 2 // check value
+        public const val BUTTON_BOARD_PORT = 1 // check value
     }
 
     object Drivetrain {

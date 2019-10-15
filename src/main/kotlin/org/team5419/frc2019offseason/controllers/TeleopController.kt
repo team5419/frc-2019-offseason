@@ -107,16 +107,16 @@ public class TeleopController(
 
         // Codriver
 
-        // Vacuum control
-        // if (mCoDriver.getRawButton(7)) {
-        //     mVacuum.pickBall()
-        // } else if (mCoDriver.getRawButton(8)) {
-        //     mVacuum.pickHatch()
-        // } else if (mCoDriver.getBumper(Hand.kLeft) || mCoDriver.getBumper(Hand.kRight)) {
-        //     mSubsystems.vacuum.release()
-        // } else {
-        //     mVacuum.setPercent(0.2)
-        // }
+        if (mCoDriver.getVaccumPressed()) {
+            println("vacuum")
+            if (mWrist.isHatchPosition) {
+                mVacuum.pickHatch()
+            } else if (!mWrist.isHatchPosition) {
+                mVacuum.pickBall()
+            } else {
+            mVacuum.setPercent(0.2)
+            }
+        }
 
         // button control
         if (mCoDriver.getHatchLow()) {

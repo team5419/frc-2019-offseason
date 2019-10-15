@@ -32,6 +32,8 @@ class Wrist(
     public var rawPosition: Int? = null
         get() = mMaster.getSelectedSensorPosition(0)
     lateinit var lift: Lift
+    private var targetPosistion: WristPosition
+    public val isHatchPosition: Boolean get() = targetPosistion == WristPosition.HATCH
     // public var targetPosistion: WristPosition
 
     // set posistion
@@ -81,6 +83,7 @@ class Wrist(
         setPoint = 0.0
         position = WristPosition.FORWARD.value
         liftPos = 0.0
+        targetPosistion = WristPosition.FORWARD
     }
 
     public fun zero() {
@@ -105,6 +108,7 @@ class Wrist(
 
     @Suppress("ComplexCondition")
     public fun setPosition(point: WristPosition) {
+        targetPosistion = point
         setPoint = point.value
         if (
             (position < Constants.Wrist.MAX_RISE_ANGLE && setPoint < Constants.Wrist.MAX_RISE_ANGLE) ||
