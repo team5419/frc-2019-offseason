@@ -142,9 +142,10 @@ public class TeleopController(
         } else if (mCoDriver.getBallHigh()) {
             mLift.setPosition(LiftHeight.BALL_LOW)
             mWrist.setPosition(WristPosition.BALL)
-        } /*else if (mCoDriver.getHatchHumanPlayer()) {
-            mWrist.setPosition(WristPosition.BALL)
-        }*/ else if (mCoDriver.getBallHumanPlayer()) {
+        } else if (mCoDriver.getHatchHumanPlayer()) {
+            mLift.setPosition(LiftHeight.HUMAN_PLAYER)
+            mWrist.setPosition(WristPosition.HATCH)
+        } else if (mCoDriver.getBallHumanPlayer()) {
             mLift.setPosition(LiftHeight.HUMAN_PLAYER)
             mWrist.setPosition(WristPosition.BALL)
         }
@@ -160,13 +161,10 @@ public class TeleopController(
                 mWrist.setPosition(WristPosition.BACKWARD)
             }
         }
-
+        isManualOverride = mCoDriver.getSlider() > 0.9
         // Manual Lift control
-        // if (Math.abs(mCoDriver.getY(Hand.kLeft)) > Input.DEADBAND && isManualOverride) {
-        //     mSubsystems.lift.setPercent(mCoDriver.getY(Hand.kLeft) * 0.5)
-        // }
-        // if (Math.abs(mCoDriver.getY(Hand.kRight)) > Input.DEADBAND && isManualOverride) {
-        //     mSubsystems.wrist.setPercent(mCoDriver.getY(Hand.kLeft) * 0.5)
-        // }
+        if (isManualOverride && Math.abs(mCoDriver.getManualInput()) > Constants.Input.DEADBAND) {
+            mLift.setPercent(mCoDriver.getManualInput())
+        }
     }
 }
