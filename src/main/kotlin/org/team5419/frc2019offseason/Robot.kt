@@ -2,6 +2,7 @@ package org.team5499.frc2019offseason
 
 import edu.wpi.first.wpilibj.TimedRobot
 import edu.wpi.first.wpilibj.XboxController
+import edu.wpi.first.wpilibj.DriverStation
 
 import org.team5419.frc2019offseason.Constants
 
@@ -20,6 +21,8 @@ import org.team5419.fault.hardware.LazyTalonSRX
 import org.team5419.fault.hardware.LazyVictorSPX
 import edu.wpi.first.wpilibj.Solenoid
 import edu.wpi.first.wpilibj.Joystick
+import edu.wpi.first.networktables.NetworkTableInstance
+import edu.wpi.first.networktables.NetworkTable
 
 class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
 
@@ -60,6 +63,11 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     private val mJoystick: Joystick
     private val mButtonBoard: Joystick
     private val mCoDriver: ButtonBoard
+
+    // network tables
+    private val nt: NetworkTableInstance
+    private val stormxTable: NetworkTable
+    private val ds: DriverStation
 
     init {
 
@@ -151,6 +159,11 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
             mCoDriver
         )
         mVision.ledState = Vision.LEDState.OFF
+
+        // network tables
+        nt = NetworkTableInstance.getDefault()
+        stormxTable = nt.getTable("stormx")
+        ds = DriverStation()
     }
 
     // robot
@@ -160,6 +173,10 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
     }
 
     override fun robotPeriodic() {
+        stormxTable.getEntry("matchTime").setDouble(ds.getMatchTime())
+        stormxTable.getEntry("matchNumber").setDouble(ds.getMatchNumber().toDouble())
+        stormxTable.getEntry("eventName").setString(ds.getEventName())
+        stormxTable.getEntry("isEnabled").setBoolean(ds.isEnabled())
     }
 
     // disabled mode
