@@ -137,6 +137,7 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
             mReleaseSolenoid,
             mHatchSolenoid
         )
+        mVacuum.mVision = mVision
 
         // initilize Subsystems Manager
         mSubsystemsManager = SubsystemsManager(

@@ -4,6 +4,10 @@ import org.team5419.fault.Subsystem
 import edu.wpi.first.wpilibj.Solenoid
 import org.team5419.fault.hardware.LazyTalonSRX
 import com.ctre.phoenix.motorcontrol.ControlMode
+import org.team5419.frc2019offseason.Constants
+import java.util.Deque
+import java.util.LinkedList
+import java.util.Collections
 
 class Vacuum(
     masterTalon: LazyTalonSRX,
@@ -14,20 +18,28 @@ class Vacuum(
     private val mTalon: LazyTalonSRX
     private val mReleaseSolenoid: Solenoid
     private val mHatchSolenoid: Solenoid
+    lateinit var mVision: Vision
     private var isClearingValve: Boolean = false
-    private var hasPeice: Boolean = false
+    private var hasPiece: Boolean = false
     public var hatchValve: Boolean = false
         get() = mHatchSolenoid.get()
         set(value) {
             mHatchSolenoid.set(value)
             field = value
         }
-
     public var realeaseValve: Boolean = false
         get() = mReleaseSolenoid.get()
         set(value) {
             mReleaseSolenoid.set(value)
             field = value
+        }
+
+    private val rollingValues: Deque<Double> = LinkedList(Collections.nCopies(30, 0.0))
+    private val rollingAverage: Double
+        get() {
+            var sum = 0.0
+            rollingValues.iterator().forEach { sum += it }
+            return sum / rollingValues.size
         }
 
     init {
@@ -39,7 +51,7 @@ class Vacuum(
     public fun release() {
         realeaseValve = true
         hatchValve = true
-        hasPeice = false
+        hasPiece = false
         mTalon.set(ControlMode.PercentOutput, 0.0)
     }
 
@@ -61,14 +73,13 @@ class Vacuum(
     }
 
     public override fun update() {
-        // println("${mTalon.getOutputCurrent()}")
-        // hasPeice = hasPeice || mTalon.getOutputCurrent() >= Constants.Vacuum.RESTING_THRESHOLD
-        // if (hasPeice && !isPumping){
-        //     mTalon.set(ControlMode.PercentOutput, 0.2)
-        // }
-        // else if(!hasPeice && !isPumping){
-        //     mTalon.set(ControlMode.PercentOutput, 0.0)
-        // }
+        rollingValues.addFirst(mTalon.getOutputCurrent())
+        rollingValues.removeLast()
+
+        if (!hasPiece && rollingAverage >= Constants.Vacuum.RESTING_THRESHOLD) {
+            hasPiece = true
+            mVision.flashNumTimes(3)
+        }
     }
 
     public override fun stop() {
