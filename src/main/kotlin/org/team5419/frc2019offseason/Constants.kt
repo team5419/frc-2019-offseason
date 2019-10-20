@@ -50,8 +50,9 @@ public object Constants {
         public const val MASTER_TALON_PORT = 2
         public const val RELEASE_SOLNOID_PORT = 0
         public const val HATCH_SOLENOID_PORT = 1
-        public const val RESTING_THRESHOLD = 0.875
         public const val MIN_THRESHOLD = 0.5
+        public const val MAX_CURRENT = 0.9
+        public const val MIN_CURRENT = 0.6
 
         public const val MOTION_MAGIC_VELOCITY = 11000
         public const val MOTION_MAGIC_ACCELERATION = 11000
