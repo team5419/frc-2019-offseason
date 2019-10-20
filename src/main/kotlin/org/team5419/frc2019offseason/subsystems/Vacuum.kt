@@ -1,10 +1,14 @@
 package org.team5419.frc2019offseason.subsystems
-
 import org.team5419.fault.Subsystem
-import edu.wpi.first.wpilibj.Solenoid
-import org.team5419.fault.hardware.LazyTalonSRX
-import com.ctre.phoenix.motorcontrol.ControlMode
 import org.team5419.frc2019offseason.Constants
+import org.team5419.fault.hardware.LazyTalonSRX
+
+import edu.wpi.first.wpilibj.Solenoid
+import edu.wpi.first.wpilibj.Timer
+import edu.wpi.first.wpilibj.GenericHID.RumbleType
+import edu.wpi.first.wpilibj.XboxController
+
+import com.ctre.phoenix.motorcontrol.ControlMode
 import java.util.Deque
 import java.util.LinkedList
 import java.util.Collections
@@ -18,9 +22,14 @@ class Vacuum(
     private val mTalon: LazyTalonSRX
     private val mReleaseSolenoid: Solenoid
     private val mHatchSolenoid: Solenoid
+    private val mTimer: Timer = Timer()
     lateinit var mVision: Vision
+    lateinit var mController: XboxController
+
     private var isClearingValve: Boolean = false
     private var hasPiece: Boolean = false
+    private var isTestingPiece: Boolean = false
+
     public var hatchValve: Boolean = false
         get() = mHatchSolenoid.get()
         set(value) {
@@ -34,8 +43,8 @@ class Vacuum(
             field = value
         }
 
-    private val rollingValues: Deque<Double> = LinkedList(Collections.nCopies(30, 0.0))
-    private val rollingAverage: Double
+    private val rollingValues: Deque<Double> = LinkedList(Collections.nCopies(10, 0.0))
+    public val rollingAverage: Double
         get() {
             var sum = 0.0
             rollingValues.iterator().forEach { sum += it }
@@ -72,13 +81,36 @@ class Vacuum(
         mTalon.set(ControlMode.PercentOutput, percent)
     }
 
+    @Suppress("ComplexCondition")
     public override fun update() {
         rollingValues.addFirst(mTalon.getOutputCurrent())
         rollingValues.removeLast()
+        val tempAve: Double = rollingAverage
 
-        if (!hasPiece && rollingAverage >= Constants.Vacuum.RESTING_THRESHOLD) {
-            hasPiece = true
-            mVision.flashNumTimes(3)
+        if (
+            !isTestingPiece &&
+            !hasPiece &&
+            tempAve >= Constants.Vacuum.MIN_CURRENT &&
+            tempAve <= Constants.Vacuum.MAX_CURRENT
+        ) {
+            timer.start()
+            isTestingPiece = true
+        }
+        if (isTestingPiece) {
+            if (timer.get() > 0.5) {
+                hasPiece = true
+                isTestingPiece = false
+                mVision.flashNumTimes(3)
+                mController.setRumble(RumbleType.kLeftRumble, 0.5)
+                mController.setRumble(RumbleType.kRightRumble, 0.5)
+            } else if (
+                tempAve <= Constants.Vacuum.MIN_CURRENT ||
+                tempAve >= Constants.Vacuum.MAX_CURRENT
+            ) {
+                isTestingPiece = false
+                timer.stop()
+                timer.reset()
+            }
         }
     }
 

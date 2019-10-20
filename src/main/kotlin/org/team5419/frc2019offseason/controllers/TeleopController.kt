@@ -12,10 +12,10 @@ import org.team5419.frc2019offseason.subsystems.Vacuum
 import org.team5419.frc2019offseason.subsystems.Climber
 import org.team5419.frc2019offseason.input.ButtonBoard
 
+import org.team5419.fault.input.DriveSignal
 import org.team5419.fault.Controller
 import org.team5419.fault.input.SpaceDriveHelper
 import org.team5419.fault.input.DriveHelper
-import org.team5419.fault.input.DriveSignal
 
 import edu.wpi.first.wpilibj.XboxController
 import edu.wpi.first.wpilibj.GenericHID.Hand

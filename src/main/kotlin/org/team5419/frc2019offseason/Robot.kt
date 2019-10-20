@@ -159,6 +159,7 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
             mDriver,
             mCoDriver
         )
+        mVacuum.mController = mDriver
         mVision.ledState = Vision.LEDState.OFF
 
         // network tables
