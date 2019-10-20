@@ -111,7 +111,7 @@ class Wrist(
         targetPosistion = point
         setPoint = point.value
         if (
-            (position < Constants.Wrist.MAX_RISE_ANGLE && setPoint < Constants.Wrist.MAX_RISE_ANGLE) ||
+            (position < Constants.Wrist.MAX_RISE_ANGLE && setPoint < Constants.Wrist.MAX_RISE_ANGLE) || /* > > */
             (position > 110.0 && setPoint > 110.0) ||
             lift.canFlip) {
                 setDegrees(point.value.toDouble())
@@ -120,7 +120,7 @@ class Wrist(
 
     private fun setDegrees(heading: Double) {
         println("set degree")
-        setPositionRaw(degreesToTicks(heading))
+        setPositionRaw(degreesToTicks(heading + Constants.Wrist.OFFSET_ANGLE))
     }
 
     // private fun setTicks(ticks: Int) {

@@ -75,6 +75,9 @@ public object Constants {
     object Wrist {
         public const val MASTER_TALON_PORT = 6 // to set
         // to check
+
+        public const val OFFSET_ANGLE = 0.0
+
         public const val FORWARD = 0.0 // need pot value
         public const val MIDDLE = 80.0
         public const val BACKWARD = 165.0
