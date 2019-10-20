@@ -163,7 +163,7 @@ class Robot : TimedRobot(Constants.ROBOT_UPDATE_PERIOD) {
         // network tables
         nt = NetworkTableInstance.getDefault()
         stormxTable = nt.getTable("stormx")
-        ds = DriverStation()
+        ds = DriverStation.getInstance()
     }
 
     // robot

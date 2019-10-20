@@ -76,12 +76,12 @@ public object Constants {
         // to check
         public const val FORWARD = 0.0 // need pot value
         public const val MIDDLE = 80.0
-        public const val BACKWARD = 180.0
-        public const val HATCH_ANGLE = 175.0
+        public const val BACKWARD = 165.0
+        public const val HATCH_ANGLE = 165.0
         public const val BALL_ANGLE = 130.0
         public const val MIN_RISE_ANGLE = 135.0
         public const val MAX_RISE_ANGLE = 75.0
-        public const val HUMAN_PLAYER = 140.0
+        public const val HUMAN_PLAYER = 130.0
 
         public const val ENCODER_TICKS_PER_ROTATION = 4096.0
 
@@ -94,7 +94,7 @@ public object Constants {
         public const val MOTION_MAGIC_ACCELERATION = 500000
         public const val MAX_ENCODER_TICKS = 2048
         public const val MIN_ENCODER_TICKS = 0
-        public const val POSITION_OFFSET = -71.0
+        public const val POSITION_OFFSET = -43.0
     }
 
     object Lift {
@@ -108,7 +108,7 @@ public object Constants {
         public const val BALL_LOW_HEIGHT = 0.0
         public const val BALL_MID_HEIGHT = 26.3
         public const val BALL_HIGH_HEIGHT = 51.0
-        public const val HUMAN_PLAYER = 14.7
+        public const val HUMAN_PLAYER = 20.0
         public const val SECOND_STAGE_HIGHT = 22.865
         public const val MAX_HEIGHT = 50.0
         public const val MAX_FLIP_HIGHT = 4.0
