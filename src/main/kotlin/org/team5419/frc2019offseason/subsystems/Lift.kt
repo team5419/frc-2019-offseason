@@ -4,8 +4,6 @@ import com.ctre.phoenix.motorcontrol.ControlMode
 import com.ctre.phoenix.motorcontrol.NeutralMode
 import com.ctre.phoenix.motorcontrol.FeedbackDevice
 import com.ctre.phoenix.motorcontrol.InvertType
-import java.util.Deque
-import java.util.LinkedList
 
 import org.team5419.fault.hardware.LazyTalonSRX
 import org.team5419.fault.Subsystem
@@ -22,12 +20,6 @@ class Lift(
         private const val kElevatorSlot = 0
     }
 
-    private val rollingValues: Deque<Double> = LinkedList()
-    private val rollingAverage: Double get() {
-        var sum = 0.0
-        rollingValues.iterator().forEach { sum += it }
-        return sum / rollingValues.size
-    }
     private var mMaster: LazyTalonSRX
     private var mSlave: LazyTalonSRX
     lateinit var wrist: Wrist
