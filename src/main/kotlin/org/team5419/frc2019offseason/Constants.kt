@@ -80,8 +80,8 @@ public object Constants {
 
         public const val FORWARD = 0.0 // need pot value
         public const val MIDDLE = 80.0
-        public const val BACKWARD = 165.0
-        public const val HATCH_ANGLE = 165.0
+        public const val BACKWARD = 160.0
+        public const val HATCH_ANGLE = 160.0
         public const val BALL_ANGLE = 130.0
         public const val MIN_RISE_ANGLE = 135.0
         public const val MAX_RISE_ANGLE = 75.0
